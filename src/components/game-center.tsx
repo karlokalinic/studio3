@@ -25,6 +25,7 @@ import {
   LogOut,
   Archive,
   BookOpen,
+  Lightbulb,
 } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
@@ -147,6 +148,15 @@ export default function GameCenter() {
               >
                 <Link href="/admin-archives">
                   <Archive className="mr-4"/> Admin Archives
+                </Link>
+              </Button>
+               <Button
+                variant="ghost"
+                className="justify-start text-lg p-6 hover:bg-accent/20 hover:text-accent"
+                asChild
+              >
+                <Link href="/dev-insights">
+                  <Lightbulb className="mr-4"/> Dev Insights
                 </Link>
               </Button>
               <Button
