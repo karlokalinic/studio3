@@ -3,12 +3,12 @@
 "use client";
 
 import type { CharacterProfile, CalculatedStats } from "@/types";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { getCalculatedStats } from "@/lib/character-calculations";
 import { useEffect, useState } from "react";
-import { Info, ExternalLink } from "lucide-react";
+import { Info, UserRound, BookCopy } from "lucide-react";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { useSettings } from "@/context/settings-context";
@@ -61,7 +61,39 @@ export default function CharacterProfile({ profile }: CharacterProfileProps) {
   return (
     <Card className="bg-card/50 border-primary/20 shadow-lg shadow-primary/5">
       <CardHeader>
-        <CardTitle className="font-headline text-2xl text-primary">{profile.name}</CardTitle>
+        <div className="flex items-center justify-between">
+            <CardTitle className="font-headline text-2xl text-primary">{profile.name}</CardTitle>
+            <div className="flex items-center gap-1">
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-accent">
+                                <Link href="/character-profile">
+                                    <UserRound className="h-5 w-5" />
+                                </Link>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>View Full Profile</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+                 <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                             <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-accent">
+                                <Link href="/character-sheet">
+                                    <BookCopy className="h-5 w-5" />
+                                </Link>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>View Stat Internals</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            </div>
+        </div>
         <CardDescription>Lvl {profile.level} ({profile.xp} XP) - {profile.metadata.origin}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -96,20 +128,6 @@ export default function CharacterProfile({ profile }: CharacterProfileProps) {
           </div>
         </div>
       </CardContent>
-       <CardFooter className="flex flex-col gap-2">
-        <Button asChild variant="outline" className="w-full">
-          <Link href="/character-profile">
-            <ExternalLink className="mr-2 h-4 w-4" />
-            View Full Character Profile
-          </Link>
-        </Button>
-        <Button asChild variant="outline" className="w-full">
-            <Link href="/character-sheet">
-                <ExternalLink className="mr-2 h-4 w-4" />
-                View Stat Internals
-            </Link>
-        </Button>
-      </CardFooter>
     </Card>
   );
 }
