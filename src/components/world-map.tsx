@@ -2,11 +2,13 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import type { WorldLocation } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin, Users, Coins, Info } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { Button } from "./ui/button";
 
 interface WorldMapProps {
   locations: WorldLocation[];
@@ -93,4 +95,3 @@ export default function WorldMap({ locations }: WorldMapProps) {
     </Card>
   );
 }
-
