@@ -5,6 +5,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware'
 import type { CharacterProfile, InventoryItem, Quest } from '@/types';
+import { inventoryData } from '@/data/mock-data';
 
 const calculateInitialSlots = (strength: number) => 3 + Math.floor(strength / 5);
 
@@ -22,6 +23,7 @@ interface CharacterState {
     unlockInventorySlot: () => void;
     setCharacter: (setter: (char: CharacterProfile | null) => CharacterProfile | null) => void;
     addQuest: (quest: Quest) => void;
+    setInventory: (items: InventoryItem[]) => void;
 }
 
 export const useCharacterStore = create<CharacterState>()(
@@ -74,7 +76,7 @@ export const useCharacterStore = create<CharacterState>()(
                         backstory: `A new face in the Nexus, hailing from the ${faction}, ready to make their mark.`,
                     },
                 };
-                set({ character: newCharacter, inventory: [], quests: [] });
+                set({ character: newCharacter, inventory: inventoryData, quests: [] });
                 localStorage.removeItem('tutorialCompleted'); // Reset tutorial on new character
             },
             loadCharacter: () => {
@@ -124,7 +126,16 @@ export const useCharacterStore = create<CharacterState>()(
                 set((state) => ({ character: setter(state.character) }));
             },
             addQuest: (quest) => {
-                set((state) => ({ quests: [...state.quests, quest] }));
+                set((state) => {
+                    // Prevent adding duplicate quests
+                    if (state.quests.some(q => q.id === quest.id)) {
+                        return {};
+                    }
+                    return { quests: [...state.quests, quest] };
+                });
+            },
+            setInventory: (items) => {
+                set({ inventory: items });
             }
         }),
         {
@@ -142,5 +153,3 @@ export const useCharacterStore = create<CharacterState>()(
         }
     )
 );
-
-    

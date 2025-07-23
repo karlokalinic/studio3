@@ -1,12 +1,13 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from './ui/button';
 import { useCharacterStore } from '@/stores/use-character-store';
 import { ScrollArea } from './ui/scroll-area';
+import { questData } from '@/data/mock-data';
 
 const story = [
     {
@@ -36,52 +37,57 @@ const story = [
     }
 ];
 
-const initialQuest = { 
-    id: 'q1-retrieval', 
-    title: 'The Retrieval', 
-    status: 'Active', 
-    progress: 0, 
-    description: 'Retrieve the package from the fallen courier in the ruins of Terra Nexus Sector-G.', 
-    moralChoice: 'The contents of the package are unknown. Do you deliver it sealed, or investigate first?',
-    outcomes: 'Your employer values discretion, but knowledge is power.'
-};
-
-
 export default function MissionControl() {
-    const [currentStep, setCurrentStep] = useState(0);
+    const { addQuest, quests } = useCharacterStore();
     const [history, setHistory] = useState<any[]>([]);
-    const { addQuest } = useCharacterStore();
+    const [storyStep, setStoryStep] = useState(0);
+
+    const advanceStory = useCallback(() => {
+        if (storyStep < story.length) {
+            setHistory(prev => [...prev, story[storyStep]]);
+            setStoryStep(prev => prev + 1);
+        }
+    }, [storyStep]);
 
     useEffect(() => {
-        // Add the first narrator block to history on mount
-        if (history.length === 0 && story[0]?.type === 'narrator') {
-            setHistory([story[0]]);
-            setCurrentStep(1);
+        // Automatically advance the story if the current block is narration
+        const currentBlock = story[storyStep];
+        if (currentBlock && currentBlock.type === 'narrator') {
+            const timer = setTimeout(() => {
+                advanceStory();
+            }, 1500); // Add a delay for readability
+            return () => clearTimeout(timer);
+        }
+    }, [storyStep, advanceStory]);
+    
+    // Start story if no quests are active
+    useEffect(() => {
+        if (quests.length === 0 && history.length === 0) {
+            advanceStory();
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [quests]);
 
     const handleChoice = (option: any) => {
         // Add user choice to history
         const choiceEntry = { id: `choice-${Date.now()}`, type: 'player_choice', text: option.text };
-        
-        // Handle consequence
-        if(option.consequence.type === 'quest_start') {
-            addQuest(initialQuest);
-        }
-        
-        // Move to the next story block if it exists
-        const nextStep = currentStep < story.length ? story[currentStep] : null;
+        setHistory(prev => [...prev, choiceEntry]);
 
-        if (nextStep) {
-            setHistory(prev => [...prev, choiceEntry, nextStep]);
-            setCurrentStep(prev => prev + 1);
-        } else {
-             setHistory(prev => [...prev, choiceEntry, { id: 'end', type: 'narrator', text: 'The line goes dead. You are left alone with your thoughts and your mission.' }]);
+        // Handle consequence
+        if (option.consequence.type === 'quest_start') {
+            const questToAdd = questData.find(q => q.id === option.consequence.questId);
+            if(questToAdd) {
+                addQuest(questToAdd);
+            }
         }
+        
+        // Add a concluding remark and end this story segment
+        const endOfSegment = { id: 'end', type: 'narrator', text: 'The line goes dead. You are left alone with your thoughts and your mission.' };
+        setHistory(prev => [...prev, endOfSegment]);
+        setStoryStep(story.length); // Mark story as complete
     }
 
-    const currentBlock = story[currentStep];
+    const currentBlock = story[storyStep];
 
     return (
         <Card className="bg-card/50 border-primary/20 shadow-lg shadow-primary/5 flex flex-col h-[600px]">
@@ -93,9 +99,9 @@ export default function MissionControl() {
                 <ScrollArea className="h-full pr-4">
                      <div className="space-y-4">
                         <AnimatePresence>
-                        {history.map((item) => (
+                        {history.map((item, index) => (
                             <motion.div
-                                key={item.id}
+                                key={`${item.id}-${index}`}
                                 layout
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}

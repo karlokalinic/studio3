@@ -12,6 +12,7 @@ import { SkipForward, Zap, Shield } from 'lucide-react';
 import ActionCheck from './action-check';
 import { useSettings, type Difficulty } from '@/context/settings-context';
 import DifficultySlider from '@/app/settings/_components/difficulty-slider';
+import { inventoryData } from '@/data/mock-data';
 
 const tutorialScript = [
   // ... existing tutorial steps ...
@@ -113,7 +114,7 @@ const ChoiceConsequence = ({ consequence, onAcknowledged }: { consequence: any, 
 
 export default function TutorialContent() {
   const router = useRouter();
-  const { character, hasHydrated, loadCharacter, updateCharacterStats } = useCharacterStore();
+  const { character, hasHydrated, loadCharacter, updateCharacterStats, setInventory } = useCharacterStore();
   const { settings, setSetting } = useSettings();
   const [step, setStep] = useState(0);
   const [showText, setShowText] = useState(false);
@@ -182,11 +183,13 @@ export default function TutorialContent() {
   };
   
   const finishTutorial = () => {
+      setInventory(inventoryData);
       localStorage.setItem('tutorialCompleted', 'true');
       router.push('/');
   }
 
   const skipTutorial = () => {
+    setInventory(inventoryData);
     localStorage.setItem('tutorialCompleted', 'true');
     router.push('/');
   }
@@ -303,5 +306,3 @@ export default function TutorialContent() {
     </div>
   );
 }
-
-    

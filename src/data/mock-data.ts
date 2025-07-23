@@ -35,6 +35,11 @@ export const characterData: CharacterProfile = {
     cybernetics: ['NeuralLink V2', 'AdrenalBooster'],
     implants: ['Subdermal Weave'],
   },
+  attunement: {
+    order: 10,
+    chaos: 5,
+    balance: 2,
+  },
   metadata: {
     age: 28,
     gender: "Non-binary",
@@ -54,12 +59,20 @@ export const inventoryData: InventoryItem[] = [
   { id: 'item-6', name: 'Slot Expansion Key', type: 'Key', value: 1000, description: 'A rare cybernetic key that can re-route power to unlock an additional inventory slot.', icon: Key },
 ];
 
-export const questData: Quest[] = [];
+export const questData: Quest[] = [
+    { 
+        id: 'q1-retrieval', 
+        title: 'The Retrieval', 
+        status: 'Active', 
+        progress: 0, 
+        description: 'Retrieve the package from the fallen courier in the ruins of Terra Nexus Sector-G.', 
+        moralChoice: 'The contents of the package are unknown. Do you deliver it sealed, or investigate first?',
+        outcomes: 'Your employer values discretion, but knowledge is power.'
+    }
+];
 
 export const worldData: WorldLocation[] = [
   { id: 'loc1', name: 'Neo-Kyoto', faction: 'Solaris Coalition', currencyModifier: 1.2, position: { top: '30%', left: '25%' }, description: 'A gleaming metropolis governed by corporate technocrats. Order and progress are valued above all.' },
   { id: 'loc2', name: 'The Undercity', faction: 'Outcasts', currencyModifier: 0.8, position: { top: '65%', left: '40%' }, description: 'A sprawling, chaotic network of tunnels and settlements beneath Neo-Kyoto. A haven for criminals and the disenfranchised.' },
   { id: 'loc3', name: 'Aethelgard', faction: 'Sky Citadels', currencyModifier: 1.0, position: { top: '50%', left: '70%' }, description: 'A floating city-state built on principles of free trade and individualism. Controlled by powerful merchant guilds.' },
 ];
-
-    

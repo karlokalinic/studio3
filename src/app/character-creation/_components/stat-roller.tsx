@@ -35,14 +35,10 @@ const StatDisplay = ({ label, value }: { label: string; value: number }) => {
 export default function StatRoller({ onRandomize, onConfirm, isSaving }: StatRollerProps) {
     const [stats, setStats] = useState({ strength: 10, intelligence: 10, spirit: 10 });
     const [isRolling, setIsRolling] = useState(false);
-    const [remainingRerolls, setRemainingRerolls] = useState(1);
+    const [remainingRerolls, setRemainingRerolls] = useState(3);
 
-    const rollStats = useCallback(() => {
-        if (isRolling || remainingRerolls <= 0) return;
-        
+    const performRollAnimation = useCallback((onComplete: () => void) => {
         setIsRolling(true);
-        setRemainingRerolls(prev => prev - 1);
-
         let counter = 0;
         const interval = setInterval(() => {
             setStats({
@@ -54,13 +50,21 @@ export default function StatRoller({ onRandomize, onConfirm, isSaving }: StatRol
             if (counter >= 25) { // Roll for ~2.5 seconds (25 * 100ms)
                 clearInterval(interval);
                 setIsRolling(false);
+                onComplete();
             }
         }, 100);
-    }, [isRolling, remainingRerolls]);
+    }, []);
+
+    const handleReroll = useCallback(() => {
+        if (isRolling || remainingRerolls <= 0) return;
+        
+        setRemainingRerolls(prev => prev - 1);
+        performRollAnimation(() => {});
+    }, [isRolling, remainingRerolls, performRollAnimation]);
 
     // Initial roll on mount
     useEffect(() => {
-        rollStats();
+        performRollAnimation(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -77,7 +81,7 @@ export default function StatRoller({ onRandomize, onConfirm, isSaving }: StatRol
             
             <div className="flex gap-4">
                 <div className="w-full flex flex-col">
-                    <Button onClick={rollStats} variant="outline" className="w-full" disabled={isRolling || isSaving || remainingRerolls <= 0}>
+                    <Button onClick={handleReroll} variant="outline" className="w-full" disabled={isRolling || isSaving || remainingRerolls <= 0}>
                         <Dices className="mr-2" />
                         {isRolling ? 'Rolling...' : 'Re-roll'}
                     </Button>
