@@ -43,7 +43,7 @@ const SectionCard: React.FC<{
   <Card className="bg-card/30 border-primary/20 shadow-lg shadow-primary/10 backdrop-blur-sm mb-8">
     <CardHeader>
       <CardTitle className="font-headline text-2xl text-accent">{title}</CardTitle>
-      {description && <CardDescription className="text-foreground/90">{description}</CardDescription>}
+      {description && <CardDescription>{description}</CardDescription>}
     </CardHeader>
     <CardContent>{children}</CardContent>
   </Card>
@@ -74,19 +74,19 @@ export default function LorePage() {
 
         <SectionCard title={lore.core.title}>
             <p className="font-bold text-primary/90">Timeline:</p>
-            <p className="text-foreground/90 mb-4">{lore.core.timeline}</p>
+            <p className="mb-4">{lore.core.timeline}</p>
             <p className="font-bold text-primary/90">Core Story:</p>
-            <p className="text-foreground/90">{lore.core.story}</p>
+            <p>{lore.core.story}</p>
         </SectionCard>
 
         <SectionCard title={lore.factions.title}>
             <div className="space-y-4">
             {lore.factions.list.map(faction => (
                 <div key={faction.name} className="p-4 bg-black/20 rounded-lg">
-                    <h4 className="font-headline text-lg text-primary">{faction.name} <span className="text-sm text-foreground/90 font-body font-normal">- {faction.type}</span></h4>
-                    <p className="text-foreground/90"><strong className="text-primary/80">Values:</strong> {faction.values}</p>
-                    <p className="text-foreground/90"><strong className="text-primary/80">Structure:</strong> {faction.structure}</p>
-                    <p className="text-foreground/90"><strong className="text-primary/80">Conflicts:</strong> {faction.conflicts}</p>
+                    <h4 className="font-headline text-lg text-primary">{faction.name} <span className="text-sm font-body font-normal">- {faction.type}</span></h4>
+                    <p><strong className="text-primary/80">Values:</strong> {faction.values}</p>
+                    <p><strong className="text-primary/80">Structure:</strong> {faction.structure}</p>
+                    <p><strong className="text-primary/80">Conflicts:</strong> {faction.conflicts}</p>
                 </div>
             ))}
             </div>
@@ -95,12 +95,12 @@ export default function LorePage() {
         <SectionCard title={lore.quests.title}>
             <div className="space-y-4">
                 <h4 className="font-headline text-lg text-primary/90 mb-2">Quest Layers:</h4>
-                <ol className="list-decimal list-inside space-y-2 text-foreground/90 pl-4">
+                <ol className="list-decimal list-inside space-y-2 pl-4">
                     {lore.quests.layers.map((layer, index) => <li key={index}>{layer}</li>)}
                 </ol>
                 <Separator className="my-6"/>
                 <h4 className="font-headline text-lg text-primary/90 mb-2">Expandability & Outcomes:</h4>
-                <p className="text-foreground/90">{lore.quests.outcomes}</p>
+                <p>{lore.quests.outcomes}</p>
                 <div className="mt-4 p-4 border-l-4 border-accent bg-accent/10">
                     <p className="font-bold text-accent-foreground">Analysis</p>
                     <p className="text-accent-foreground/80">This quest structure is highly expandable. New "layers" can be inserted to extend the investigation, or branches can be added at each decision point. For example, a choice in Layer 5 could lead to a whole new arc dealing with the fallout of the assassination, or preventing it could trigger a civil war within the resistance movement. The modular design allows for near-infinite narrative depth by connecting outcomes to the global faction and reputation systems.</p>
