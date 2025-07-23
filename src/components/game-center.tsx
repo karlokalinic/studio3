@@ -7,6 +7,13 @@ import { useCharacterStore } from '@/stores/use-character-store';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import {
   Sheet,
   SheetContent,
   SheetHeader,
@@ -24,12 +31,35 @@ import {
   FolderOpen,
   LogOut,
   Archive,
+  BookOpen,
 } from 'lucide-react';
 import Link from 'next/link';
 
 const GlowIcon = ({ icon: Icon }: { icon: React.ElementType }) => (
   <Icon className="h-5 w-5 mr-2 text-accent drop-shadow-[0_0_4px_hsl(var(--accent))] transition-all" />
 );
+
+const HowToPlayContent = () => (
+  <div className="space-y-4 text-sm text-muted-foreground">
+      <div>
+        <h3 className="font-headline text-lg text-primary mb-2">Character Attributes</h3>
+        <p>Your character has three core attributes: Strength, Intelligence, and Spirit. These base stats determine your effectiveness in various situations. They are modified by your dynamic state (like fatigue) to produce your "effective" stats for any given action.</p>
+      </div>
+       <div>
+        <h3 className="font-headline text-lg text-primary mb-2">Attribute Checks</h3>
+        <p>Many actions, like forcing a door (Strength) or hacking a terminal (Intelligence), require an attribute check. The game compares your relevant effective stat against a target number. Success is not guaranteed, and failure can sometimes lead to unexpected outcomes.</p>
+      </div>
+      <div>
+        <h3 className="font-headline text-lg text-primary mb-2">Inventory</h3>
+        <p>Your inventory size is determined by your Strength. You can expand it by finding or buying "Slot Expansion Keys". Pay attention to item types: Consumables can be used for effects, while other items might be for quests or provide passive bonuses.</p>
+      </div>
+      <div>
+        <h3 className="font-headline text-lg text-primary mb-2">State Management</h3>
+        <p>Your character's health, energy, and hunger will deplete over time and must be managed. Additionally, stats like Fatigue and Focus will change based on your actions, directly impacting your performance.</p>
+      </div>
+  </div>
+);
+
 
 export default function GameCenter() {
   const { character, resetCharacter } = useCharacterStore();
@@ -117,6 +147,22 @@ export default function GameCenter() {
               </SheetTitle>
             </SheetHeader>
             <div className="mt-8 flex flex-col gap-4">
+               <Dialog>
+                <DialogTrigger asChild>
+                   <Button
+                      variant="ghost"
+                      className="justify-start text-lg p-6 hover:bg-accent/20 hover:text-accent"
+                    >
+                      <BookOpen className="mr-4" /> How to Play
+                    </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle className="font-headline text-2xl text-primary">How to Play</DialogTitle>
+                  </DialogHeader>
+                  <HowToPlayContent />
+                </DialogContent>
+              </Dialog>
               <Button
                 variant="ghost"
                 className="justify-start text-lg p-6 hover:bg-accent/20 hover:text-accent"

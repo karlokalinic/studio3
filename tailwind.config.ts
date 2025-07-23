@@ -10,9 +10,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['Roboto', 'sans-serif'],
-        headline: ['Orbitron', 'sans-serif'],
-        code: ['monospace'],
+        body: ['Open Sans', 'sans-serif'],
+        headline: ['Cinzel', 'serif'],
+        handwriting: ['MedievalSharp', 'cursive'],
         dyslexia: ['Atkinson Hyperlegible', 'sans-serif'],
       },
       colors: {
