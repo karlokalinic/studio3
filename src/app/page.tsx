@@ -10,8 +10,8 @@ import { useRouter } from 'next/navigation';
 import CharacterProfile from '@/components/character-profile';
 import GameCenter from '@/components/game-center';
 import Inventory from '@/components/inventory';
-import StatInternals from '@/components/stat-internals';
 import MissionControl from '@/components/mission-control';
+import QuestLog from '@/components/quest-log';
 
 import { useCharacterStore } from '@/stores/use-character-store';
 import { Button } from '@/components/ui/button';
@@ -23,7 +23,7 @@ import { useSettings } from '@/context/settings-context';
 export default function Home() {
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const router = useRouter();
-  const { character, inventory, loadCharacter, hasHydrated } = useCharacterStore();
+  const { character, inventory, quests, loadCharacter, hasHydrated } = useCharacterStore();
   const { settings } = useSettings();
   const [characterStats, setCharacterStats] = useState<{
     inventorySlots: number;
@@ -135,12 +135,10 @@ export default function Home() {
 
           <div className="xl:col-span-2 space-y-8">
             <MissionControl />
-            <StatInternals profile={character} />
+            <QuestLog quests={quests} />
           </div>
         </div>
       </div>
     </main>
   );
 }
-
-    

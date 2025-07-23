@@ -1,7 +1,7 @@
 
 "use client";
 
-import type { CharacterProfile, CalculatedStats, Attribute } from "@/types";
+import type { CharacterProfile, CalculatedStats } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -95,12 +95,18 @@ export default function CharacterProfile({ profile }: CharacterProfileProps) {
           </div>
         </div>
       </CardContent>
-       <CardFooter>
+       <CardFooter className="flex flex-col gap-2">
         <Button asChild variant="outline" className="w-full">
-          <Link href="/character-sheet" target="_blank">
+          <Link href="/character-profile">
             <ExternalLink className="mr-2 h-4 w-4" />
-            View Full Character Sheet
+            View Full Character Profile
           </Link>
+        </Button>
+        <Button asChild variant="outline" className="w-full">
+            <Link href="/character-sheet">
+                <ExternalLink className="mr-2 h-4 w-4" />
+                View Stat Internals
+            </Link>
         </Button>
       </CardFooter>
     </Card>

@@ -1,13 +1,14 @@
 
+
 'use client';
 
 import { Suspense } from 'react';
-import CharacterSheetContent from './_components/character-sheet-content';
+import StatInternalsContent from './_components/stat-internals-content';
 
 export default function CharacterSheetPage() {
     return (
-        <Suspense fallback={<div>Loading Character Sheet...</div>}>
-            <CharacterSheetContent />
+        <Suspense fallback={<div>Loading Stat Internals...</div>}>
+            <StatInternalsContent />
         </Suspense>
     )
 }

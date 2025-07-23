@@ -5,6 +5,7 @@ import type { CharacterProfile } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertTriangle, Cpu, Dumbbell, Brain, Heart, Shield, HelpCircle, Weight, Footprints, Hourglass, Atom, Coins, Handshake, BrainCircuit } from "lucide-react";
+import { Button } from "./ui/button";
 
 const Node = ({ name, icon, formula, description, isCore, isMystery, children }: { name: string; icon: React.ElementType; formula?: string; description?: string; isCore?: boolean; isMystery?: boolean; children?: React.ReactNode }) => {
     const Icon = icon;
@@ -38,6 +39,16 @@ const Node = ({ name, icon, formula, description, isCore, isMystery, children }:
                             <pre><code>{formula}</code></pre>
                         </div>
                          {children && <div className="text-xs text-muted-foreground">{children}</div>}
+                    </div>
+                     <div className="mt-4 pt-4 border-t border-border">
+                        <h4 className="font-headline text-lg text-primary mb-2">Upgrade</h4>
+                        <p className="text-sm text-muted-foreground mb-4">Permanently enhance this attribute.</p>
+                        <div className="flex justify-between items-center bg-black/20 p-2 rounded-md">
+                            <p className="font-bold">Minor Enhancement</p>
+                            <Button size="sm" variant="outline" disabled>
+                                <Coins className="mr-2 h-4 w-4" /> 1,500
+                            </Button>
+                        </div>
                     </div>
                 </DialogContent>
             </Dialog>
@@ -222,5 +233,3 @@ export default function StatInternals({ profile }: { profile: CharacterProfile }
     </Card>
   );
 }
-
-    

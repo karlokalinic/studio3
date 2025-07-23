@@ -9,7 +9,7 @@ import type { CalculatedStats, CharacterProfile } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ExternalLink } from "lucide-react";
 import { useSettings } from "@/context/settings-context";
 
 const Stat = ({ label, value, unit, description }: { label: string; value: string | number; unit?: string; description?: string }) => (
@@ -27,8 +27,18 @@ const FullCharacterSheet = ({ profile, calculatedStats }: { profile: CharacterPr
     return (
          <Card className="bg-card/50 border-primary/20 shadow-lg shadow-primary/5">
             <CardHeader>
-                <CardTitle className="font-headline text-3xl text-primary">{profile.name}</CardTitle>
-                <CardDescription>Lvl {profile.level} ({profile.xp} XP) - {profile.metadata.origin}</CardDescription>
+                <div className="flex justify-between items-start">
+                    <div>
+                        <CardTitle className="font-headline text-3xl text-primary">{profile.name}</CardTitle>
+                        <CardDescription>Lvl {profile.level} ({profile.xp} XP) - {profile.metadata.origin}</CardDescription>
+                    </div>
+                    <Button asChild variant="outline">
+                        <Link href="/character-sheet">
+                            <ExternalLink className="mr-2 h-4 w-4" />
+                            View Stat Internals
+                        </Link>
+                    </Button>
+                </div>
             </CardHeader>
             <CardContent className="space-y-6">
                  <div>
