@@ -27,10 +27,7 @@ import {
   BookOpen,
 } from 'lucide-react';
 import Link from 'next/link';
-
-const GlowIcon = ({ icon: Icon }: { icon: React.ElementType }) => (
-  <Icon className="h-5 w-5 mr-2 text-accent drop-shadow-[0_0_4px_hsl(var(--accent))] transition-all" />
-);
+import { cn } from '@/lib/utils';
 
 
 export default function GameCenter() {
@@ -70,18 +67,18 @@ export default function GameCenter() {
 
       <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6">
         <div className="flex items-center" title="Health">
-          <GlowIcon icon={Shield} />
+          <Shield className="h-5 w-5 mr-2 text-accent drop-shadow-[0_0_4px_hsl(var(--accent))] transition-all" />
           <Progress
             value={character.health}
             className="w-24 h-2 bg-primary/20"
           />
         </div>
         <div className="flex items-center" title="Energy">
-          <GlowIcon icon={Zap} />
+          <Zap className="h-5 w-5 mr-2 text-accent drop-shadow-[0_0_4px_hsl(var(--accent))] transition-all" />
           <Progress value={character.energy} className="w-24 h-2 bg-primary/20" />
         </div>
         <div className="flex items-center" title="Hunger">
-          <GlowIcon icon={Drumstick} />
+          <Drumstick className="h-5 w-5 mr-2 text-accent drop-shadow-[0_0_4px_hsl(var(--accent))] transition-all" />
           <Progress value={character.hunger} className="w-24 h-2 bg-primary/20" />
         </div>
 
@@ -89,7 +86,7 @@ export default function GameCenter() {
           className="flex items-center font-bold text-lg text-accent"
           title="Nexus Kristali"
         >
-          <GlowIcon icon={CircleDollarSign} />
+          <CircleDollarSign className="h-5 w-5 mr-2 text-accent drop-shadow-[0_0_4px_hsl(var(--accent))] transition-all" />
           {formattedCurrency || '...'}
         </div>
       </div>
