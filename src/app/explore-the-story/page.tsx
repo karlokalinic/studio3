@@ -45,7 +45,7 @@ const SectionCard: React.FC<{
       <CardTitle className="font-headline text-2xl text-accent">{title}</CardTitle>
       {description && <CardDescription>{description}</CardDescription>}
     </CardHeader>
-    <CardContent>{children}</CardContent>
+    <CardContent className="text-white">{children}</CardContent>
   </Card>
 );
 
@@ -74,8 +74,8 @@ export default function LorePage() {
 
         <SectionCard title={lore.core.title}>
             <p className="font-bold text-primary/90">Timeline:</p>
-            <p className="mb-4">{lore.core.timeline}</p>
-            <p className="font-bold text-primary/90">Core Story:</p>
+            <p>{lore.core.timeline}</p>
+            <p className="font-bold text-primary/90 mt-4">Core Story:</p>
             <p>{lore.core.story}</p>
         </SectionCard>
 
