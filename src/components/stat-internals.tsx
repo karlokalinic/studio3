@@ -1,113 +1,12 @@
 
+
 "use client";
 
 import type { CharacterProfile } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertTriangle, Cpu, Dumbbell, Brain, Heart, Shield, HelpCircle, Weight, Footprints, Hourglass, Atom, Coins, Handshake, BrainCircuit, BookOpen, Scale, Eye, Ghost, Anchor, Feather, Recycle, GitCommit, GitBranch, Waves, Zap, ShieldCheck, Sword, BrainCog, Microscope, Dna, Bot, Sprout, Network, Combine, Fingerprint, LucideIcon, FileJson, Server, Binary, GitFork, ShieldQuestion, HeartCrack, Flame } from "lucide-react";
-import { Button } from "./ui/button";
-import React from "react";
-import { cn } from "@/lib/utils";
-
-const Node = React.forwardRef<HTMLDivElement, { name: string; icon: React.ElementType; formula?: string; description?: string; colorClass?: string; children?: React.ReactNode }>(
-    ({ name, icon, formula, description, colorClass = 'primary', children }, ref) => {
-    const Icon = icon;
-    
-    const colors: {[key: string]: { border: string, icon: string, text: string }} = {
-        primary: { border: 'border-primary/30 hover:border-primary/80 hover:shadow-primary/20', icon: 'text-primary', text: 'text-primary'},
-        core: { border: 'border-accent/50 hover:border-accent/80 hover:shadow-accent/20', icon: 'text-accent', text: 'text-accent' },
-        curse: { border: 'border-destructive/50 hover:border-destructive/80 hover:shadow-destructive/20', icon: 'text-destructive', text: 'text-destructive' },
-        ability: { border: 'border-yellow-400/50 hover:border-yellow-400/80 hover:shadow-yellow-400/20', icon: 'text-yellow-400', text: 'text-yellow-400' },
-        order: { border: 'border-cyan-400/50 hover:border-cyan-400/80 hover:shadow-cyan-400/20', icon: 'text-cyan-400', text: 'text-cyan-400' },
-        chaos: { border: 'border-fuchsia-500/50 hover:border-fuchsia-500/80 hover:shadow-fuchsia-500/20', icon: 'text-fuchsia-500', text: 'text-fuchsia-500' },
-        balance: { border: 'border-lime-500/50 hover:border-lime-500/80 hover:shadow-lime-500/20', icon: 'text-lime-500', text: 'text-lime-500' },
-        convergence: { border: 'border-orange-500/50 hover:border-orange-500/80 hover:shadow-orange-500/20', icon: 'text-orange-500', text: 'text-orange-500' },
-        mystery: { border: 'border-slate-500/50 hover:border-slate-500/80 hover:shadow-slate-500/20', icon: 'text-slate-500', text: 'text-slate-500' },
-    }
-
-    const selectedColor = colors[colorClass] || colors.primary;
-
-    const nodeContent = (
-         <div ref={ref} className="relative group flex items-center justify-center">
-            <div 
-                className={cn(`group w-20 h-20 bg-black/20 rounded-lg border-2 cursor-pointer shadow-md overflow-hidden relative flex flex-col items-center justify-center transition-all duration-300 hover:scale-105`, selectedColor.border)}
-            >
-                <div className={cn(`w-full h-full flex flex-col items-center justify-center p-2 text-center`)}>
-                    <Icon className={cn(`w-8 h-8 mb-1 transition-all group-hover:scale-110`, selectedColor.icon)} />
-                </div>
-                 <p className={`absolute -bottom-0.5 w-full text-center px-1 font-bold text-[10px] opacity-0 group-hover:opacity-100 transition-opacity duration-300`}>{name}</p>
-            </div>
-        </div>
-    );
-
-    return (
-        <Dialog>
-            <DialogTrigger asChild>
-                {nodeContent}
-            </DialogTrigger>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle className={cn("font-headline flex items-center gap-2 text-2xl", selectedColor.text)}><Icon className="w-8 h-8"/> {name}</DialogTitle>
-                </DialogHeader>
-                <div className="mt-4 space-y-4">
-                    <p className="text-sm text-muted-foreground">{description || "The purpose of this node is currently unknown. Its secrets may be revealed through gameplay."}</p>
-                    
-                    {formula && (
-                      <div className={`text-sm font-mono p-4 rounded-md ${formula.includes('[REDACTED]') ? 'bg-destructive/10 text-destructive' : 'bg-black/30 text-green-400'}`}>
-                          <pre><code>{formula}</code></pre>
-                      </div>
-                    )}
-                    
-                     {children && <div className="text-xs text-muted-foreground">{children}</div>}
-                </div>
-                 {colorClass !== 'curse' && colorClass !== 'mystery' && (
-                    <div className="mt-4 pt-4 border-t border-border">
-                        <h4 className="font-headline text-lg text-primary mb-2">Upgrade</h4>
-                        <p className="text-sm text-muted-foreground mb-4">Permanently enhance this attribute.</p>
-                        <div className="flex justify-between items-center bg-black/20 p-2 rounded-md">
-                            <p className="font-bold">Minor Enhancement</p>
-                            <Button size="sm" variant="outline" disabled>
-                                <Coins className="mr-2 h-4 w-4" /> 1,500
-                            </Button>
-                        </div>
-                    </div>
-                 )}
-            </DialogContent>
-        </Dialog>
-    )
-});
-Node.displayName = "Node";
-
-const Line = ({ type, gridArea, colorClass = 'bg-primary/20' }: { type: 'horizontal' | 'vertical' | 't-down' | 't-up' | 'cross' | 'corner-br' | 'corner-bl' | 'corner-tr' | 'corner-tl' | 'radial-tr' | 'radial-tl' | 'radial-br' | 'radial-bl' | 'z-ne' | 'z-en' | 'z-sw' | 'z-ws'; gridArea: string, colorClass?: string }) => {
-  const baseClasses = colorClass;
-  
-  if (type === 'horizontal') return <div style={{ gridArea }} className="flex items-center"><div className={`${baseClasses} w-full h-0.5`}></div></div>;
-  if (type === 'vertical') return <div style={{ gridArea }} className="flex justify-center"><div className={`${baseClasses} h-full w-0.5`}></div></div>;
-  
-  const rotationClasses: { [key: string]: string } = {
-    'radial-tr': 'bottom-0 left-0 origin-bottom-left -rotate-45', 'radial-tl': 'bottom-0 right-0 origin-bottom-right rotate-45',
-    'radial-br': 'top-0 left-0 origin-top-left rotate-45', 'radial-bl': 'top-0 right-0 origin-top-right -rotate-45',
-  }
-
-  if (rotationClasses[type]) {
-    return <div style={{ gridArea }} className="relative"><div className={`${baseClasses} absolute w-full h-0.5 ${rotationClasses[type]}`}></div></div>;
-  }
-  
-  return (
-    <div style={{ gridArea }} className="relative w-full h-full">
-      { (type === 't-down' || type === 'cross' || type.startsWith('corner-b')) && <div className={`${baseClasses} absolute top-0 left-1/2 w-0.5 h-1/2 -translate-x-1/2`}></div> }
-      { (type === 't-up' || type === 'cross' || type.startsWith('corner-t')) && <div className={`${baseClasses} absolute bottom-0 left-1/2 w-0.5 h-1/2 -translate-x-1/2`}></div> }
-      
-      { (type.startsWith('t-') || type === 'cross' || type.startsWith('corner')) && <div className={`${baseClasses} absolute top-1/2 left-0 w-full h-0.5 -translate-y-1/2`}></div> }
-
-      { (type === 'corner-br') && <><div className={`${baseClasses} absolute top-1/2 left-1/2 w-1/2 h-0.5 -translate-y-1/2`}></div><div className={`${baseClasses} absolute top-0 left-1/2 w-0.5 h-1/2 -translate-x-1/2`}></div></> }
-      { (type === 'corner-bl') && <><div className={`${baseClasses} absolute top-1/2 right-1/2 w-1/2 h-0.5 -translate-y-1/2`}></div><div className={`${baseClasses} absolute top-0 left-1/2 w-0.5 h-1/2 -translate-x-1/2`}></div></> }
-      { (type === 'corner-tr') && <><div className={`${baseClasses} absolute bottom-1/2 left-1/2 w-1/2 h-0.5 -translate-y-1/2`}></div><div className={`${baseClasses} absolute bottom-0 left-1/2 w-0.5 h-1/2 -translate-x-1/2`}></div></> }
-      { (type === 'corner-tl') && <><div className={`${baseClasses} absolute bottom-1/2 right-1/2 w-1/2 h-0.5 -translate-y-1/2`}></div><div className={`${baseClasses} absolute bottom-0 left-1/2 w-0.5 h-1/2 -translate-x-1/2`}></div></> }
-
-    </div>
-  );
-};
+import { Node } from "./stat-internals/node";
+import { Line } from "./stat-internals/line";
 
 
 export default function StatInternals({ profile }: { profile: CharacterProfile }) {
@@ -139,11 +38,11 @@ export default function StatInternals({ profile }: { profile: CharacterProfile }
 
             {/* Row 3: Primary Derivatives & Curses */}
             <div style={{ gridColumn: 3, gridRow: 3 }} className="flex justify-center items-center"><Node name="Cognitive Power" icon={Brain} description="The raw processing capability of your mind." /></div>
-            <div style={{ gridColumn: 4, gridRow: 3 }} className="flex justify-center items-center"><Node name="Analysis Paralysis" icon={AlertTriangle} colorClass="curse" description="Over-analysis can lead to hesitation and second-guessing in critical moments." /></div>
+            <div style={{ gridColumn: 4, gridRow: 3 }} className="flex justify-center items-center"><Node name="Analysis Paralysis" icon={AlertTriangle} colorClass="curse" description="Over-analysis can lead to hesitation and second-guessing in critical moments." formula="Chance = (Eff. INT - 15) / 2 - (Spirit / 4)"/></div>
             <div style={{ gridColumn: 6, gridRow: 3 }} className="flex justify-center items-center"><Node name="Physical Fortitude" icon={Shield} description="Your body's resilience and durability." /></div>
-            <div style={{ gridColumn: 7, gridRow: 3 }} className="flex justify-center items-center"><Node name="Adrenal Burnout" icon={AlertTriangle} colorClass="curse" description="Pushing your body too hard for too long can lead to sudden crashes and vulnerabilities." /></div>
+            <div style={{ gridColumn: 7, gridRow: 3 }} className="flex justify-center items-center"><Node name="Adrenal Burnout" icon={AlertTriangle} colorClass="curse" description="Pushing your body too hard for too long can lead to sudden crashes and vulnerabilities." formula="15% penalty to STR effectiveness when Fatigue > 70"/></div>
             <div style={{ gridColumn: 9, gridRow: 3 }} className="flex justify-center items-center"><Node name="Psionic Force" icon={Waves} description="The raw force of your mental and spiritual abilities." /></div>
-            <div style={{ gridColumn: 10, gridRow: 3 }} className="flex justify-center items-center"><Node name="Feedback Loop" icon={AlertTriangle} colorClass="curse" description="A powerful psionic backlash can occur if your concentration wavers, causing self-inflicted damage." /></div>
+            <div style={{ gridColumn: 10, gridRow: 3 }} className="flex justify-center items-center"><Node name="Feedback Loop" icon={AlertTriangle} colorClass="curse" description="A powerful psionic backlash can occur if your concentration wavers, causing self-inflicted damage." formula="Damage = floor(Spirit / 5) * 2"/></div>
 
             <Line type="t-down" gridArea="2/4/4/5" />
             <Line type="corner-br" gridArea="3/3/4/4" />
@@ -158,9 +57,9 @@ export default function StatInternals({ profile }: { profile: CharacterProfile }
             <Line type="vertical" gridArea="4/9/5/10" />
 
             {/* Row 5: Secondary Derivatives */}
-            <div style={{ gridColumn: 2, gridRow: 5 }} className="flex justify-center items-center"><Node name="Hacking Speed" icon={Cpu} formula="BaseSpeed / (Eff. Intelligence * 0.1)" description="How quickly you can slice through enemy security systems."/></div>
-            <div style={{ gridColumn: 4, gridRow: 5 }} className="flex justify-center items-center"><Node name="Carry Weight" icon={Weight} formula="10 + (Strength * 2)" description="How much you can carry before being encumbered." /></div>
-            <div style={{ gridColumn: 6, gridRow: 5 }} className="flex justify-center items-center"><Node name="Barter Bonus" icon={Coins} formula="(Spirit / 10)%" description="Your innate charm and presence allows you to negotiate better prices." /></div>
+            <div style={{ gridColumn: 2, gridRow: 5 }} className="flex justify-center items-center"><Node name="Hacking Speed" icon={Cpu} formula="10 - (log(Eff. INT) * 2) + Difficulty" description="How quickly you can slice through enemy security systems. Lower is better."/></div>
+            <div style={{ gridColumn: 4, gridRow: 5 }} className="flex justify-center items-center"><Node name="Carry Weight" icon={Weight} formula="20 + (Eff. STR * 3)" description="How much you can carry before being encumbered." /></div>
+            <div style={{ gridColumn: 6, gridRow: 5 }} className="flex justify-center items-center"><Node name="Barter Bonus" icon={Coins} formula="floor(Eff. Spirit / 4)%" description="Your innate charm and presence allows you to negotiate better prices." /></div>
             <div style={{ gridColumn: 8, gridRow: 5 }} className="flex justify-center items-center"><Node name="Worldview" icon={BookOpen} formula="Determined by Materialism vs Spiritualism" description="Your fundamental belief system about how the universe works." /></div>
             <div style={{ gridColumn: 10, gridRow: 5 }} className="flex justify-center items-center"><Node name="Nexus Resonance" icon={GitCommit} colorClass="mystery" formula="[REDACTED]" description="You feel a strange hum, a vibration that connects you to the fabric of the Nexus itself." /></div>
 

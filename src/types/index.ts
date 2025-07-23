@@ -38,6 +38,12 @@ export interface CharacterProfile {
   enhancements: {
     cybernetics: string[];
     implants: string[];
+  },
+  attunement: {
+    // Nexus Attunement values
+    order: number; // 0-100
+    chaos: number; // 0-100
+    balance: number; // 0-100
   }
   metadata: {
     age: number;
@@ -50,11 +56,30 @@ export interface CharacterProfile {
 }
 
 export interface CalculatedStats {
+  // Core Effective Stats
   effectiveStrength: number;
   effectiveIntelligence: number;
+  effectiveSpirit: number;
+  
+  // Combat Stats
   maxHP: number;
   critChance: number;
-  inventorySlots: number;
+  critDamage: number;
+  dodgeChance: number;
+  psionicResistance: number;
+  
+  // Utility Stats
+  carryWeight: number;
+  hackingSpeed: number; // Lower is better
+  barterBonus: number; // Percentage
+  
+  // Nexus Stats
+  nexusResonance: number; // 0-100, affects mystery abilities
+
+  // Curses & Penalties
+  adrenalBurnoutPenalty: number; // A modifier, e.g., 0.9 means 10% reduction
+  analysisParalysisChance: number; // Percentage chance to lose a turn
+  feedbackLoopDamage: number; // Flat damage on psionic failure
 }
 
 export interface InventoryItem {

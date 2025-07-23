@@ -58,7 +58,7 @@ const FullCharacterSheet = ({ profile, calculatedStats }: { profile: CharacterPr
                         <Stat label="Effective Intelligence" value={calculatedStats.effectiveIntelligence} description="Your actual cognitive power for hacking, analysis, and knowledge checks."/>
                         <Stat label="Max HP" value={calculatedStats.maxHP} description="Your total health pool."/>
                         <Stat label="Critical Hit Chance" value={calculatedStats.critChance} unit="%" description="The probability of landing a critical hit, influenced by your intelligence and spirit."/>
-                         <Stat label="Inventory Slots" value={calculatedStats.inventorySlots} description="The number of items you can carry."/>
+                         <Stat label="Inventory Slots" value={profile.inventorySlots} description="The number of items you can carry."/>
                     </div>
                 </div>
                 <Separator />

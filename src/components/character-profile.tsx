@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import type { CharacterProfile, CalculatedStats } from "@/types";

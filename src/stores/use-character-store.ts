@@ -60,6 +60,11 @@ export const useCharacterStore = create<CharacterState>()(
                         cybernetics: [],
                         implants: [],
                     },
+                    attunement: {
+                        order: 0,
+                        chaos: 0,
+                        balance: 0,
+                    },
                     metadata: {
                         age: 25,
                         gender: "Not specified",
