@@ -23,40 +23,38 @@ const Node = ({ name, icon, formula, description, isCore, isMystery, children }:
         </div>
     );
 
-    if (formula) {
-        return (
-            <Dialog>
-                <DialogTrigger asChild>
-                    <NodeWrapper>{nodeContent}</NodeWrapper>
-                </DialogTrigger>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle className="font-headline text-primary flex items-center gap-2"><Icon className="w-6 h-6"/> {name} Formula</DialogTitle>
-                    </DialogHeader>
-                    <div className="mt-4 space-y-4">
-                        {description && <p className="text-sm text-muted-foreground">{description}</p>}
-                        <div className={`text-sm font-mono p-4 rounded-md ${formula.includes('[REDACTED]') ? 'bg-destructive/10 text-destructive' : 'bg-black/30 text-green-400'}`}>
-                            <pre><code>{formula}</code></pre>
-                        </div>
-                         {children && <div className="text-xs text-muted-foreground">{children}</div>}
-                    </div>
-                     <div className="mt-4 pt-4 border-t border-border">
-                        <h4 className="font-headline text-lg text-primary mb-2">Upgrade</h4>
-                        <p className="text-sm text-muted-foreground mb-4">Permanently enhance this attribute.</p>
-                        <div className="flex justify-between items-center bg-black/20 p-2 rounded-md">
-                            <p className="font-bold">Minor Enhancement</p>
-                            <Button size="sm" variant="outline" disabled>
-                                <Coins className="mr-2 h-4 w-4" /> 1,500
-                            </Button>
-                        </div>
-                    </div>
-                </DialogContent>
-            </Dialog>
-        )
-    }
-
     return (
-        <NodeWrapper>{nodeContent}</NodeWrapper>
+        <Dialog>
+            <DialogTrigger asChild>
+                <NodeWrapper>{nodeContent}</NodeWrapper>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle className="font-headline text-primary flex items-center gap-2"><Icon className="w-6 h-6"/> {name}</DialogTitle>
+                </DialogHeader>
+                <div className="mt-4 space-y-4">
+                    <p className="text-sm text-muted-foreground">{description || "The purpose of this node is currently unknown. Its secrets may be revealed through gameplay."}</p>
+                    
+                    {formula && (
+                      <div className={`text-sm font-mono p-4 rounded-md ${formula.includes('[REDACTED]') ? 'bg-destructive/10 text-destructive' : 'bg-black/30 text-green-400'}`}>
+                          <pre><code>{formula}</code></pre>
+                      </div>
+                    )}
+                    
+                     {children && <div className="text-xs text-muted-foreground">{children}</div>}
+                </div>
+                 <div className="mt-4 pt-4 border-t border-border">
+                    <h4 className="font-headline text-lg text-primary mb-2">Upgrade</h4>
+                    <p className="text-sm text-muted-foreground mb-4">Permanently enhance this attribute.</p>
+                    <div className="flex justify-between items-center bg-black/20 p-2 rounded-md">
+                        <p className="font-bold">Minor Enhancement</p>
+                        <Button size="sm" variant="outline" disabled>
+                            <Coins className="mr-2 h-4 w-4" /> 1,500
+                        </Button>
+                    </div>
+                </div>
+            </DialogContent>
+        </Dialog>
     )
 };
 
@@ -139,10 +137,10 @@ export default function StatInternals({ profile }: { profile: CharacterProfile }
     <Card className="bg-card/50 border-primary/20 shadow-lg shadow-primary/5">
       <CardHeader>
         <CardTitle className="font-headline text-2xl text-primary">Stat Internals</CardTitle>
-        <CardDescription>The nexus is complex. Hover over nodes for details. Some systems are known, others are yet to be understood.</CardDescription>
+        <CardDescription>The nexus is complex. Click on nodes for details. Some systems are known, others are yet to be understood.</CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="p-4 bg-black/20 rounded-md overflow-x-auto">
+      <CardContent className="p-0 sm:p-2 md:p-4">
+        <div className="bg-black/20 rounded-md">
           <div 
             className="grid"
             style={{
@@ -165,9 +163,9 @@ export default function StatInternals({ profile }: { profile: CharacterProfile }
             }}
           >
             {/* Core Nodes */}
-            <div style={{ gridArea: 'coreStr' }} className="flex justify-center items-center"><Node name="Strength" icon={Dumbbell} isCore /></div>
-            <div style={{ gridArea: 'coreInt' }} className="flex justify-center items-center"><Node name="Intelligence" icon={BrainCircuit} isCore /></div>
-            <div style={{ gridArea: 'coreSpi' }} className="flex justify-center items-center"><Node name="Spirit" icon={Atom} isCore /></div>
+            <div style={{ gridArea: 'coreStr' }} className="flex justify-center items-center"><Node name="Strength" icon={Dumbbell} isCore description="Your body's raw physical power. The foundation for all physical feats." /></div>
+            <div style={{ gridArea: 'coreInt' }} className="flex justify-center items-center"><Node name="Intelligence" icon={BrainCircuit} isCore description="Your mind's processing power, memory, and analytical capability."/></div>
+            <div style={{ gridArea: 'coreSpi' }} className="flex justify-center items-center"><Node name="Spirit" icon={Atom} isCore description="Your connection to the metaphysical and your inner willpower."/></div>
 
             {/* Connecting Lines Row 1 */}
             <Line type="vertical" gridArea="lineA" />
@@ -178,34 +176,34 @@ export default function StatInternals({ profile }: { profile: CharacterProfile }
 
             {/* Primary Derivatives */}
             <div style={{ gridArea: 'nodeP1' }} className="flex justify-center items-center"><Node name="Stamina" icon={Hourglass} formula="(Strength * 5) + (Level * 2)" description="Determines how long you can perform strenuous actions." /></div>
-            <div style={{ gridArea: 'nodeP2' }} className="flex justify-center items-center"><Node name="Cognitive Style" icon={GitBranch} formula="Ratio of Int to Spi" description="Your dominant mode of processing information. Influences dialogue options." /></div>
+            <div style={{ gridArea: 'nodeP2' }} className="flex justify-center items-center"><Node name="Cognitive Style" icon={GitBranch} formula="Ratio of Int to Spi" description="Your dominant mode of processing information. Influences dialogue options and problem-solving approaches." /></div>
             <div style={{ gridArea: 'nodeP3' }} className="flex justify-center items-center"><Node name="Carry Weight" icon={Weight} formula="10 + (Strength * 2)" description="How much you can carry before being encumbered." /></div>
             <div style={{ gridArea: 'nodeP4' }} className="flex justify-center items-center"><Node name="Psionic Power" icon={Waves} formula="(Spirit * 1.5) + (Intelligence * 0.5)" description="The raw force of your mental and dimensional abilities." /></div>
 
             {/* Connecting Lines Row 2 */}
             <Line type="vertical" gridArea="lineF" />
-            <Line type="t-down" gridArea="lineG" colorClass="bg-purple-500/30" />
+            <Line type="t-down" gridArea="lineG" />
             <Line type="t-down" gridArea="lineH" />
             <Line type="vertical" gridArea="lineI" />
 
             {/* Secondary Derivatives */}
-            <div style={{ gridArea: 'nodeC1' }} className="flex justify-center items-center"><Node name="Effective Strength" icon={Dumbbell} formula="(BaseStr * FitnessMod * FatigueMod) + Enhancements" description="Your actual physical power after all modifiers." /></div>
-            <div style={{ gridArea: 'nodeC2' }} className="flex justify-center items-center"><Node name="Logic" icon={Scale} formula="Based on high Intelligence" description="Favors analytical, data-driven decisions." /></div>
-            <div style={{ gridArea: 'nodeC3' }} className="flex justify-center items-center"><Node name="Effective Intelligence" icon={Brain} formula="(BaseInt * ClarityMod * FocusMod) + Enhancements" description="Your actual cognitive power after all modifiers." /></div>
-            <div style={{ gridArea: 'nodeC4' }} className="flex justify-center items-center"><Node name="Intuition" icon={Eye} formula="Based on high Spirit" description="Favors gut feelings and reading between the lines." /></div>
+            <div style={{ gridArea: 'nodeC1' }} className="flex justify-center items-center"><Node name="Effective Strength" icon={Dumbbell} formula="(BaseStr * FitnessMod * FatigueMod) + Enhancements" description="Your actual physical power in any given moment, after all situational modifiers are applied." /></div>
+            <div style={{ gridArea: 'nodeC2' }} className="flex justify-center items-center"><Node name="Logic" icon={Scale} formula="Based on high Intelligence" description="Represents analytical, data-driven, and deductive reasoning. Unlocks specific dialogue and interaction options." /></div>
+            <div style={{ gridArea: 'nodeC3' }} className="flex justify-center items-center"><Node name="Effective Intelligence" icon={Brain} formula="(BaseInt * ClarityMod * FocusMod) + Enhancements" description="Your actual cognitive power in any given moment, after all situational modifiers are applied." /></div>
+            <div style={{ gridArea: 'nodeC4' }} className="flex justify-center items-center"><Node name="Intuition" icon={Eye} formula="Based on high Spirit" description="Represents gut feelings, empathy, and reading between the lines. Unlocks specific dialogue and interaction options." /></div>
 
             {/* Connecting Lines Row 3 */}
-            <Line type="t-down" gridArea="lineJ" />
-            <Line type="t-down" gridArea="lineK" />
-            <Line type="t-down" gridArea="lineL" />
-            <Line type="vertical" gridArea="lineM" />
+            <Line type="corner-br" gridArea="lineJ" />
+            <Line type="corner-bl" gridArea="lineK" />
+            <Line type="corner-br" gridArea="lineL" />
+            <Line type="corner-bl" gridArea="lineM" />
 
             {/* Worldview Nodes */}
-            <div style={{ gridArea: 'nodeW1' }} className="flex justify-center items-center"><Node name="Materialism" icon={Anchor} formula="Favored by high Strength and Logic" description="A worldview focused on the tangible, physical aspects of reality." /></div>
+            <div style={{ gridArea: 'nodeW1' }} className="flex justify-center items-center"><Node name="Materialism" icon={Anchor} formula="Favored by high Strength and Logic" description="A worldview focused on the tangible, physical aspects of reality. 'What you see is what you get.'" /></div>
             <div style={{ gridArea: 'nodeW2' }} className="flex justify-center items-center"><Node name="Worldview" icon={BookOpen} formula="Determined by Materialism vs Spiritualism" description="Your fundamental belief system about how the universe works. This has major story implications." /></div>
-            <div style={{ gridArea: 'nodeW3' }} className="flex justify-center items-center"><Node name="Spiritualism" icon={Feather} formula="Favored by high Spirit and Intuition" description="A worldview focused on the unseen, metaphysical, and dimensional energies." /></div>
-            <div style={{ gridArea: 'nodeW4' }} className="flex justify-center items-center"><Node name="Fate Inversion" icon={Recycle} isMystery formula="[REDACTED]" description="The ability to... change what was written?" /></div>
-            <div style={{ gridArea: 'nodeW5' }} className="flex justify-center items-center"><Node name="Echo Chamber" icon={HelpCircle} isMystery formula="[REDACTED]" description="Do your own thoughts sound louder lately?" /></div>
+            <div style={{ gridArea: 'nodeW3' }} className="flex justify-center items-center"><Node name="Spiritualism" icon={Feather} formula="Favored by high Spirit and Intuition" description="A worldview focused on the unseen, metaphysical, and dimensional energies. 'There is more than meets the eye.'" /></div>
+            <div style={{ gridArea: 'nodeW4' }} className="flex justify-center items-center"><Node name="Fate Inversion" icon={Recycle} isMystery formula="[REDACTED]" description="The ability to... change what was written? Is it possible to defy destiny itself?" /></div>
+            <div style={{ gridArea: 'nodeW5' }} className="flex justify-center items-center"><Node name="Echo Chamber" icon={HelpCircle} isMystery formula="[REDACTED]" description="Do your own thoughts sound louder lately? Is it just you in there?" /></div>
 
             {/* Connecting Lines Row 4 */}
             <Line type="vertical" gridArea="lineN" />
@@ -215,13 +213,13 @@ export default function StatInternals({ profile }: { profile: CharacterProfile }
             <Line type="vertical" gridArea="lineR" />
 
              {/* Mystery Nodes */}
-            <div style={{ gridArea: 'nodeM1' }} className="flex justify-center items-center"><Node name="Synaptic Potential" icon={HelpCircle} isMystery formula="[REDACTED]" /></div>
-            <div style={{ gridArea: 'nodeM2' }} className="flex justify-center items-center"><Node name="Temporal Echo" icon={HelpCircle} isMystery formula="[REDACTED]" /></div>
-            <div style={{ gridArea: 'nodeM3' }} className="flex justify-center items-center"><Node name="Karmic Trace" icon={Footprints} isMystery formula="[REDACTED]" description="The universe seems to remember your actions..." /></div>
-            <div style={{ gridArea: 'nodeM4' }} className="flex justify-center items-center"><Node name="Nexus Resonance" icon={GitCommit} isMystery formula="[REDACTED]" description="You feel a strange hum..." /></div>
-            <div style={{ gridArea: 'nodeM5' }} className="flex justify-center items-center"><Node name="Psionic Residue" icon={Ghost} isMystery formula="[REDACTED]" /></div>
-            <div style={{ gridArea: 'nodeM6' }} className="flex justify-center items-center"><Node name="Barter Bonus" icon={Coins} formula="(Spirit / 10)%" description="Your innate charm and presence allows you to negotiate better prices." /></div>
-            <div style={{ gridArea: 'nodeM7' }} className="flex justify-center items-center"><Node name="Hacking Speed" icon={Cpu} formula="BaseSpeed / (Eff. Intelligence * 0.1)" description="How quickly you can slice through enemy security."/></div>
+            <div style={{ gridArea: 'nodeM1' }} className="flex justify-center items-center"><Node name="Synaptic Potential" icon={HelpCircle} isMystery description="A measure of untapped neural pathways. What could they be used for?" /></div>
+            <div style={{ gridArea: 'nodeM2' }} className="flex justify-center items-center"><Node name="Temporal Echo" icon={HelpCircle} isMystery description="Sometimes, you feel a faint resonance of choices not made. Deja vu, or something more?" /></div>
+            <div style={{ gridArea: 'nodeM3' }} className="flex justify-center items-center"><Node name="Karmic Trace" icon={Footprints} isMystery formula="[REDACTED]" description="The universe seems to remember your actions, both good and ill. This invisible weight might have consequences." /></div>
+            <div style={{ gridArea: 'nodeM4' }} className="flex justify-center items-center"><Node name="Nexus Resonance" icon={GitCommit} isMystery formula="[REDACTED]" description="You feel a strange hum, a vibration that connects you to the fabric of the Nexus itself." /></div>
+            <div style={{ gridArea: 'nodeM5' }} className="flex justify-center items-center"><Node name="Psionic Residue" icon={Ghost} isMystery description="Powerful mental or emotional events leave a trace. Can it be detected? Can it be used?" /></div>
+            <div style={{ gridArea: 'nodeM6' }} className="flex justify-center items-center"><Node name="Barter Bonus" icon={Coins} formula="(Spirit / 10)%" description="Your innate charm and presence allows you to negotiate better prices with merchants." /></div>
+            <div style={{ gridArea: 'nodeM7' }} className="flex justify-center items-center"><Node name="Hacking Speed" icon={Cpu} formula="BaseSpeed / (Eff. Intelligence * 0.1)" description="How quickly you can slice through enemy security systems and access protected data."/></div>
 
              {/* Connecting Lines Row 5 */}
             <Line type="vertical" gridArea="lineS" />
