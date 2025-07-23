@@ -15,10 +15,6 @@ interface WorldMapProps {
 }
 
 export default function WorldMap({ locations }: WorldMapProps) {
-    const GlowIcon = ({ icon: Icon, className }: { icon: React.ElementType, className?: string }) => (
-        <Icon className={cn("h-4 w-4 mr-2 text-accent drop-shadow-[0_0_4px_hsl(var(--accent))]", className)} />
-    );
-  
   return (
     <Card className="bg-card/50 border-primary/20 shadow-lg shadow-primary/5">
       <CardHeader>
@@ -61,7 +57,7 @@ export default function WorldMap({ locations }: WorldMapProps) {
               <div key={loc.id} className="text-sm p-3 bg-black/20 rounded-md">
                 <div className="flex items-center justify-between font-bold text-foreground">
                     <div className="flex items-center">
-                        <GlowIcon icon={MapPin} /> {loc.name}
+                        <MapPin className={cn("h-4 w-4 mr-2 text-accent drop-shadow-[0_0_4px_hsl(var(--accent))]")} /> {loc.name}
                     </div>
                      <TooltipProvider>
                         <Tooltip delayDuration={150}>
@@ -75,10 +71,10 @@ export default function WorldMap({ locations }: WorldMapProps) {
                     </TooltipProvider>
                 </div>
                 <div className="flex items-center text-muted-foreground mt-1 ml-6">
-                    <GlowIcon icon={Users} className="h-3 w-3" /> Faction: {loc.faction}
+                    <Users className={cn("h-3 w-3 mr-2 text-accent drop-shadow-[0_0_4px_hsl(var(--accent))]")} /> Faction: {loc.faction}
                 </div>
                  <div className="flex items-center text-muted-foreground mt-1 ml-6">
-                    <GlowIcon icon={Coins} className="h-3 w-3" /> Currency Rate: x{loc.currencyModifier}
+                    <Coins className={cn("h-3 w-3 mr-2 text-accent drop-shadow-[0_0_4px_hsl(var(--accent))]")} /> Currency Rate: x{loc.currencyModifier}
                 </div>
               </div>
             ))}
