@@ -9,11 +9,21 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { motion, AnimatePresence } from 'framer-motion';
 import { SkipForward } from 'lucide-react';
 import ActionCheck from './action-check';
+import { useSettings, type Difficulty } from '@/context/settings-context';
+import DifficultySlider from '@/app/settings/_components/difficulty-slider';
 
 const tutorialScript = [
   {
     type: 'narrator',
     text: "The air hums with a strange energy. You feel a disorienting pull, as if reality itself is folding around you. Your memory is a haze, but one thing is clear: you are a Nexus Walker, and you've just arrived in an unknown dimension.",
+  },
+  {
+    type: 'narrator',
+    text: "But before you proceed, you must decide the nature of the path you'll walk. The Nexus is a place of infinite possibilities, and your journey can be as forgiving or as brutal as you wish.",
+  },
+  {
+    type: 'difficulty',
+    text: "Choose your difficulty. This will affect the challenge you face in the worlds ahead. This can be changed later in the settings menu.",
   },
   {
     type: 'narrator',
@@ -28,7 +38,7 @@ const tutorialScript = [
   },
   {
     type: 'narrator',
-    text: "With a surge of adrenaline, you slam your shoulder into the door. The ancient metal groans and gives way! That was a Strength check. Your 'Effective Strength' was high enough to succeed. This stat is calculated from your base Strength, but also affected by things like your current fitness and fatigue. Always keep an eye on your character's state!",
+    text: "With a surge of adrenaline, you slam your shoulder into the door. The ancient metal groans and gives way! That was a Strength check. Your 'Effective Strength' was high enough to succeed. This stat is calculated from your base Strength, but also affected by things like your current fitness, fatigue, and the difficulty you chose. Always keep an eye on your character's state!",
   },
   {
     type: 'narrator',
@@ -62,9 +72,12 @@ const tutorialScript = [
 export default function TutorialContent() {
   const router = useRouter();
   const { character, hasHydrated, loadCharacter } = useCharacterStore();
+  const { settings, setSetting } = useSettings();
   const [step, setStep] = useState(0);
   const [showText, setShowText] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
+  const [difficultyFeedback, setDifficultyFeedback] = useState('');
+
 
   useEffect(() => {
     if (!hasHydrated) {
@@ -84,11 +97,25 @@ export default function TutorialContent() {
     setShowText(false);
     setTimeout(() => {
         if (step < tutorialScript.length - 1) {
-            setStep(step + 1);
+            const nextStep = tutorialScript[step + 1];
+            if (nextStep.type === 'narrator' && settings) {
+                let dynamicText = nextStep.text;
+                if(dynamicText.includes("difficulty you chose")) {
+                    dynamicText = dynamicText.replace("difficulty you chose", `difficulty you chose (${settings.difficulty})`);
+                }
+                // Clone the step to avoid mutating the original script
+                const mutableStep = {...nextStep, text: dynamicText};
+                setStep(currentStep => {
+                    tutorialScript[currentStep + 1] = mutableStep;
+                    return currentStep + 1;
+                });
+            } else {
+                 setStep(step + 1);
+            }
             setShowText(true);
         }
     }, 300); // Wait for fade-out animation
-  }, [step]);
+  }, [step, settings]);
   
   const startActionCheck = () => {
       setShowText(false);
@@ -98,19 +125,11 @@ export default function TutorialContent() {
   }
 
   const onCheckComplete = useCallback(() => {
-      // First, advance the step logic
-      if (step < tutorialScript.length - 1) {
-          setStep(prevStep => prevStep + 1);
-      }
-      
-      // Then, transition out of the checking state
       setIsChecking(false);
-      
-      // Finally, trigger the text fade-in after a short delay for the component to switch
       setTimeout(() => {
-          setShowText(true);
+        handleNext();
       }, 300);
-  }, [step]);
+  }, [handleNext]);
   
   const finishTutorial = () => {
       localStorage.setItem('tutorialCompleted', 'true');
@@ -122,7 +141,21 @@ export default function TutorialContent() {
     router.push('/');
   }
 
-  if (!character || !hasHydrated) {
+  const handleDifficultyChange = (value: Difficulty) => {
+    setSetting('difficulty', value);
+    switch(value) {
+        case 'Story-Only':
+            setDifficultyFeedback("Oh, a tourist! Well, enjoy the sights, I suppose we'll handle the actual dangers for you.");
+            break;
+        case 'Ultimate':
+            setDifficultyFeedback("You... you're sure? The Nexus doesn't forgive mistakes on this path. May you find whatever it is you're looking for before it finds you.");
+            break;
+        default:
+            setDifficultyFeedback('');
+    }
+  }
+
+  if (!character || !hasHydrated || !settings) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
         <p className="text-foreground">Loading Character...</p>
@@ -174,6 +207,14 @@ export default function TutorialContent() {
                             <div>
                                 <p className="text-lg leading-relaxed text-foreground/80">{currentStep.text}</p>
                                 <Button onClick={handleNext} className="mt-6 font-headline">Continue</Button>
+                            </div>
+                        )}
+                         {currentStep.type === 'difficulty' && (
+                            <div className="space-y-4">
+                                <p className="text-lg leading-relaxed text-foreground/80">{currentStep.text}</p>
+                                <DifficultySlider value={settings.difficulty} onValueChange={handleDifficultyChange} />
+                                {difficultyFeedback && <p className="text-sm italic text-accent mt-4">{difficultyFeedback}</p>}
+                                <Button onClick={handleNext} className="mt-6 font-headline">Confirm Difficulty</Button>
                             </div>
                         )}
                         {currentStep.type === 'action' && (

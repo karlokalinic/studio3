@@ -3,10 +3,13 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
+export type Difficulty = 'Story-Only' | 'Easy' | 'Normal' | 'Hard' | 'Ultimate';
+
 interface Settings {
   theme: 'light' | 'dark';
   dyslexiaFont: boolean;
   reduceFlashing: boolean;
+  difficulty: Difficulty;
 }
 
 interface SettingsContextType {
@@ -22,6 +25,7 @@ const getInitialSettings = (): Settings => {
             theme: 'dark',
             dyslexiaFont: false,
             reduceFlashing: false,
+            difficulty: 'Normal',
         }
     }
     
@@ -33,6 +37,7 @@ const getInitialSettings = (): Settings => {
                  theme: 'dark',
                  dyslexiaFont: false,
                  reduceFlashing: false,
+                 difficulty: 'Normal',
                  ...parsed
             };
         } catch (e) {
@@ -43,6 +48,7 @@ const getInitialSettings = (): Settings => {
         theme: 'dark',
         dyslexiaFont: false,
         reduceFlashing: false,
+        difficulty: 'Normal',
     };
 };
 
@@ -82,4 +88,3 @@ export const useSettings = () => {
   }
   return context;
 };
-

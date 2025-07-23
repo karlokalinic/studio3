@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -10,7 +11,8 @@ import {
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useSettings } from '@/context/settings-context';
-import { Moon, Sun, BookOpen, EyeOff } from 'lucide-react';
+import { Moon, Sun, BookOpen, EyeOff, Swords } from 'lucide-react';
+import DifficultySlider from './difficulty-slider';
 
 const SettingsRow = ({
   icon,
@@ -52,6 +54,23 @@ export default function SettingsContent() {
       </div>
 
       <Card className="max-w-3xl mx-auto bg-card/50 border-primary/20">
+        <CardHeader>
+          <CardTitle className="font-headline text-2xl text-primary">
+            Gameplay
+          </CardTitle>
+           <CardDescription>
+            Adjust the challenge level of your adventure.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <DifficultySlider 
+            value={settings.difficulty}
+            onValueChange={(value) => setSetting('difficulty', value)}
+          />
+        </CardContent>
+      </Card>
+      
+      <Card className="max-w-3xl mx-auto bg-card/50 border-primary/20 mt-8">
         <CardHeader>
           <CardTitle className="font-headline text-2xl text-primary">
             Accessibility

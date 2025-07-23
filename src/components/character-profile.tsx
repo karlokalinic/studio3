@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { Info, ExternalLink } from "lucide-react";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import { useSettings } from "@/context/settings-context";
 
 interface CharacterProfileProps {
   profile: CharacterProfile;
@@ -46,10 +47,13 @@ const Stat = ({ label, value, unit, baseValue, description }: { label: string; v
 
 export default function CharacterProfile({ profile }: CharacterProfileProps) {
   const [calculatedStats, setCalculatedStats] = useState<CalculatedStats | null>(null);
+  const { settings } = useSettings();
 
   useEffect(() => {
-    setCalculatedStats(getCalculatedStats(profile));
-  }, [profile]);
+    if (settings) {
+      setCalculatedStats(getCalculatedStats(profile, settings.difficulty));
+    }
+  }, [profile, settings]);
 
   const { attributes, state } = profile;
   

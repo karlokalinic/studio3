@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useCharacterStore } from '@/stores/use-character-store';
 import { getCalculatedStats } from '@/lib/character-calculations';
+import { useSettings } from '@/context/settings-context';
 
 interface ActionCheckProps {
   check: 'strength' | 'intelligence';
@@ -44,19 +45,20 @@ const resultVariants = {
 
 export default function ActionCheck({ check, successThreshold, isFixedSuccess, onComplete }: ActionCheckProps) {
   const { character } = useCharacterStore();
+  const { settings } = useSettings();
   const [checkValue, setCheckValue] = useState(0);
   const [isRevealed, setIsRevealed] = useState(false);
 
   useEffect(() => {
-    if (character) {
-      const stats = getCalculatedStats(character);
+    if (character && settings) {
+      const stats = getCalculatedStats(character, settings.difficulty);
       const val = check === 'strength' ? stats.effectiveStrength : stats.effectiveIntelligence;
       setCheckValue(val);
 
       const timer = setTimeout(() => setIsRevealed(true), 100); // Start flip animation
       return () => clearTimeout(timer);
     }
-  }, [character, check]);
+  }, [character, check, settings]);
   
   const success = isFixedSuccess === true ? true : isFixedSuccess === false ? false : checkValue >= successThreshold;
 
@@ -84,7 +86,7 @@ export default function ActionCheck({ check, successThreshold, isFixedSuccess, o
         </div>
 
         {/* Card Front */}
-        <div className="absolute w-full h-full bg-card rounded-xl flex flex-col items-center justify-center p-6 backface-hidden" style={{transform: 'rotateY(0deg)'}}>
+        <div className="absolute w-full h-full bg-card rounded-xl flex flex-col items-center justify-center p-6 backface-hidden">
             <h3 className="font-headline text-xl text-primary capitalize">{check} Check</h3>
             <p className="text-sm text-muted-foreground">Target: {successThreshold}</p>
             <div className="my-6">

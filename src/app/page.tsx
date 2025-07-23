@@ -19,11 +19,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Rocket, History, Settings, Gamepad2, Trophy, BookOpen } from 'lucide-react';
 import { getCalculatedStats } from '@/lib/character-calculations';
+import { useSettings } from '@/context/settings-context';
 
 export default function Home() {
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const router = useRouter();
   const { character, inventory, loadCharacter, hasHydrated } = useCharacterStore();
+  const { settings } = useSettings();
   const [characterStats, setCharacterStats] = useState<{
     inventorySlots: number;
   } | null>(null);
@@ -33,7 +35,7 @@ export default function Home() {
   }, [loadCharacter]);
 
   useEffect(() => {
-    if (hasHydrated && character) {
+    if (hasHydrated && character && settings) {
         if (!localStorage.getItem('tutorialCompleted')) {
           router.push('/tutorial');
         }
@@ -42,12 +44,12 @@ export default function Home() {
         } else if (inventory.length === 0) {
             setSelectedItem(null);
         }
-        const stats = getCalculatedStats(character);
+        const stats = getCalculatedStats(character, settings.difficulty);
         setCharacterStats(stats);
     } else if (hasHydrated && !character) {
       setSelectedItem(null);
     }
-  }, [character, router, hasHydrated, inventory, selectedItem]);
+  }, [character, router, hasHydrated, inventory, selectedItem, settings]);
 
 
   const startNewGame = () => {
@@ -55,7 +57,7 @@ export default function Home() {
     router.push('/new-game');
   };
 
-  if (!hasHydrated) {
+  if (!hasHydrated || !settings) {
      return (
         <main className="min-h-screen bg-background p-4 md:p-8 font-body text-foreground flex items-center justify-center">
              <p>Loading Game Data...</p>

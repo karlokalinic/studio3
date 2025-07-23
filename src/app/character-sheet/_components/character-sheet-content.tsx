@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { ArrowLeft } from "lucide-react";
+import { useSettings } from "@/context/settings-context";
 
 const Stat = ({ label, value, unit, description }: { label: string; value: string | number; unit?: string; description?: string }) => (
     <div className="flex justify-between items-start text-sm py-2">
@@ -93,15 +94,16 @@ const FullCharacterSheet = ({ profile, calculatedStats }: { profile: CharacterPr
 export default function CharacterSheetContent() {
     const { character, hasHydrated } = useCharacterStore();
     const [calculatedStats, setCalculatedStats] = useState<CalculatedStats | null>(null);
+    const { settings } = useSettings();
 
     useEffect(() => {
-        if (character) {
-            setCalculatedStats(getCalculatedStats(character));
+        if (character && settings) {
+            setCalculatedStats(getCalculatedStats(character, settings.difficulty));
         }
-    }, [character]);
+    }, [character, settings]);
 
 
-    if (!hasHydrated) {
+    if (!hasHydrated || !settings) {
         return <div className="min-h-screen flex items-center justify-center"><p>Loading...</p></div>
     }
 
