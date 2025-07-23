@@ -131,7 +131,13 @@ export const useCharacterStore = create<CharacterState>()(
             name: 'character-storage',
             storage: createJSONStorage(() => localStorage),
             onRehydrateStorage: () => (state) => {
-                state?.setHasHydrated(true)
+                if (state) {
+                    // Backwards compatibility for old save files
+                    if (state.character && !state.character.attunement) {
+                        state.character.attunement = { order: 0, chaos: 0, balance: 0 };
+                    }
+                    state.setHasHydrated(true);
+                }
             },
         }
     )
