@@ -147,22 +147,15 @@ export default function GameCenter() {
               </SheetTitle>
             </SheetHeader>
             <div className="mt-8 flex flex-col gap-4">
-               <Dialog>
-                <DialogTrigger asChild>
-                   <Button
-                      variant="ghost"
-                      className="justify-start text-lg p-6 hover:bg-accent/20 hover:text-accent"
-                    >
-                      <BookOpen className="mr-4" /> How to Play
-                    </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle className="font-headline text-2xl text-primary">How to Play</DialogTitle>
-                  </DialogHeader>
-                  <HowToPlayContent />
-                </DialogContent>
-              </Dialog>
+               <Button
+                variant="ghost"
+                className="justify-start text-lg p-6 hover:bg-accent/20 hover:text-accent"
+                asChild
+              >
+                 <Link href="/explore-the-story">
+                  <BookOpen className="mr-4" /> Wiki
+                </Link>
+              </Button>
               <Button
                 variant="ghost"
                 className="justify-start text-lg p-6 hover:bg-accent/20 hover:text-accent"

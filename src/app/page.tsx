@@ -89,9 +89,9 @@ export default function Home() {
                     Load Game
                 </Button>
                 <Button asChild className="w-full" variant="outline">
-                    <Link href="/new-game">
+                    <Link href="/explore-the-story">
                         <BookOpen className="mr-2" />
-                        Explore The Story
+                        Wiki
                     </Link>
                 </Button>
                 <Button asChild className="w-full" variant="outline">
