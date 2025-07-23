@@ -52,7 +52,7 @@ export default function Home() {
 
   const startNewGame = () => {
     // This will be handled by the zustand store resetting
-    router.push('/explore-the-story');
+    router.push('/new-game');
   };
 
   if (!hasHydrated) {
