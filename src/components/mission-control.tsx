@@ -67,9 +67,9 @@ export default function MissionControl() {
      // Auto-scroll to bottom of history
     useEffect(() => {
         if (scrollAreaRef.current) {
-            const scrollableView = scrollAreaRef.current.querySelector('div');
-            if (scrollableView) {
-                scrollableView.scrollTop = scrollableView.scrollHeight;
+            const viewport = scrollAreaRef.current.querySelector('div[data-radix-scroll-area-viewport]');
+            if (viewport) {
+                viewport.scrollTop = viewport.scrollHeight;
             }
         }
     }, [history]);
@@ -79,12 +79,10 @@ export default function MissionControl() {
         const activeRetrievalQuest = quests.find(q => q.id === 'q1-retrieval' && q.status === 'Active');
         if (activeRetrievalQuest) {
             setCurrentStory(retrievalQuestStory);
-        } else if (quests.length === 0) {
+        } else if (quests.length === 0 && !hasStartedIntro.current) {
             setCurrentStory({ choices: introStory.find(s => s.type === 'choice')?.options || [] });
-            if(!hasStartedIntro.current) {
-                 hasStartedIntro.current = true;
-                 advanceIntroStory();
-            }
+            hasStartedIntro.current = true;
+            advanceIntroStory();
         }
     }, [quests, advanceIntroStory, history.length]);
 
@@ -94,7 +92,7 @@ export default function MissionControl() {
         if (quests.length === 0 && currentBlock && currentBlock.type === 'narrator') {
             const timer = setTimeout(() => {
                 advanceIntroStory();
-            }, 2000); // Add a delay for readability
+            }, 2500); // Add a delay for readability
             return () => clearTimeout(timer);
         }
     }, [storyStep, advanceIntroStory, quests]);
@@ -105,28 +103,30 @@ export default function MissionControl() {
 
         const { consequence } = option;
 
-        // Handle consequence
-        if (consequence.type === 'quest_start') {
-            const questToAdd = questData.find(q => q.id === consequence.questId);
-            if(questToAdd) {
-                addQuest(questToAdd);
-                const endOfSegment = { id: 'end-intro', type: 'narrator', text: 'The line goes dead. You are left alone with your thoughts and your mission.' };
-                setHistory(prev => [...prev, endOfSegment]);
+        setTimeout(() => {
+            // Handle consequence
+            if (consequence.type === 'quest_start') {
+                const questToAdd = questData.find(q => q.id === consequence.questId);
+                if(questToAdd) {
+                    addQuest(questToAdd);
+                    const endOfSegment = { id: 'end-intro', type: 'narrator', text: 'The line goes dead. You are left alone with your thoughts and your mission.' };
+                    setHistory(prev => [...prev, endOfSegment]);
+                }
             }
-        }
 
-        if (consequence.type === 'progress') {
-            updateQuestProgress(consequence.questId, consequence.progress);
-            const progressMessage = { id: `progress-${Date.now()}`, type: 'narrator', text: consequence.message };
-            setHistory(prev => [...prev, progressMessage]);
-        }
+            if (consequence.type === 'progress') {
+                updateQuestProgress(consequence.questId, consequence.progress);
+                const progressMessage = { id: `progress-${Date.now()}`, type: 'narrator', text: consequence.message };
+                setHistory(prev => [...prev, progressMessage]);
+            }
+        }, 500);
     }
 
     const currentBlock = introStory[storyStep];
     const isIntroActive = quests.length === 0 && storyStep < introStory.length;
 
     return (
-        <Card className="bg-card/50 border-primary/20 shadow-lg shadow-primary/5 flex flex-col h-[600px]">
+        <Card className="bg-card/50 border-primary/20 shadow-lg shadow-primary/5 flex flex-col h-[700px] md:h-[600px]">
             <CardHeader>
                 <CardTitle className="font-headline text-2xl text-primary">
                      {currentStory?.title || "Mission Control"}

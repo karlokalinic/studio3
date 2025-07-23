@@ -56,6 +56,11 @@ export default function GamePage() {
         </header>
 
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          <div className="xl:col-span-2 space-y-8">
+            <MissionControl />
+            <QuestLog quests={quests} />
+          </div>
+
           <div className="xl:col-span-1 space-y-8">
             <CharacterProfile profile={character} />
             <Inventory
@@ -64,11 +69,6 @@ export default function GamePage() {
               onSelectItem={setSelectedItem}
               maxSlots={characterStats.inventorySlots}
             />
-          </div>
-
-          <div className="xl:col-span-2 space-y-8">
-            <MissionControl />
-            <QuestLog quests={quests} />
           </div>
         </div>
       </div>

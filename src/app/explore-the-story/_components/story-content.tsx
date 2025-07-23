@@ -17,6 +17,19 @@ import {
 } from '@/components/ui/accordion';
 
 const wikiData = {
+  howToPlay: {
+    title: 'How to Play',
+    description: "Welcome, Walker. This guide will help you begin your journey through the shattered realities of the Nexus.",
+    steps: [
+      { name: '1. Begin Your Chronicle', description: "From the Main Menu, select 'New Game'. This will erase any previous character and start a fresh journey. You'll first choose your starting allegiance—your faction—which will define your character's origin story." },
+      { name: '2. Create Your Character', description: "After choosing a faction, you will name your character and determine their base attributes: Strength, Intelligence, and Spirit. This is a one-time roll that sets your character's foundational potential. Choose wisely." },
+      { name: '3. The Tutorial', description: "You will then play through a brief, narrative-driven tutorial. This sequence will introduce you to core concepts like attribute checks and making choices with lasting consequences. It is highly recommended for first-time players." },
+      { name: '4. The Game Screen', description: "After the tutorial, you'll land on the main game screen. This is your dashboard. On the right, you'll see your Character Profile and Inventory. On the left is your Mission Control and Quest Log." },
+      { name: '5. Mission Control is Your Story', description: "The most important panel is **Mission Control**. This is where the main story unfolds. You will be presented with narrative text and choices. Clicking a choice will advance the plot, start or update quests, and shape your character's journey." },
+      { name: '6. Check Your Quests', description: "The **Quest Log**, below Mission Control, tracks your active and completed objectives. Always check here to see what you should be doing." },
+      { name: '7. Explore!', description: "Use the menu to explore the Wiki, check your full character sheet, or change settings. The Nexus is vast and unforgiving. Good luck, Walker." }
+    ]
+  },
   lore: {
     title: 'Core Lore and Setting',
     timeline: 'Year 2387, 200 years after the "Great Disconnection"—a cataclysm that shattered technological networks and opened portals to other dimensions.',
@@ -109,7 +122,24 @@ export default function StoryContent() {
 
             <Separator className="my-12" />
 
-            <Accordion type="multiple" defaultValue={['lore']} className="w-full space-y-8">
+            <Accordion type="multiple" defaultValue={['how-to-play']} className="w-full space-y-8">
+                <AccordionItem value="how-to-play" className="border-b-0">
+                    <AccordionTrigger className="text-3xl font-headline text-primary hover:no-underline pb-4">
+                        {wikiData.howToPlay.title}
+                    </AccordionTrigger>
+                    <AccordionContent className="pt-4 text-foreground/90 space-y-4 text-base">
+                       <p className="text-lg text-muted-foreground">{wikiData.howToPlay.description}</p>
+                        <div className="space-y-4 pt-4">
+                           {wikiData.howToPlay.steps.map(step => (
+                            <div key={step.name} className="p-4 bg-black/20 rounded-lg">
+                                <h4 className="font-headline text-lg text-primary">{step.name}</h4>
+                                <p className="text-foreground/90 mt-2">{step.description}</p>
+                            </div>
+                           ))}
+                        </div>
+                    </AccordionContent>
+                </AccordionItem>
+
                 <AccordionItem value="lore" className="border-b-0">
                     <AccordionTrigger className="text-3xl font-headline text-primary hover:no-underline pb-4">
                         {wikiData.lore.title}
