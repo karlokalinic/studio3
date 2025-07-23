@@ -43,7 +43,7 @@ const SectionCard: React.FC<{
   <Card className="bg-card/30 border-primary/20 shadow-lg shadow-primary/10 backdrop-blur-sm mb-8">
     <CardHeader>
       <CardTitle className="font-headline text-2xl text-accent">{title}</CardTitle>
-      {description && <CardDescription>{description}</CardDescription>}
+      {description && <CardDescription className="text-foreground/80">{description}</CardDescription>}
     </CardHeader>
     <CardContent>{children}</CardContent>
   </Card>
@@ -73,9 +73,9 @@ export default function LorePage() {
         <Separator className="my-8" />
 
         <SectionCard title={lore.core.title}>
-            <p className="font-bold">Timeline:</p>
+            <p className="font-bold text-primary/90">Timeline:</p>
             <p className="text-muted-foreground mb-4">{lore.core.timeline}</p>
-            <p className="font-bold">Core Story:</p>
+            <p className="font-bold text-primary/90">Core Story:</p>
             <p className="text-muted-foreground">{lore.core.story}</p>
         </SectionCard>
 
