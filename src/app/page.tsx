@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from 'react';
-import type { InventoryItem } from '@/types';
+import { useState, useEffect } from 'react';
+import type { InventoryItem, CharacterProfile } from '@/types';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import CharacterProfile from '@/components/character-profile';
 import GameCenter from '@/components/game-center';
@@ -10,11 +11,50 @@ import Inventory from '@/components/inventory';
 import QuestLog from '@/components/quest-log';
 import WorldMap from '@/components/world-map';
 
-import { characterData, playerStats, inventoryData, questData, worldData } from '@/data/mock-data';
+import { playerStats, inventoryData, questData, worldData } from '@/data/mock-data';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Rocket } from 'lucide-react';
 
 export default function Home() {
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(inventoryData[0] || null);
+  const [character, setCharacter] = useState<CharacterProfile | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const savedCharacter = localStorage.getItem('characterProfile');
+    if (savedCharacter) {
+      try {
+        setCharacter(JSON.parse(savedCharacter));
+      } catch (e) {
+        console.error("Failed to parse character profile from localStorage", e);
+        localStorage.removeItem('characterProfile');
+      }
+    }
+  }, []);
+
+  if (!character) {
+    return (
+      <main className="min-h-screen bg-background p-4 md:p-8 font-body text-foreground flex items-center justify-center">
+        <Card className="max-w-md w-full text-center bg-card/50 border-primary/20 shadow-lg shadow-primary/5">
+          <CardHeader>
+            <CardTitle className="font-headline text-3xl text-primary">No Character Found</CardTitle>
+            <CardDescription>Start a new journey in the Nexus Chronicles.</CardDescription>
+          </CardHeader>
+          <CardContent>
+             <p className="text-muted-foreground mb-6">Create a new character to begin your adventure across the dimensions.</p>
+             <Button 
+                onClick={() => router.push('/character-creation')}
+                className="w-full bg-accent text-accent-foreground hover:bg-accent/80 transition-all text-lg py-6 font-headline"
+            >
+                <Rocket className="mr-2" />
+                Start New Game
+            </Button>
+          </CardContent>
+        </Card>
+      </main>
+    )
+  }
 
   return (
     <main className="min-h-screen bg-background p-4 md:p-8 font-body text-foreground">
@@ -25,7 +65,7 @@ export default function Home() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           <div className="lg:col-span-1 xl:col-span-1 space-y-8">
-            <CharacterProfile profile={characterData} />
+            <CharacterProfile profile={character} />
             <QuestLog quests={questData} />
           </div>
 

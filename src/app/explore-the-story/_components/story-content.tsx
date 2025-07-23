@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
   Card,
@@ -131,33 +132,34 @@ export default function StoryContent() {
 
           <motion.div variants={itemVariants}>
             <h2 className="text-center font-headline text-3xl font-bold text-primary mb-8">
-              Major Factions
+              Choose your Allegiance
             </h2>
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
               {factions.map((faction) => (
-                <Card
-                  key={faction.name}
-                  className="bg-card/50 border-primary/10 transition-all hover:border-accent hover:shadow-accent/20 hover:shadow-2xl"
-                >
-                  <CardHeader className="flex flex-row items-center gap-4">
-                    <Image
-                      src={`https://placehold.co/64x64.png`}
-                      alt={`${faction.name} logo`}
-                      width={52}
-                      height={52}
-                      className="rounded-lg bg-black/30 p-1 border border-primary/20"
-                      data-ai-hint={faction.dataAiHint}
-                    />
-                    <div>
-                      <CardTitle className="font-headline text-xl text-accent">
-                        {faction.name}
-                      </CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">{faction.description}</p>
-                  </CardContent>
-                </Card>
+                 <Link key={faction.name} href={`/character-creation?faction=${encodeURIComponent(faction.name)}`}>
+                    <Card
+                    className="bg-card/50 border-primary/10 transition-all hover:border-accent hover:shadow-accent/20 hover:shadow-2xl h-full"
+                    >
+                    <CardHeader className="flex flex-row items-center gap-4">
+                        <Image
+                        src={`https://placehold.co/64x64.png`}
+                        alt={`${faction.name} logo`}
+                        width={52}
+                        height={52}
+                        className="rounded-lg bg-black/30 p-1 border border-primary/20"
+                        data-ai-hint={faction.dataAiHint}
+                        />
+                        <div>
+                        <CardTitle className="font-headline text-xl text-accent">
+                            {faction.name}
+                        </CardTitle>
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-muted-foreground">{faction.description}</p>
+                    </CardContent>
+                    </Card>
+                </Link>
               ))}
             </div>
           </motion.div>
