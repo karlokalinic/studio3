@@ -11,8 +11,8 @@ function calculateEffectiveStrength(profile: CharacterProfile): number {
     enhancementBonus += 5;
   }
 
-  const effectiveStrength = Math.round((baseStrength * fitnessModifier * fatigueModifier) + enhancementBonus);
-  return Math.max(1, effectiveStrength); // Strength can't be less than 1
+  const effectiveStrength = (baseStrength * fitnessModifier * fatigueModifier) + enhancementBonus;
+  return Math.round(Math.max(1, effectiveStrength)); // Strength can't be less than 1
 }
 
 // Formula to calculate effective intelligence
@@ -26,8 +26,8 @@ function calculateEffectiveIntelligence(profile: CharacterProfile): number {
     enhancementBonus += 5;
   }
 
-  const effectiveIntelligence = Math.round((baseIntelligence * clarityModifier * focusModifier) + enhancementBonus);
-  return Math.max(1, effectiveIntelligence);
+  const effectiveIntelligence = (baseIntelligence * clarityModifier * focusModifier) + enhancementBonus;
+  return Math.round(Math.max(1, effectiveIntelligence));
 }
 
 // Formula to calculate max HP
@@ -37,9 +37,9 @@ function calculateMaxHP(profile: CharacterProfile): number {
 
 // Formula to calculate critical hit chance
 function calculateCritChance(profile: CharacterProfile): number {
-  const intelligenceFactor = profile.attributes.intelligence / 100; // up to 1.0
-  const spiritFactor = profile.attributes.spirit / 150; // up to 0.66
-  return Math.round((intelligenceFactor * 0.1 + spiritFactor * 0.05) * 100); // Percentage
+  const intelligenceFactor = calculateEffectiveIntelligence(profile) / 50; 
+  const spiritFactor = profile.attributes.spirit / 100;
+  return Math.round(Math.min(100, (intelligenceFactor * 0.1 + spiritFactor * 0.05) * 100)); // Percentage, capped at 100%
 }
 
 
