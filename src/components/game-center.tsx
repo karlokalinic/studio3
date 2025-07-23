@@ -26,10 +26,9 @@ import {
   Archive,
   BookOpen,
   Lightbulb,
+  Home
 } from 'lucide-react';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
-
 
 export default function GameCenter() {
   const { character, resetCharacter } = useCharacterStore();
@@ -46,7 +45,7 @@ export default function GameCenter() {
   }, [character?.currency]);
 
   const handleQuit = () => {
-    resetCharacter();
+    // For a real game, you might want to ask for confirmation
     router.push('/');
   }
 
@@ -117,6 +116,13 @@ export default function GameCenter() {
               </SheetTitle>
             </SheetHeader>
             <div className="mt-8 flex flex-col gap-4">
+              <Button
+                variant="ghost"
+                className="justify-start text-lg p-6 hover:bg-accent/20 hover:text-accent"
+                onClick={handleQuit}
+              >
+                <Home className="mr-4" /> Main Menu
+              </Button>
                <Button
                 variant="ghost"
                 className="justify-start text-lg p-6 hover:bg-accent/20 hover:text-accent"
@@ -158,13 +164,6 @@ export default function GameCenter() {
                 <Link href="/dev-insights">
                   <Lightbulb className="mr-4"/> Dev Insights
                 </Link>
-              </Button>
-              <Button
-                variant="ghost"
-                className="justify-start text-lg p-6 hover:bg-accent/20 hover:text-accent"
-                onClick={handleQuit}
-              >
-                <LogOut className="mr-4" /> Quit Game
               </Button>
             </div>
           </SheetContent>
