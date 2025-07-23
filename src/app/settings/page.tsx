@@ -1,4 +1,6 @@
 
+'use client';
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -6,7 +8,7 @@ import SettingsContent from "./_components/settings-content";
 import { useCharacterStore } from "@/stores/use-character-store";
 
 export default function SettingsPage() {
-  const { character } = useCharacterStore.getState(); // Non-reactive read for initial render
+  const { character } = useCharacterStore();
   const backHref = character ? "/game" : "/";
 
   return (
