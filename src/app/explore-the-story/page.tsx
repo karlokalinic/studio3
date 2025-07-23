@@ -43,7 +43,7 @@ const SectionCard: React.FC<{
   <Card className="bg-card/30 border-primary/20 shadow-lg shadow-primary/10 backdrop-blur-sm mb-8">
     <CardHeader>
       <CardTitle className="font-headline text-2xl text-accent">{title}</CardTitle>
-      {description && <CardDescription className="text-foreground/80">{description}</CardDescription>}
+      {description && <CardDescription className="text-foreground/90">{description}</CardDescription>}
     </CardHeader>
     <CardContent>{children}</CardContent>
   </Card>
@@ -83,7 +83,7 @@ export default function LorePage() {
             <div className="space-y-4">
             {lore.factions.list.map(faction => (
                 <div key={faction.name} className="p-4 bg-black/20 rounded-lg">
-                    <h4 className="font-headline text-lg text-primary">{faction.name} <span className="text-sm text-foreground/80 font-body font-normal">- {faction.type}</span></h4>
+                    <h4 className="font-headline text-lg text-primary">{faction.name} <span className="text-sm text-foreground/90 font-body font-normal">- {faction.type}</span></h4>
                     <p className="text-foreground/90"><strong className="text-primary/80">Values:</strong> {faction.values}</p>
                     <p className="text-foreground/90"><strong className="text-primary/80">Structure:</strong> {faction.structure}</p>
                     <p className="text-foreground/90"><strong className="text-primary/80">Conflicts:</strong> {faction.conflicts}</p>
