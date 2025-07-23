@@ -97,9 +97,9 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
               const item = items[index];
               const isUnlocked = index < maxSlots;
               const isSelected = item && selectedItem?.id === item.id;
-              const IconComponent = item?.icon;
-
-              if (item && isUnlocked && IconComponent) {
+              
+              if (item && isUnlocked) {
+                 const IconComponent = item.icon;
                  return (
                     <motion.div
                       key={item.id}
