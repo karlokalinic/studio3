@@ -6,27 +6,24 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertTriangle, Cpu, Dumbbell, Brain, Heart, Shield, HelpCircle, Weight, Footprints, Hourglass, Atom, Coins, Handshake, BrainCircuit, BookOpen, Scale, Eye, Ghost, Anchor, Feather, Recycle, GitCommit, GitBranch, Waves } from "lucide-react";
 import { Button } from "./ui/button";
+import React from "react";
 
-const Node = ({ name, icon, formula, description, isCore, isMystery, children }: { name: string; icon: React.ElementType; formula?: string; description?: string; isCore?: boolean; isMystery?: boolean; children?: React.ReactNode }) => {
+const Node = React.forwardRef<HTMLDivElement, { name: string; icon: React.ElementType; formula?: string; description?: string; isCore?: boolean; isMystery?: boolean; children?: React.ReactNode }>(
+    ({ name, icon, formula, description, isCore, isMystery, children }, ref) => {
     const Icon = icon;
     
-    const nodeContent = (
-      <div className={`w-full h-full flex flex-col items-center justify-center p-2 text-center transition-all duration-300 transform group-hover:bg-opacity-20 ${isCore ? 'group-hover:bg-accent' : 'group-hover:bg-primary'}`}>
-        <Icon className={`w-10 h-10 mb-1 transition-all group-hover:scale-110 ${isCore ? 'text-accent' : 'text-primary'}`} />
-        <p className={`font-bold text-sm absolute bottom-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isMystery ? 'italic text-muted-foreground' : ''}`}>{name}</p>
-      </div>
-    );
-    
-    const NodeWrapper = ({ children }: { children: React.ReactNode }) => (
-        <div className={`group w-32 h-32 bg-black/20 rounded-lg border-2 ${isCore ? 'border-accent/50 hover:shadow-accent/20' : 'border-primary/30 hover:shadow-primary/20'} cursor-pointer shadow-md overflow-hidden relative flex flex-col items-center justify-center`}>
-            {children}
-        </div>
-    );
-
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <NodeWrapper>{nodeContent}</NodeWrapper>
+                 <div 
+                    ref={ref}
+                    className={`group w-32 h-32 bg-black/20 rounded-lg border-2 ${isCore ? 'border-accent/50 hover:shadow-accent/20' : 'border-primary/30 hover:shadow-primary/20'} cursor-pointer shadow-md overflow-hidden relative flex flex-col items-center justify-center`}
+                 >
+                    <div className={`w-full h-full flex flex-col items-center justify-center p-2 text-center transition-all duration-300 transform group-hover:bg-opacity-20 ${isCore ? 'group-hover:bg-accent' : 'group-hover:bg-primary'}`}>
+                        <Icon className={`w-10 h-10 mb-1 transition-all group-hover:scale-110 ${isCore ? 'text-accent' : 'text-primary'}`} />
+                        <p className={`font-bold text-sm absolute bottom-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isMystery ? 'italic text-muted-foreground' : ''}`}>{name}</p>
+                    </div>
+                </div>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
@@ -56,7 +53,8 @@ const Node = ({ name, icon, formula, description, isCore, isMystery, children }:
             </DialogContent>
         </Dialog>
     )
-};
+});
+Node.displayName = "Node";
 
 
 const Line = ({ type, gridArea, colorClass = 'bg-primary/20' }: { type: 'horizontal' | 'vertical' | 't-down' | 't-up' | 'cross' | 'corner-br' | 'corner-bl' | 'corner-tr' | 'corner-tl'; gridArea: string, colorClass?: string }) => {
@@ -93,7 +91,7 @@ export default function StatInternals({ profile }: { profile: CharacterProfile }
         <CardTitle className="font-headline text-2xl text-primary">Stat Internals</CardTitle>
         <CardDescription>The nexus is complex. Click on nodes for details. Some systems are known, others are yet to be understood.</CardDescription>
       </CardHeader>
-      <CardContent className="p-0 sm:p-4">
+      <CardContent className="p-0 sm:p-0">
           <div 
             className="grid"
             style={{
@@ -202,3 +200,4 @@ export default function StatInternals({ profile }: { profile: CharacterProfile }
     </Card>
   );
 }
+
