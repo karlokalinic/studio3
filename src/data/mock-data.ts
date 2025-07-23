@@ -18,6 +18,16 @@ export const characterData: CharacterProfile = {
     spirit: 15,
     hp: 120,
   },
+  state: {
+    fatigue: 25,
+    fitness: 80,
+    focus: 90,
+    mentalClarity: 75,
+  },
+  enhancements: {
+    cybernetics: ['NeuralLink V2', 'AdrenalBooster'],
+    implants: ['Subdermal Weave'],
+  },
   metadata: {
     age: 28,
     gender: "Non-binary",

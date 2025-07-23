@@ -10,11 +10,23 @@ export interface CharacterProfile {
   level: number;
   xp: number;
   attributes: {
+    // Base attributes
     strength: number;
     intelligence: number;
     spirit: number;
     hp: number;
   };
+  state: {
+    // Dynamic state values
+    fatigue: number; // 0-100
+    fitness: number; // 0-100
+    focus: number; // 0-100
+    mentalClarity: number; // 0-100
+  },
+  enhancements: {
+    cybernetics: string[];
+    implants: string[];
+  }
   metadata: {
     age: number;
     gender: string;
@@ -23,6 +35,13 @@ export interface CharacterProfile {
     origin: string;
     backstory: string;
   };
+}
+
+export interface CalculatedStats {
+  effectiveStrength: number;
+  effectiveIntelligence: number;
+  maxHP: number;
+  critChance: number;
 }
 
 export interface InventoryItem {
