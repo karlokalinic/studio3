@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import type { PlayerStats } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Shield, Zap, Drumstick, Save, Menu, CircleDollarSign } from "lucide-react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Shield, Zap, Drumstick, Save, Menu, CircleDollarSign, Settings, FolderOpen, LogOut } from "lucide-react";
 
 interface GameCenterProps {
   stats: PlayerStats;
@@ -18,7 +19,9 @@ export default function GameCenter({ stats }: GameCenterProps) {
   const [formattedCurrency, setFormattedCurrency] = useState<string | null>(null);
 
   useEffect(() => {
-    setFormattedCurrency(stats.currency.toLocaleString());
+    if (typeof window !== 'undefined') {
+      setFormattedCurrency(stats.currency.toLocaleString());
+    }
   }, [stats.currency]);
 
   return (
@@ -49,9 +52,29 @@ export default function GameCenter({ stats }: GameCenterProps) {
         <Button variant="outline" size="sm" className="border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all">
           <Save className="mr-2 h-4 w-4" /> Save
         </Button>
-        <Button variant="outline" size="sm" className="border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all">
-          <Menu className="mr-2 h-4 w-4" /> Menu
-        </Button>
+        <Sheet>
+            <SheetTrigger asChild>
+                <Button variant="outline" size="sm" className="border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all">
+                  <Menu className="mr-2 h-4 w-4" /> Menu
+                </Button>
+            </SheetTrigger>
+            <SheetContent className="bg-card/95 border-primary/20 text-foreground">
+                <SheetHeader>
+                    <SheetTitle className="font-headline text-2xl text-primary">Game Menu</SheetTitle>
+                </SheetHeader>
+                <div className="mt-8 flex flex-col gap-4">
+                    <Button variant="ghost" className="justify-start text-lg p-6 hover:bg-accent/20 hover:text-accent">
+                        <Settings className="mr-4"/> Settings
+                    </Button>
+                    <Button variant="ghost" className="justify-start text-lg p-6 hover:bg-accent/20 hover:text-accent">
+                        <FolderOpen className="mr-4"/> Load Game
+                    </Button>
+                    <Button variant="ghost" className="justify-start text-lg p-6 hover:bg-accent/20 hover:text-accent">
+                        <LogOut className="mr-4"/> Quit Game
+                    </Button>
+                </div>
+            </SheetContent>
+        </Sheet>
       </div>
     </div>
   );
