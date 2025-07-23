@@ -119,7 +119,7 @@ export default function StatInternals({ profile }: { profile: CharacterProfile }
         </CardHeader>
         <CardContent>
              <div className="p-4 bg-black/20 rounded-md overflow-x-auto">
-                <div className="relative w-full h-[700px] min-w-[800px]">
+                <div className="relative w-full h-[550px] min-w-[800px]">
                     {/* Lines to connect nodes */}
                     <ConnectingLine className="top-[18%] left-0 w-[25%] h-0.5" />
                     <ConnectingLine className="top-1/2 left-0 w-[25%] h-0.5" />
