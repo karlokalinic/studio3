@@ -66,8 +66,8 @@ const tutorialScript = [
     type: 'choice',
     text: "The voice continues, 'I can give you a gift to begin your journey, but only one. Choose wisely. This choice will have permanent consequences.' Before you, two streams of energy materialize.",
     options: [
-      { text: 'Embrace the Kinetic Force', consequence: { type: 'stat_change', payload: { health: -50, energy: 50 }, message: 'You feel a surge of raw power, but your body is weakened by the strain.' } },
-      { text: 'Harness the Psionic Shield', consequence: { type: 'stat_change', payload: { health: 50, energy: -50 }, message: 'A protective energy envelops you, but your inner reserves feel drained.' } },
+      { text: 'Embrace the Kinetic Force', consequence: { type: 'stat_change', payload: { hp: -50, energy: 50 }, message: 'You feel a surge of raw power, but your body is weakened by the strain.' } },
+      { text: 'Harness the Psionic Shield', consequence: { type: 'stat_change', payload: { hp: 50, energy: -50 }, message: 'A protective energy envelops you, but your inner reserves feel drained.' } },
     ]
   },
   {
@@ -93,9 +93,9 @@ const ChoiceConsequence = ({ consequence, onAcknowledged }: { consequence: any, 
             <h3 className="font-headline text-2xl text-accent mb-4">Consequence</h3>
             <p className="text-lg text-muted-foreground mb-2">{consequence.message}</p>
             <div className="flex justify-center gap-4 text-xl font-bold my-4">
-                {consequence.payload.health !== 0 && (
-                    <span className={`flex items-center gap-2 ${consequence.payload.health > 0 ? 'text-green-400' : 'text-red-400'}`}>
-                        <Shield /> {consequence.payload.health > 0 ? '+' : ''}{consequence.payload.health} Max Health
+                {consequence.payload.hp !== 0 && (
+                    <span className={`flex items-center gap-2 ${consequence.payload.hp > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                        <Shield /> {consequence.payload.hp > 0 ? '+' : ''}{consequence.payload.hp} Max Health
                     </span>
                 )}
                 {consequence.payload.energy !== 0 && (
@@ -114,7 +114,7 @@ const ChoiceConsequence = ({ consequence, onAcknowledged }: { consequence: any, 
 
 export default function TutorialContent() {
   const router = useRouter();
-  const { character, hasHydrated, loadCharacter, updateCharacterStats, setInventory } = useCharacterStore();
+  const { character, hasHydrated, loadCharacter, setCharacter, setInventory } = useCharacterStore();
   const { settings, setSetting } = useSettings();
   const [step, setStep] = useState(0);
   const [showText, setShowText] = useState(false);
@@ -176,7 +176,23 @@ export default function TutorialContent() {
 
   const handleChoice = (consequenceData: any) => {
     if (consequenceData.type === 'stat_change') {
-      updateCharacterStats(consequenceData.payload);
+       setCharacter(char => {
+          if (!char) return null;
+          return {
+            ...char,
+            attributes: {
+              ...char.attributes,
+              hp: {
+                ...char.attributes.hp,
+                value: char.attributes.hp.value + (consequenceData.payload.hp || 0)
+              },
+               energy: { // Assuming energy could be a base attribute
+                ...char.attributes.spirit, // Using spirit as a stand-in for energy logic
+                value: char.energy + (consequenceData.payload.energy || 0)
+              }
+            }
+          }
+       })
     }
     setConsequence(consequenceData);
     setShowText(false);
@@ -185,13 +201,13 @@ export default function TutorialContent() {
   const finishTutorial = () => {
       setInventory(inventoryData);
       localStorage.setItem('tutorialCompleted', 'true');
-      router.push('/');
+      router.push('/game');
   }
 
   const skipTutorial = () => {
     setInventory(inventoryData);
     localStorage.setItem('tutorialCompleted', 'true');
-    router.push('/');
+    router.push('/game');
   }
 
   const handleDifficultyChange = (value: Difficulty) => {
