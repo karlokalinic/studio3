@@ -1,3 +1,4 @@
+
 import type { CharacterProfile, CalculatedStats } from '@/types';
 
 // Formula to calculate effective strength

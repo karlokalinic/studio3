@@ -4,10 +4,8 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware'
 import type { CharacterProfile, InventoryItem } from '@/types';
-import { inventoryData } from '@/data/mock-data';
 
-const generateRandomStat = () => Math.floor(Math.random() * 8) + 8; // Random number between 8 and 15
-const calculateInitialSlots = (strength: number) => 10 + Math.floor(strength / 2);
+const calculateInitialSlots = (strength: number) => 3 + Math.floor(strength / 5);
 
 interface CharacterState {
     character: CharacterProfile | null;
@@ -66,7 +64,7 @@ export const useCharacterStore = create<CharacterState>()(
                         backstory: `A new face in the Nexus, hailing from the ${faction}, ready to make their mark.`,
                     },
                 };
-                set({ character: newCharacter, inventory: [...inventoryData].slice(0, 5) }); // Start with a few items from mock data
+                set({ character: newCharacter, inventory: [] });
                 localStorage.removeItem('tutorialCompleted'); // Reset tutorial on new character
             },
             loadCharacter: () => {
@@ -98,7 +96,7 @@ export const useCharacterStore = create<CharacterState>()(
             unlockInventorySlot: () => {
                 set((state) => {
                     if (!state.character) return {};
-                    if (state.character.inventorySlots < 30) {
+                    if (state.character.inventorySlots < 25) {
                         return {
                             character: {
                                 ...state.character,

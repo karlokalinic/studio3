@@ -27,7 +27,7 @@ interface InventoryProps {
   maxSlots: number;
 }
 
-const TOTAL_GRID_SLOTS = 30; // 6x5 grid
+const TOTAL_GRID_SLOTS = 25; // 5x5 grid
 
 export default function Inventory({ items, selectedItem, onSelectItem, maxSlots }: InventoryProps) {
   const { removeItem, updateCharacterStats, unlockInventorySlot } = useCharacterStore();
@@ -93,14 +93,14 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
   const canBeUsed = selectedItem && (selectedItem.type === 'Consumable' || (selectedItem.type === 'Key' && maxSlots < TOTAL_GRID_SLOTS));
 
   return (
-    <Card className="bg-card/50 border-primary/20 shadow-lg shadow-primary/5 h-full flex flex-col md:flex-row">
+    <Card className="bg-card/50 border-primary/20 shadow-lg shadow-primary/5 flex flex-col md:flex-row">
       <div className="md:w-1/2 p-4 border-b md:border-b-0 md:border-r border-primary/10">
         <CardHeader className="p-2">
             <CardTitle className="font-headline text-2xl text-primary">Inventory</CardTitle>
             <CardDescription>{maxSlots} / {TOTAL_GRID_SLOTS} Slots</CardDescription>
         </CardHeader>
         <CardContent className="p-2">
-            <div className="grid grid-cols-6 gap-2">
+            <div className="grid grid-cols-5 gap-2">
             {Array.from({ length: TOTAL_GRID_SLOTS }).map((_, index) => {
               const item = items[index];
               const isUnlocked = index < maxSlots;
@@ -138,7 +138,7 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
         </CardContent>
       </div>
       
-      <div className="md:w-1/2 p-6 flex flex-col">
+      <div className="md:w-1/2 p-6 flex flex-col min-h-[300px]">
         {selectedItem ? (
           <>
             <CardHeader className="p-0 mb-4">

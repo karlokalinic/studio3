@@ -44,6 +44,8 @@ export default function Home() {
         }
         const stats = getCalculatedStats(character);
         setCharacterStats(stats);
+    } else if (hasHydrated && !character) {
+      setSelectedItem(null);
     }
   }, [character, router, hasHydrated, inventory, selectedItem]);
 
