@@ -30,10 +30,9 @@ interface InventoryProps {
 
 const TOTAL_GRID_SLOTS = 25; // 5x5 grid
 
-const GlowIcon = ({ item, isSelected }: { item: InventoryItem, isSelected: boolean }) => {
-    const IconComponent = item.icon;
+const GlowIcon = ({ icon: Icon, isSelected }: { icon: React.ElementType, isSelected: boolean }) => {
     return (
-        <IconComponent
+        <Icon
         className={cn(
             "h-8 w-8 text-primary/70 transition-all duration-300",
             isSelected && "text-accent drop-shadow-[0_0_8px_hsl(var(--accent))]"
@@ -123,7 +122,7 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
                       >
-                      <GlowIcon item={item} isSelected={!!isSelected} />
+                      <GlowIcon icon={item.icon} isSelected={!!isSelected} />
                     </motion.div>
                  );
               }
