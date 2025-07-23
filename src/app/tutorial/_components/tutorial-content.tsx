@@ -98,11 +98,19 @@ export default function TutorialContent() {
   }
 
   const onCheckComplete = useCallback(() => {
+      // First, advance the step logic
+      if (step < tutorialScript.length - 1) {
+          setStep(prevStep => prevStep + 1);
+      }
+      
+      // Then, transition out of the checking state
       setIsChecking(false);
+      
+      // Finally, trigger the text fade-in after a short delay for the component to switch
       setTimeout(() => {
-          handleNext();
+          setShowText(true);
       }, 300);
-  }, [handleNext]);
+  }, [step]);
   
   const finishTutorial = () => {
       localStorage.setItem('tutorialCompleted', 'true');

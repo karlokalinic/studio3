@@ -51,7 +51,7 @@ export default function StatRoller({ onRandomize, onConfirm, isSaving }: StatRol
                 spirit: generateRandomStat(),
             });
             counter++;
-            if (counter >= 15) { // Roll for ~1.5 seconds
+            if (counter >= 25) { // Roll for ~2.5 seconds (25 * 100ms)
                 clearInterval(interval);
                 setIsRolling(false);
             }
