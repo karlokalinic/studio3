@@ -215,43 +215,53 @@ export default function CharacterProfile({ profile }: CharacterProfileProps) {
             <AccordionContent className="space-y-6 pt-4">
                 <p className="text-xs text-muted-foreground">Click on a primary attribute node to see the detailed formula.</p>
                 <div className="p-4 bg-black/20 rounded-md">
-                    <div className="relative w-full h-[400px]">
-                        {/* Lines */}
-                        <ConnectingLine className="top-1/2 left-0 w-1/4 h-0.5" />
-                        <ConnectingLine className="top-1/4 left-[22%] w-[3%] h-0.5" />
-                        <ConnectingLine className="top-1/2 left-[22%] w-[3%] h-0.5" />
-                        <ConnectingLine className="top-3/4 left-[22%] w-[3%] h-0.5" />
-                        <ConnectingLine className="top-1/4 left-1/4 h-1/2 w-0.5" />
-                        <ConnectingLine className="top-1/2 left-1/4 w-1/4 h-0.5" />
-                        <ConnectingLine className="top-1/2 left-1/2 h-[28%] w-0.5" />
-                        <ConnectingLine className="top-1/2 left-1/2 w-[28%] h-0.5" />
-                        <ConnectingLine className="top-[calc(50%+112px)] left-[calc(50%+112px)] h-[30px] w-0.5 -translate-y-full" />
-                        <ConnectingLine className="top-1/2 left-1/2 w-0.5 h-[calc(28%-30px)] translate-y-[30px]" />
+                    <div className="relative w-full h-[550px]">
+                        {/* Lines to connect nodes */}
+                        <ConnectingLine className="top-[18%] left-0 w-[25%] h-0.5" />
+                        <ConnectingLine className="top-1/2 left-0 w-[25%] h-0.5" />
+                        <ConnectingLine className="top-[82%] left-0 w-[25%] h-0.5" />
+                        
+                        <ConnectingLine className="top-[18%] left-[25%] w-[25%] h-0.5" />
+                        <ConnectingLine className="top-[82%] left-[25%] w-[25%] h-0.5" />
 
+                        <ConnectingLine className="top-[18%] left-[25%] h-[64%] w-0.5" />
+
+                        <ConnectingLine className="top-1/2 left-[25%] w-0.5 h-[16%]" />
+                        <ConnectingLine className="top-1/2 left-[calc(25%+1px)] w-[calc(25%-1px)] h-0.5" />
+
+                        <ConnectingLine className="top-[66%] left-[25%] h-[16%] w-0.5" />
+
+                        <ConnectingLine className="top-1/2 left-[50%] h-[32%] w-0.5" />
+                        <ConnectingLine className="top-1/2 left-[50%] w-[25%] h-0.5" />
+
+                        <ConnectingLine className="top-[82%] left-[50%] w-[25%] h-0.5" />
 
                         {/* Base Attributes Column */}
-                        <div className="absolute top-1/2 left-0 -translate-y-1/2 flex flex-col items-center justify-around h-full">
+                        <div className="absolute top-1/2 left-0 -translate-y-1/2 flex flex-col items-center justify-between h-full py-8">
                            <Node name="Base Strength" icon={Dumbbell} />
                            <Node name="Base Intelligence" icon={Brain} />
                            <Node name="Base Spirit" icon={Heart} />
                         </div>
                         
                         {/* Modifiers Column */}
-                        <div className="absolute top-1/2 left-1/4 -translate-y-1/2 -translate-x-1/2 flex flex-col items-center justify-around h-[80%]">
+                        <div className="absolute top-1/2 left-1/4 -translate-y-1/2 -translate-x-1/2 flex flex-col items-center justify-between h-[80%]">
                             <ModifierNode name="Fitness" value={`${state.fitness.value}%`} />
                             <ModifierNode name="Fatigue" value={`${state.fatigue.value}%`} hasWarning={isFatigued}/>
                             <ModifierNode name="Mental Clarity" value={`${state.mentalClarity.value}%`} />
                             <ModifierNode name="Focus" value={`${state.focus.value}%`} />
                         </div>
-
-                         {/* Enhancements Column */}
-                        <div className="absolute top-[calc(50%+112px)] left-[calc(50%+112px)] -translate-x-1/2 -translate-y-full flex flex-col gap-2">
+                        
+                        {/* Enhancements Column */}
+                        <div className="absolute top-[33%] left-[75%] -translate-x-1/2 -translate-y-1/2 flex flex-col gap-2">
                              <ModifierNode name="Cybernetics" value="Active" description="NeuralLink V2, AdrenalBooster"/>
-                             <ModifierNode name="Implants" value="Active" description="Subdermal Weave" />
+                        </div>
+                         <div className="absolute top-[66%] left-[75%] -translate-x-1/2 -translate-y-1/2 flex flex-col gap-2">
+                            <ModifierNode name="Implants" value="Active" description="Subdermal Weave" />
                         </div>
 
+
                         {/* Calculated Stats Column */}
-                        <div className="absolute top-1/2 left-1/2 -translate-y-1/2 flex flex-col items-center justify-around h-full">
+                        <div className="absolute top-1/2 left-1/2 -translate-y-1/2 flex flex-col items-center justify-between h-full py-8">
                            <Node name="Effective Strength" icon={Dumbbell} 
                                  formula="= (BaseStr * FitnessMod * FatigueMod) + Enhancements" 
                                  description="Your actual physical power in combat and for physical checks, after all modifiers." />
@@ -288,3 +298,5 @@ export default function CharacterProfile({ profile }: CharacterProfileProps) {
 }
 
   
+
+    
