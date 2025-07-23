@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -9,12 +10,10 @@ import { useRouter } from 'next/navigation';
 import CharacterProfile from '@/components/character-profile';
 import GameCenter from '@/components/game-center';
 import Inventory from '@/components/inventory';
-import QuestLog from '@/components/quest-log';
-import WorldMap from '@/components/world-map';
 import StatInternals from '@/components/stat-internals';
+import MissionControl from '@/components/mission-control';
 
 import { useCharacterStore } from '@/stores/use-character-store';
-import { questData, worldData } from '@/data/mock-data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Rocket, History, Settings, Gamepad2, Trophy, BookOpen } from 'lucide-react';
@@ -53,7 +52,6 @@ export default function Home() {
 
 
   const startNewGame = () => {
-    // This will be handled by the zustand store resetting
     router.push('/new-game');
   };
 
@@ -91,9 +89,9 @@ export default function Home() {
                     Load Game
                 </Button>
                 <Button asChild className="w-full" variant="outline">
-                    <Link href="/explore-the-story">
+                    <Link href="/new-game">
                         <BookOpen className="mr-2" />
-                        Lore
+                        Explore The Story
                     </Link>
                 </Button>
                 <Button asChild className="w-full" variant="outline">
@@ -127,17 +125,16 @@ export default function Home() {
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
           <div className="xl:col-span-1 space-y-8">
             <CharacterProfile profile={character} />
-            <QuestLog quests={questData} />
-            <WorldMap locations={worldData} />
-          </div>
-
-          <div className="xl:col-span-2 space-y-8">
             <Inventory 
               items={inventory} 
               selectedItem={selectedItem}
               onSelectItem={setSelectedItem}
               maxSlots={characterStats.inventorySlots}
             />
+          </div>
+
+          <div className="xl:col-span-2 space-y-8">
+            <MissionControl />
             <StatInternals profile={character} />
           </div>
         </div>
@@ -145,3 +142,5 @@ export default function Home() {
     </main>
   );
 }
+
+    

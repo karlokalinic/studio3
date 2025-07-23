@@ -1,4 +1,5 @@
 
+
 import type { PlayerStats, CharacterProfile, InventoryItem, Quest, WorldLocation } from '@/types';
 import { Sword, HeartPulse, Shield, Bot, Map, Key } from 'lucide-react';
 
@@ -53,13 +54,12 @@ export const inventoryData: InventoryItem[] = [
   { id: 'item-6', name: 'Slot Expansion Key', type: 'Key', value: 1000, description: 'A rare cybernetic key that can re-route power to unlock an additional inventory slot.', icon: Key },
 ];
 
-export const questData: Quest[] = [
-  { id: 'q1', title: 'The Ghost in the Machine', status: 'Active', progress: 75, description: 'The Cy-Gnostics want you to deliver a data chip to their contact in the Undercity. The trip is perilous.', moralChoice: 'Hand over the data chip as is, or decrypt it first to see what secrets it holds?', outcomes: 'Betraying the Cy-Gnostics could be profitable, but they have long memories.'},
-  { id: 'q2', title: 'Echoes of the Past', status: 'Active', progress: 20, description: 'A mysterious signal is broadcasting from the ruins of Old-Terra. Investigate its source.', moralChoice: 'The signal could be a trap or a cry for help. Proceed with caution or aggression?', outcomes: 'What you find might change your understanding of the world.'},
-];
+export const questData: Quest[] = [];
 
 export const worldData: WorldLocation[] = [
   { id: 'loc1', name: 'Neo-Kyoto', faction: 'Solaris Coalition', currencyModifier: 1.2, position: { top: '30%', left: '25%' }, description: 'A gleaming metropolis governed by corporate technocrats. Order and progress are valued above all.' },
   { id: 'loc2', name: 'The Undercity', faction: 'Outcasts', currencyModifier: 0.8, position: { top: '65%', left: '40%' }, description: 'A sprawling, chaotic network of tunnels and settlements beneath Neo-Kyoto. A haven for criminals and the disenfranchised.' },
   { id: 'loc3', name: 'Aethelgard', faction: 'Sky Citadels', currencyModifier: 1.0, position: { top: '50%', left: '70%' }, description: 'A floating city-state built on principles of free trade and individualism. Controlled by powerful merchant guilds.' },
 ];
+
+    

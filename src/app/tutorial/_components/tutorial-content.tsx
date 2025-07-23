@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
@@ -7,12 +8,13 @@ import { useCharacterStore } from '@/stores/use-character-store';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SkipForward } from 'lucide-react';
+import { SkipForward, Zap, Shield } from 'lucide-react';
 import ActionCheck from './action-check';
 import { useSettings, type Difficulty } from '@/context/settings-context';
 import DifficultySlider from '@/app/settings/_components/difficulty-slider';
 
 const tutorialScript = [
+  // ... existing tutorial steps ...
   {
     type: 'narrator',
     text: "The air hums with a strange energy. You feel a disorienting pull, as if reality itself is folding around you. Your memory is a haze, but one thing is clear: you are a Nexus Walker, and you've just arrived in an unknown dimension.",
@@ -59,9 +61,17 @@ const tutorialScript = [
     type: 'narrator',
     text: 'Suddenly, the console sparks violently and a hidden door slides open nearby, revealing a brightly lit room. It seems your failed attempt triggered a failsafe. A voice echoes from the room: "Interesting... very interesting. Step forward, Walker."',
   },
+    {
+    type: 'choice',
+    text: "The voice continues, 'I can give you a gift to begin your journey, but only one. Choose wisely. This choice will have permanent consequences.' Before you, two streams of energy materialize.",
+    options: [
+      { text: 'Embrace the Kinetic Force', consequence: { type: 'stat_change', payload: { health: -50, energy: 50 }, message: 'You feel a surge of raw power, but your body is weakened by the strain.' } },
+      { text: 'Harness the Psionic Shield', consequence: { type: 'stat_change', payload: { health: 50, energy: -50 }, message: 'A protective energy envelops you, but your inner reserves feel drained.' } },
+    ]
+  },
   {
     type: 'narrator',
-    text: 'This concludes your initiation. You have learned the basics of attribute checks. Your real journey is about to begin. The choices you make, the skills you develop, and the paths you walk will shape your destiny in the Nexus.',
+    text: "The energy fades, leaving you irrevocably changed. Your journey begins now, marked by the choice you just made. Remember that every decision, big or small, can shape your path in the Nexus.",
   },
   {
     type: 'end',
@@ -69,14 +79,47 @@ const tutorialScript = [
   },
 ];
 
+const ChoiceConsequence = ({ consequence, onAcknowledged }: { consequence: any, onAcknowledged: () => void }) => {
+    return (
+        <motion.div
+            key="consequence"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5 }}
+            className="text-center"
+        >
+            <h3 className="font-headline text-2xl text-accent mb-4">Consequence</h3>
+            <p className="text-lg text-muted-foreground mb-2">{consequence.message}</p>
+            <div className="flex justify-center gap-4 text-xl font-bold my-4">
+                {consequence.payload.health !== 0 && (
+                    <span className={`flex items-center gap-2 ${consequence.payload.health > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                        <Shield /> {consequence.payload.health > 0 ? '+' : ''}{consequence.payload.health} Max Health
+                    </span>
+                )}
+                {consequence.payload.energy !== 0 && (
+                     <span className={`flex items-center gap-2 ${consequence.payload.energy > 0 ? 'text-blue-400' : 'text-red-400'}`}>
+                        <Zap /> {consequence.payload.energy > 0 ? '+' : ''}{consequence.payload.energy} Max Energy
+                    </span>
+                )}
+            </div>
+            <Button onClick={onAcknowledged} className="mt-6 font-headline">
+                Acknowledge and Continue
+            </Button>
+        </motion.div>
+    );
+};
+
+
 export default function TutorialContent() {
   const router = useRouter();
-  const { character, hasHydrated, loadCharacter } = useCharacterStore();
+  const { character, hasHydrated, loadCharacter, updateCharacterStats } = useCharacterStore();
   const { settings, setSetting } = useSettings();
   const [step, setStep] = useState(0);
   const [showText, setShowText] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [difficultyFeedback, setDifficultyFeedback] = useState('');
+  const [consequence, setConsequence] = useState<any | null>(null);
 
 
   useEffect(() => {
@@ -103,7 +146,6 @@ export default function TutorialContent() {
                 if(dynamicText.includes("difficulty you chose")) {
                     dynamicText = dynamicText.replace("difficulty you chose", `difficulty you chose (${settings.difficulty})`);
                 }
-                // Clone the step to avoid mutating the original script
                 const mutableStep = {...nextStep, text: dynamicText};
                 setStep(currentStep => {
                     tutorialScript[currentStep + 1] = mutableStep;
@@ -114,7 +156,7 @@ export default function TutorialContent() {
             }
             setShowText(true);
         }
-    }, 300); // Wait for fade-out animation
+    }, 300);
   }, [step, settings]);
   
   const startActionCheck = () => {
@@ -130,6 +172,14 @@ export default function TutorialContent() {
         handleNext();
       }, 300);
   }, [handleNext]);
+
+  const handleChoice = (consequenceData: any) => {
+    if (consequenceData.type === 'stat_change') {
+      updateCharacterStats(consequenceData.payload);
+    }
+    setConsequence(consequenceData);
+    setShowText(false);
+  };
   
   const finishTutorial = () => {
       localStorage.setItem('tutorialCompleted', 'true');
@@ -180,7 +230,9 @@ export default function TutorialContent() {
         </CardHeader>
         <CardContent className="min-h-[350px] flex flex-col justify-center items-center text-center space-y-6">
             <AnimatePresence mode="wait">
-                {isChecking ? (
+                {consequence ? (
+                    <ChoiceConsequence consequence={consequence} onAcknowledged={() => { setConsequence(null); handleNext(); }} />
+                ) : isChecking ? (
                     <motion.div
                         key="action-check"
                         initial={{ opacity: 0 }}
@@ -223,6 +275,18 @@ export default function TutorialContent() {
                                 <Button onClick={startActionCheck} className="font-headline text-lg py-6">{currentStep.text}</Button>
                             </div>
                         )}
+                        {currentStep.type === 'choice' && (
+                           <div>
+                                <p className="text-lg leading-relaxed text-foreground/80 mb-6">{currentStep.text}</p>
+                                <div className="flex flex-col md:flex-row gap-4 justify-center">
+                                {currentStep.options.map((option, index) => (
+                                    <Button key={index} onClick={() => handleChoice(option.consequence)} variant="outline" className="font-headline text-lg py-6 flex-1">
+                                    {option.text}
+                                    </Button>
+                                ))}
+                                </div>
+                            </div>
+                        )}
                         {currentStep.type === 'end' && (
                             <div>
                                 <p className="text-lg leading-relaxed text-foreground/80">{currentStep.text}</p>
@@ -239,3 +303,5 @@ export default function TutorialContent() {
     </div>
   );
 }
+
+    

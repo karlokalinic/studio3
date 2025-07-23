@@ -1,7 +1,9 @@
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import StoryContent from "./_components/story-content";
+import { Suspense } from "react";
 
 export default function NewGamePage() {
   return (
@@ -14,7 +16,11 @@ export default function NewGamePage() {
           </Link>
         </Button>
       </div>
-      <StoryContent />
+      <Suspense fallback={<div>Loading...</div>}>
+        <StoryContent />
+      </Suspense>
     </div>
   );
 }
+
+    

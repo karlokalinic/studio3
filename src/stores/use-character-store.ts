@@ -1,15 +1,17 @@
 
+
 'use client'
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware'
-import type { CharacterProfile, InventoryItem } from '@/types';
+import type { CharacterProfile, InventoryItem, Quest } from '@/types';
 
 const calculateInitialSlots = (strength: number) => 3 + Math.floor(strength / 5);
 
 interface CharacterState {
     character: CharacterProfile | null;
     inventory: InventoryItem[];
+    quests: Quest[];
     hasHydrated: boolean;
     setHasHydrated: (hydrated: boolean) => void;
     createCharacter: (name: string, faction: string, stats: { strength: number, intelligence: number, spirit: number }) => void;
@@ -19,6 +21,7 @@ interface CharacterState {
     updateCharacterStats: (updates: Partial<{ health: number; energy: number; hunger: number; currency: number }>) => void;
     unlockInventorySlot: () => void;
     setCharacter: (setter: (char: CharacterProfile | null) => CharacterProfile | null) => void;
+    addQuest: (quest: Quest) => void;
 }
 
 export const useCharacterStore = create<CharacterState>()(
@@ -26,6 +29,7 @@ export const useCharacterStore = create<CharacterState>()(
         (set, get) => ({
             character: null,
             inventory: [],
+            quests: [],
             hasHydrated: false,
             setHasHydrated: (hydrated) => {
                 set({ hasHydrated: hydrated });
@@ -65,7 +69,7 @@ export const useCharacterStore = create<CharacterState>()(
                         backstory: `A new face in the Nexus, hailing from the ${faction}, ready to make their mark.`,
                     },
                 };
-                set({ character: newCharacter, inventory: [] });
+                set({ character: newCharacter, inventory: [], quests: [] });
                 localStorage.removeItem('tutorialCompleted'); // Reset tutorial on new character
             },
             loadCharacter: () => {
@@ -73,7 +77,7 @@ export const useCharacterStore = create<CharacterState>()(
                 // The actual loading is handled by the persist middleware
             },
             resetCharacter: () => {
-                set({ character: null, inventory: [] });
+                set({ character: null, inventory: [], quests: [] });
                  localStorage.removeItem('tutorialCompleted');
                  if (typeof window !== 'undefined') {
                     localStorage.removeItem('character-storage');
@@ -89,10 +93,10 @@ export const useCharacterStore = create<CharacterState>()(
                     if (!state.character) return {};
 
                     const newStats = { ...state.character };
-                    if (updates.health) newStats.health = Math.min(100, newStats.health + updates.health);
-                    if (updates.energy) newStats.energy = Math.min(100, newStats.energy + updates.energy);
-                    if (updates.hunger) newStats.hunger = Math.min(100, newStats.hunger + updates.hunger);
-                    if (updates.currency) newStats.currency = newStats.currency + updates.currency;
+                    if (updates.health !== undefined) newStats.health = Math.min(100, newStats.health + updates.health);
+                    if (updates.energy !== undefined) newStats.energy = Math.min(100, newStats.energy + updates.energy);
+                    if (updates.hunger !== undefined) newStats.hunger = Math.min(100, newStats.hunger + updates.hunger);
+                    if (updates.currency !== undefined) newStats.currency = newStats.currency + updates.currency;
                     
                     return { character: newStats };
                 });
@@ -114,6 +118,9 @@ export const useCharacterStore = create<CharacterState>()(
             setCharacter: (setter) => {
                 set((state) => ({ character: setter(state.character) }));
             },
+            addQuest: (quest) => {
+                set((state) => ({ quests: [...state.quests, quest] }));
+            }
         }),
         {
             name: 'character-storage',
@@ -124,3 +131,5 @@ export const useCharacterStore = create<CharacterState>()(
         }
     )
 );
+
+    

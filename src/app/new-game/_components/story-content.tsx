@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Image from 'next/image';
@@ -25,6 +26,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
+import { useCharacterStore } from '@/stores/use-character-store';
 
 const factions = [
   {
@@ -93,67 +95,25 @@ const AnimatedCard = ({
 
 const FactionLink = ({ faction }: { faction: typeof factions[0] }) => {
     const router = useRouter();
-    const [characterExists, setCharacterExists] = useState(false);
-
-    useEffect(() => {
-        if (localStorage.getItem('character-storage')) {
-            setCharacterExists(true);
-        }
-    }, []);
+    const { character, resetCharacter } = useCharacterStore();
+    const [showAlert, setShowAlert] = useState(false);
 
     const handleNewGame = () => {
-        localStorage.removeItem('character-storage');
-        localStorage.removeItem('tutorialCompleted');
+        resetCharacter();
         router.push(`/character-creation?faction=${encodeURIComponent(faction.name)}`);
     };
 
-    if (characterExists) {
-        return (
-            <AlertDialog>
-                <AlertDialogTrigger asChild>
-                     <Card
-                        className="bg-card/50 border-primary/10 transition-all hover:border-accent hover:shadow-accent/20 hover:shadow-2xl h-full cursor-pointer"
-                        >
-                        <CardHeader className="flex flex-row items-center gap-4">
-                            <Image
-                            src={`https://placehold.co/64x64.png`}
-                            alt={`${faction.name} logo`}
-                            width={52}
-                            height={52}
-                            className="rounded-lg bg-black/30 p-1 border border-primary/20"
-                            data-ai-hint={faction.dataAiHint}
-                            />
-                            <div>
-                            <CardTitle className="font-headline text-xl text-accent">
-                                {faction.name}
-                            </CardTitle>
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-muted-foreground">{faction.description}</p>
-                        </CardContent>
-                    </Card>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                    <AlertDialogTitle>Start a New Game?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        You already have a character. Starting a new game will delete your existing character and progress. Are you sure you want to continue?
-                    </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleNewGame}>Start New Game</AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
-        )
-    }
-
-    return (
-        <Link href={`/character-creation?faction=${encodeURIComponent(faction.name)}`}>
-            <Card
-            className="bg-card/50 border-primary/10 transition-all hover:border-accent hover:shadow-accent/20 hover:shadow-2xl h-full"
+    const handleFactionClick = () => {
+        if (character) {
+            setShowAlert(true);
+        } else {
+            handleNewGame();
+        }
+    };
+    
+    const FactionCard = () => (
+        <Card
+            className="bg-card/50 border-primary/10 transition-all hover:border-accent hover:shadow-accent/20 hover:shadow-2xl h-full cursor-pointer"
             >
             <CardHeader className="flex flex-row items-center gap-4">
                 <Image
@@ -173,8 +133,29 @@ const FactionLink = ({ faction }: { faction: typeof factions[0] }) => {
             <CardContent>
                 <p className="text-muted-foreground">{faction.description}</p>
             </CardContent>
-            </Card>
-        </Link>
+        </Card>
+    );
+
+    return (
+        <AlertDialog open={showAlert} onOpenChange={setShowAlert}>
+            <AlertDialogTrigger asChild>
+                <div onClick={handleFactionClick}>
+                    <FactionCard />
+                </div>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                <AlertDialogTitle>Start a New Game?</AlertDialogTitle>
+                <AlertDialogDescription>
+                    You already have a character. Starting a new game will delete your existing character and progress. Are you sure you want to continue?
+                </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleNewGame}>Start New Game</AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
     );
 }
 
@@ -184,7 +165,7 @@ export default function StoryContent() {
        <Image
           src="https://placehold.co/1920x1080.png"
           alt="Cosmic background"
-          layout="fill"
+          fill
           objectFit="cover"
           className="-z-10 opacity-20"
           data-ai-hint="nebula stars"
@@ -276,3 +257,5 @@ export default function StoryContent() {
     </div>
   );
 }
+
+    
