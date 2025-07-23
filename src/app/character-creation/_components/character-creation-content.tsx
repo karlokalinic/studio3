@@ -54,6 +54,8 @@ export default function CharacterCreationContent() {
     const [character, setCharacter] = useState<CharacterProfile | null>(null);
 
     useEffect(() => {
+        // Clear any previous tutorial state when creating a new character
+        localStorage.removeItem('tutorialCompleted');
         setCharacter(createNewCharacter(characterName, faction));
     }, [characterName, faction]);
 
@@ -74,7 +76,7 @@ export default function CharacterCreationContent() {
     const saveCharacter = () => {
         if (character && character.name) {
             localStorage.setItem('characterProfile', JSON.stringify(character));
-            router.push('/');
+            router.push('/tutorial'); // Start the tutorial after character creation
         } else {
             alert('Please enter a name for your character.');
         }

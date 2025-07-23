@@ -1,7 +1,9 @@
+
 'use client';
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
   Card,
@@ -10,7 +12,19 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
 
 const factions = [
   {
@@ -77,6 +91,93 @@ const AnimatedCard = ({
   </motion.div>
 );
 
+const FactionLink = ({ faction }: { faction: typeof factions[0] }) => {
+    const router = useRouter();
+    const [characterExists, setCharacterExists] = useState(false);
+
+    useEffect(() => {
+        if (localStorage.getItem('characterProfile')) {
+            setCharacterExists(true);
+        }
+    }, []);
+
+    const handleNewGame = () => {
+        localStorage.removeItem('characterProfile');
+        localStorage.removeItem('tutorialCompleted');
+        router.push(`/character-creation?faction=${encodeURIComponent(faction.name)}`);
+    };
+
+    if (characterExists) {
+        return (
+            <AlertDialog>
+                <AlertDialogTrigger asChild>
+                     <Card
+                        className="bg-card/50 border-primary/10 transition-all hover:border-accent hover:shadow-accent/20 hover:shadow-2xl h-full cursor-pointer"
+                        >
+                        <CardHeader className="flex flex-row items-center gap-4">
+                            <Image
+                            src={`https://placehold.co/64x64.png`}
+                            alt={`${faction.name} logo`}
+                            width={52}
+                            height={52}
+                            className="rounded-lg bg-black/30 p-1 border border-primary/20"
+                            data-ai-hint={faction.dataAiHint}
+                            />
+                            <div>
+                            <CardTitle className="font-headline text-xl text-accent">
+                                {faction.name}
+                            </CardTitle>
+                            </div>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-muted-foreground">{faction.description}</p>
+                        </CardContent>
+                    </Card>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                    <AlertDialogTitle>Start a New Game?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        You already have a character. Starting a new game will delete your existing character and progress. Are you sure you want to continue?
+                    </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleNewGame}>Start New Game</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+        )
+    }
+
+    return (
+        <Link href={`/character-creation?faction=${encodeURIComponent(faction.name)}`}>
+            <Card
+            className="bg-card/50 border-primary/10 transition-all hover:border-accent hover:shadow-accent/20 hover:shadow-2xl h-full"
+            >
+            <CardHeader className="flex flex-row items-center gap-4">
+                <Image
+                src={`https://placehold.co/64x64.png`}
+                alt={`${faction.name} logo`}
+                width={52}
+                height={52}
+                className="rounded-lg bg-black/30 p-1 border border-primary/20"
+                data-ai-hint={faction.dataAiHint}
+                />
+                <div>
+                <CardTitle className="font-headline text-xl text-accent">
+                    {faction.name}
+                </CardTitle>
+                </div>
+            </CardHeader>
+            <CardContent>
+                <p className="text-muted-foreground">{faction.description}</p>
+            </CardContent>
+            </Card>
+        </Link>
+    );
+}
+
 export default function StoryContent() {
   return (
     <div className="relative isolate overflow-hidden min-h-screen">
@@ -134,32 +235,10 @@ export default function StoryContent() {
             <h2 className="text-center font-headline text-3xl font-bold text-primary mb-8">
               Choose your Allegiance
             </h2>
+             <p className="text-center text-muted-foreground mb-8">This will begin your journey. If you have an existing character, your progress will be overwritten.</p>
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
               {factions.map((faction) => (
-                 <Link key={faction.name} href={`/character-creation?faction=${encodeURIComponent(faction.name)}`}>
-                    <Card
-                    className="bg-card/50 border-primary/10 transition-all hover:border-accent hover:shadow-accent/20 hover:shadow-2xl h-full"
-                    >
-                    <CardHeader className="flex flex-row items-center gap-4">
-                        <Image
-                        src={`https://placehold.co/64x64.png`}
-                        alt={`${faction.name} logo`}
-                        width={52}
-                        height={52}
-                        className="rounded-lg bg-black/30 p-1 border border-primary/20"
-                        data-ai-hint={faction.dataAiHint}
-                        />
-                        <div>
-                        <CardTitle className="font-headline text-xl text-accent">
-                            {faction.name}
-                        </CardTitle>
-                        </div>
-                    </CardHeader>
-                    <CardContent>
-                        <p className="text-muted-foreground">{faction.description}</p>
-                    </CardContent>
-                    </Card>
-                </Link>
+                 <FactionLink key={faction.name} faction={faction} />
               ))}
             </div>
           </motion.div>
