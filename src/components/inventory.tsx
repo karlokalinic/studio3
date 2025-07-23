@@ -18,7 +18,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useCharacterStore } from "@/stores/use-character-store";
 import { useToast } from "@/hooks/use-toast";
-import { Hand, Trash2, Info, Lock, Key } from "lucide-react";
+import { Hand, Trash2, Info, Lock } from "lucide-react";
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface InventoryProps {
   items: InventoryItem[];
@@ -97,7 +98,7 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
       <div className="md:w-1/2 p-4 border-b md:border-b-0 md:border-r border-primary/10">
         <CardHeader className="p-2">
             <CardTitle className="font-headline text-2xl text-primary">Inventory</CardTitle>
-            <CardDescription>{maxSlots} / {TOTAL_GRID_SLOTS} Slots</CardDescription>
+            <CardDescription>{items.length} / {maxSlots} Slots Used</CardDescription>
         </CardHeader>
         <CardContent className="p-2">
             <div className="grid grid-cols-5 gap-2">
@@ -108,7 +109,7 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
 
               if (item && isUnlocked) {
                  return (
-                    <div
+                    <motion.div
                       key={item.id}
                       onClick={() => onSelectItem(item)}
                       className={cn(
@@ -116,9 +117,11 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
                           isSelected ? "border-accent bg-accent/10" : "border-primary/20"
                       )}
                       title={item.name}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
                       >
                       <GlowIcon icon={item.icon} isSelected={isSelected} />
-                    </div>
+                    </motion.div>
                  );
               }
               
@@ -139,8 +142,16 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
       </div>
       
       <div className="md:w-1/2 p-6 flex flex-col min-h-[300px]">
+        <AnimatePresence mode="wait">
         {selectedItem ? (
-          <>
+          <motion.div 
+            key={selectedItem.id}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="flex flex-col flex-grow"
+          >
             <CardHeader className="p-0 mb-4">
               <CardTitle className="font-headline text-2xl text-accent">{selectedItem.name}</CardTitle>
               <CardDescription>
@@ -200,12 +211,19 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
                   </AlertDialogContent>
                 </AlertDialog>
             </CardFooter>
-          </>
+          </motion.div>
         ) : (
-          <div className="flex-grow flex items-center justify-center">
+          <motion.div
+            key="empty"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="flex-grow flex items-center justify-center"
+          >
             <p className="text-muted-foreground">Select an item to see details</p>
-          </div>
+          </motion.div>
         )}
+        </AnimatePresence>
       </div>
     </Card>
   );

@@ -4,7 +4,17 @@
 
 body {
   font-family: Arial, Helvetica, sans-serif;
+  cursor: url('https://placehold.co/32x32.png'), auto;
 }
+
+a, button, [role=button], input[type=button], input[type=submit] {
+  cursor: url('https://placehold.co/32x32.png'), pointer;
+}
+
+input[type=text], input[type=password], textarea {
+  cursor: url('https://placehold.co/32x32.png'), text;
+}
+
 
 @layer base {
   :root {

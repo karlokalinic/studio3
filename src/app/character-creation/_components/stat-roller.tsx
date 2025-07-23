@@ -35,10 +35,13 @@ const StatDisplay = ({ label, value }: { label: string; value: number }) => {
 export default function StatRoller({ onRandomize, onConfirm, isSaving }: StatRollerProps) {
     const [stats, setStats] = useState({ strength: 10, intelligence: 10, spirit: 10 });
     const [isRolling, setIsRolling] = useState(false);
+    const [remainingRerolls, setRemainingRerolls] = useState(1);
 
     const rollStats = useCallback(() => {
-        if (isRolling) return;
+        if (isRolling || remainingRerolls <= 0) return;
+        
         setIsRolling(true);
+        setRemainingRerolls(prev => prev - 1);
 
         let counter = 0;
         const interval = setInterval(() => {
@@ -53,7 +56,7 @@ export default function StatRoller({ onRandomize, onConfirm, isSaving }: StatRol
                 setIsRolling(false);
             }
         }, 100);
-    }, [isRolling]);
+    }, [isRolling, remainingRerolls]);
 
     // Initial roll on mount
     useEffect(() => {
@@ -73,10 +76,15 @@ export default function StatRoller({ onRandomize, onConfirm, isSaving }: StatRol
             </div>
             
             <div className="flex gap-4">
-                <Button onClick={rollStats} variant="outline" className="w-full" disabled={isRolling || isSaving}>
-                    <Dices className="mr-2" />
-                    {isRolling ? 'Rolling...' : 'Re-roll'}
-                </Button>
+                <div className="w-full flex flex-col">
+                    <Button onClick={rollStats} variant="outline" className="w-full" disabled={isRolling || isSaving || remainingRerolls <= 0}>
+                        <Dices className="mr-2" />
+                        {isRolling ? 'Rolling...' : 'Re-roll'}
+                    </Button>
+                    <p className="text-xs text-muted-foreground text-center mt-2">
+                        Remaining Re-rolls: {remainingRerolls}
+                    </p>
+                </div>
                 <Button onClick={() => onConfirm(stats)} className="w-full text-lg font-headline py-6" disabled={isRolling || isSaving}>
                     <Save className="mr-2" />
                     {isSaving ? 'Saving...' : 'Confirm and Begin'}
