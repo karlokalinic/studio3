@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Dices, Save } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 const generateRandomStat = () => Math.floor(Math.random() * 8) + 8; // Random number between 8 and 15
 
@@ -32,12 +32,12 @@ const StatDisplay = ({ label, value }: { label: string; value: number }) => {
 };
 
 
-export default function StatRoller({ onRandomize, onConfirm, isSaving }: StatRollerProps) {
+export default function StatRoller({ onConfirm, isSaving }: StatRollerProps) {
     const [stats, setStats] = useState({ strength: 10, intelligence: 10, spirit: 10 });
     const [isRolling, setIsRolling] = useState(false);
     const [remainingRerolls, setRemainingRerolls] = useState(3);
 
-    const performRollAnimation = useCallback((onComplete: () => void) => {
+    const performRollAnimation = useCallback((onComplete?: () => void) => {
         setIsRolling(true);
         let counter = 0;
         const interval = setInterval(() => {
@@ -47,10 +47,10 @@ export default function StatRoller({ onRandomize, onConfirm, isSaving }: StatRol
                 spirit: generateRandomStat(),
             });
             counter++;
-            if (counter >= 25) { // Roll for ~2.5 seconds (25 * 100ms)
+            if (counter >= 15) { // Roll for ~1.5 seconds
                 clearInterval(interval);
                 setIsRolling(false);
-                onComplete();
+                if (onComplete) onComplete();
             }
         }, 100);
     }, []);
@@ -59,12 +59,12 @@ export default function StatRoller({ onRandomize, onConfirm, isSaving }: StatRol
         if (isRolling || remainingRerolls <= 0) return;
         
         setRemainingRerolls(prev => prev - 1);
-        performRollAnimation(() => {});
+        performRollAnimation();
     }, [isRolling, remainingRerolls, performRollAnimation]);
 
     // Initial roll on mount
     useEffect(() => {
-        performRollAnimation(() => {});
+        performRollAnimation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

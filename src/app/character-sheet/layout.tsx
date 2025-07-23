@@ -13,17 +13,19 @@ export default function StatInternalsLayout({
 }) {
     return (
          <div className="min-h-screen bg-background text-foreground font-body">
-            <div className="absolute top-4 left-4 z-10">
-                <Button asChild variant="outline">
-                    <Link href="/">
-                    <ArrowLeft className="mr-2 h-4 w-4" />
-                    Back to Game
-                    </Link>
-                </Button>
+            <div className="container mx-auto p-4 md:p-8">
+                <div className="mb-8">
+                    <Button asChild variant="outline">
+                        <Link href="/">
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Back to Game
+                        </Link>
+                    </Button>
+                </div>
+                <Suspense fallback={<div>Loading...</div>}>
+                    {children}
+                </Suspense>
             </div>
-            <Suspense fallback={<div>Loading...</div>}>
-                {children}
-            </Suspense>
         </div>
     )
 }

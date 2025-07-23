@@ -19,15 +19,14 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Rocket, History, Settings, Gamepad2, Trophy, BookOpen } from 'lucide-react';
 import { getCalculatedStats } from '@/lib/character-calculations';
 import { useSettings } from '@/context/settings-context';
+import { CalculatedStats } from '@/types';
 
 export default function Home() {
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const router = useRouter();
   const { character, inventory, quests, loadCharacter, hasHydrated } = useCharacterStore();
   const { settings } = useSettings();
-  const [characterStats, setCharacterStats] = useState<{
-    inventorySlots: number;
-  } | null>(null);
+  const [characterStats, setCharacterStats] = useState<CalculatedStats | null>(null);
 
   useEffect(() => {
     loadCharacter();

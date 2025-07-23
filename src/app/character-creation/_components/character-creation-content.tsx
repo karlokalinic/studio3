@@ -1,15 +1,25 @@
 
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCharacterStore } from '@/stores/use-character-store';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dices, Save } from 'lucide-react';
 import StatRoller from './stat-roller';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 
 export default function CharacterCreationContent() {
@@ -21,7 +31,6 @@ export default function CharacterCreationContent() {
     const [characterName, setCharacterName] = useState('');
     const [isSaving, setIsSaving] = useState(false);
     
-    // Key to force re-render of StatRoller
     const [rollerKey, setRollerKey] = useState(Date.now());
 
     const handleRandomize = useCallback(() => {
@@ -36,7 +45,6 @@ export default function CharacterCreationContent() {
         setIsSaving(true);
         createCharacter(characterName, faction, finalStats);
         
-        // This timeout is just to give a sense of "saving" before redirecting
         setTimeout(() => {
              router.push('/tutorial');
         }, 500);
@@ -65,7 +73,7 @@ export default function CharacterCreationContent() {
 
                 </CardContent>
                 <CardFooter>
-                    <p className="text-xs text-muted-foreground text-center w-full">Your attributes are determined by your initial connection to the Nexus. This roll is a one-time event that shapes your core potential.</p>
+                    <p className="text-xs text-muted-foreground text-center w-full">Your attributes are a one-time roll that shapes your core potential.</p>
                 </CardFooter>
             </Card>
         </div>

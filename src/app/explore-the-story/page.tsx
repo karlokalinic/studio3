@@ -92,7 +92,7 @@ export default function WikiPage() {
         </Button>
       </div>
       <div className="container mx-auto px-4 py-16">
-        <div className="text-center">
+        <div className="text-center pt-16">
             <h1 className="font-headline text-4xl font-bold tracking-tight text-primary drop-shadow-[0_0_10px_hsl(var(--primary))] sm:text-6xl">
             Nexus Chronicles Wiki
             </h1>

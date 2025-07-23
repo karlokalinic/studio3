@@ -53,6 +53,7 @@ export default function MissionControl() {
     const [history, setHistory] = useState<any[]>([]);
     const [storyStep, setStoryStep] = useState(0);
     const [currentStory, setCurrentStory] = useState<any>(null);
+    const hasStartedIntro = useRef(false);
 
     const scrollAreaRef = useRef<HTMLDivElement>(null);
 
@@ -80,9 +81,9 @@ export default function MissionControl() {
             setCurrentStory(retrievalQuestStory);
         } else if (quests.length === 0) {
             setCurrentStory({ choices: introStory.find(s => s.type === 'choice')?.options || [] });
-            if(history.length === 0) {
-                 // Start intro story if it hasn't started
-                advanceIntroStory();
+            if(!hasStartedIntro.current) {
+                 hasStartedIntro.current = true;
+                 advanceIntroStory();
             }
         }
     }, [quests, advanceIntroStory, history.length]);
@@ -180,5 +181,3 @@ export default function MissionControl() {
         </Card>
     );
 }
-
-    

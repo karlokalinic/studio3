@@ -72,6 +72,7 @@ export interface CalculatedStats {
   carryWeight: number;
   hackingSpeed: number; // Lower is better
   barterBonus: number; // Percentage
+  inventorySlots: number;
   
   // Nexus Stats
   nexusResonance: number; // 0-100, affects mystery abilities

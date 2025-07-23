@@ -5,7 +5,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware'
 import type { CharacterProfile, InventoryItem, Quest } from '@/types';
-import { inventoryData } from '@/data/mock-data';
+import { inventoryData as startingInventory } from '@/data/mock-data';
 
 const calculateInitialSlots = (strength: number) => 3 + Math.floor(strength / 5);
 
@@ -77,7 +77,7 @@ export const useCharacterStore = create<CharacterState>()(
                         backstory: `A new face in the Nexus, hailing from the ${faction}, ready to make their mark.`,
                     },
                 };
-                set({ character: newCharacter, inventory: inventoryData, quests: [] });
+                set({ character: newCharacter, inventory: [], quests: [] });
                 localStorage.removeItem('tutorialCompleted'); // Reset tutorial on new character
             },
             loadCharacter: () => {
@@ -169,5 +169,3 @@ export const useCharacterStore = create<CharacterState>()(
         }
     )
 );
-
-    

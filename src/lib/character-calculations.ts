@@ -11,14 +11,15 @@ import type { Difficulty } from '@/context/settings-context';
  * @returns A numerical modifier.
  */
 function getDifficultyModifier(difficulty: Difficulty, isCheckAgainstLowerValue: boolean = false): number {
-    const modifierMap = {
-        'Story-Only': isCheckAgainstLowerValue ? -2 : 2, // Makes it easier
-        'Easy': isCheckAgainstLowerValue ? -1 : 1,
+    const valueMap: Record<Difficulty, number> = {
+        'Story-Only': 2,
+        'Easy': 1,
         'Normal': 0,
-        'Hard': isCheckAgainstLowerValue ? 1 : -1,
-        'Ultimate': isCheckAgainstLowerValue ? 2 : -2, // Makes it harder
+        'Hard': -1,
+        'Ultimate': -2,
     };
-    return modifierMap[difficulty] || 0;
+    const modifier = valueMap[difficulty] ?? 0;
+    return isCheckAgainstLowerValue ? -modifier : modifier;
 }
 
 
@@ -163,6 +164,10 @@ function calculateBarterBonus(effSpi: number): number {
     return Math.round(effSpi / 4); // Every 4 spirit gives 1% better prices.
 }
 
+function calculateInventorySlots(profile: CharacterProfile): number {
+    return profile.inventorySlots;
+}
+
 
 // Main function to get all calculated stats
 export function getCalculatedStats(profile: CharacterProfile, difficulty: Difficulty): CalculatedStats {
@@ -193,6 +198,7 @@ export function getCalculatedStats(profile: CharacterProfile, difficulty: Diffic
     carryWeight: calculateCarryWeight(effectiveStrength),
     hackingSpeed: calculateHackingSpeed(effectiveIntelligence, difficulty),
     barterBonus: calculateBarterBonus(effectiveSpirit),
+    inventorySlots: calculateInventorySlots(profile),
 
     // These are placeholders for more complex systems to be built
     nexusResonance: (profile.attunement.order + profile.attunement.chaos + profile.attunement.balance) / 3,
