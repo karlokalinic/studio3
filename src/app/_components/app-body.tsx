@@ -18,15 +18,16 @@ export default function AppBody({
       const root = window.document.documentElement;
       root.classList.remove('light', 'dark');
       root.classList.add(settings.theme);
-    }
-  }, [settings?.theme]);
 
-  if (!settings) return null;
+      document.body.classList.toggle('font-dyslexia', settings.dyslexiaFont);
+    }
+  }, [settings?.theme, settings?.dyslexiaFont]);
+
+  if (!settings) return <body><div className="flex items-center justify-center min-h-screen">Loading settings...</div></body>;
 
   return (
       <body className={cn(
-        "font-body antialiased",
-        settings.dyslexiaFont && "font-dyslexia"
+        "font-body antialiased"
       )}>
         {children}
       </body>
