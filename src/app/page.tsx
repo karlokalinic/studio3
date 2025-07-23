@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import type { InventoryItem, CharacterProfile } from '@/types';
+import type { InventoryItem } from '@/types';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -12,39 +12,47 @@ import Inventory from '@/components/inventory';
 import QuestLog from '@/components/quest-log';
 import WorldMap from '@/components/world-map';
 
-import { playerStats, inventoryData, questData, worldData } from '@/data/mock-data';
+import { useCharacterStore } from '@/stores/use-character-store';
+import { questData, worldData } from '@/data/mock-data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Rocket, History } from 'lucide-react';
 
 export default function Home() {
-  const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(inventoryData[0] || null);
-  const [character, setCharacter] = useState<CharacterProfile | null>(null);
+  const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const router = useRouter();
+  const { character, inventory, loadCharacter, hasHydrated } = useCharacterStore();
 
   useEffect(() => {
-    const savedCharacter = localStorage.getItem('characterProfile');
-    if (savedCharacter) {
-      try {
-        const parsedCharacter = JSON.parse(savedCharacter);
-        setCharacter(parsedCharacter);
-        // If the tutorial hasn't been completed, redirect to it.
+    loadCharacter();
+  }, [loadCharacter]);
+
+  useEffect(() => {
+    if (hasHydrated && character) {
         if (!localStorage.getItem('tutorialCompleted')) {
           router.push('/tutorial');
         }
-      } catch (e) {
-        console.error("Failed to parse character profile from localStorage", e);
-        localStorage.removeItem('characterProfile');
-      }
+        if (inventory.length > 0 && !selectedItem) {
+            setSelectedItem(inventory[0]);
+        } else if (inventory.length === 0) {
+            setSelectedItem(null);
+        }
     }
-  }, [router]);
+  }, [character, router, hasHydrated, inventory, selectedItem]);
+
 
   const startNewGame = () => {
-    // Clear old data for a fresh start
-    localStorage.removeItem('characterProfile');
-    localStorage.removeItem('tutorialCompleted');
+    // This will be handled by the zustand store resetting
     router.push('/explore-the-story');
   };
+
+  if (!hasHydrated) {
+     return (
+        <main className="min-h-screen bg-background p-4 md:p-8 font-body text-foreground flex items-center justify-center">
+             <p>Loading Game Data...</p>
+        </main>
+     )
+  }
 
   if (!character) {
     return (
@@ -81,7 +89,7 @@ export default function Home() {
     <main className="min-h-screen bg-background p-4 md:p-8 font-body text-foreground">
       <div className="container mx-auto">
         <header className="mb-8">
-          <GameCenter stats={playerStats} />
+          <GameCenter />
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-8">
@@ -92,7 +100,7 @@ export default function Home() {
 
           <div className="lg:col-span-2 xl:col-span-2 space-y-8">
             <Inventory 
-              items={inventoryData} 
+              items={inventory} 
               selectedItem={selectedItem}
               onSelectItem={setSelectedItem}
             />

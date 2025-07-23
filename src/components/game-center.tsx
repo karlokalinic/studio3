@@ -1,7 +1,8 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
-import type { PlayerStats } from '@/types';
+import { useCharacterStore } from '@/stores/use-character-store';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import {
@@ -25,25 +26,32 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
-interface GameCenterProps {
-  stats: PlayerStats;
-}
-
 const GlowIcon = ({ icon: Icon }: { icon: React.ElementType }) => (
   <Icon className="h-5 w-5 mr-2 text-accent drop-shadow-[0_0_4px_hsl(var(--accent))] transition-all" />
 );
 
-export default function GameCenter({ stats }: GameCenterProps) {
+export default function GameCenter() {
+  const { character } = useCharacterStore();
   const [formattedCurrency, setFormattedCurrency] = useState<string | null>(
     null
   );
 
   useEffect(() => {
     // Format currency on the client to avoid hydration mismatch
-    if(stats.currency) {
-      setFormattedCurrency(stats.currency.toLocaleString());
+    if (character?.currency) {
+      setFormattedCurrency(character.currency.toLocaleString());
     }
-  }, [stats.currency]);
+  }, [character?.currency]);
+
+  if (!character) {
+    return (
+        <div className="bg-card/50 rounded-lg border border-primary/20 p-4 shadow-lg shadow-primary/5 flex flex-col md:flex-row items-center justify-between gap-4">
+             <h1 className="text-3xl font-headline text-primary drop-shadow-[0_0_8px_hsl(var(--primary))]">
+                Nexus Chronicles
+            </h1>
+        </div>
+    )
+  }
 
   return (
     <div className="bg-card/50 rounded-lg border border-primary/20 p-4 shadow-lg shadow-primary/5 flex flex-col md:flex-row items-center justify-between gap-4">
@@ -55,17 +63,17 @@ export default function GameCenter({ stats }: GameCenterProps) {
         <div className="flex items-center" title="Health">
           <GlowIcon icon={Shield} />
           <Progress
-            value={stats.health}
+            value={character.health}
             className="w-24 h-2 bg-primary/20"
           />
         </div>
         <div className="flex items-center" title="Energy">
           <GlowIcon icon={Zap} />
-          <Progress value={stats.energy} className="w-24 h-2 bg-primary/20" />
+          <Progress value={character.energy} className="w-24 h-2 bg-primary/20" />
         </div>
         <div className="flex items-center" title="Hunger">
           <GlowIcon icon={Drumstick} />
-          <Progress value={stats.hunger} className="w-24 h-2 bg-primary/20" />
+          <Progress value={character.hunger} className="w-24 h-2 bg-primary/20" />
         </div>
 
         <div

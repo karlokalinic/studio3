@@ -1,3 +1,4 @@
+
 export interface PlayerStats {
   health: number;
   energy: number;
@@ -14,6 +15,10 @@ export interface CharacterProfile {
   name: string;
   level: number;
   xp: number;
+  health: number;
+  energy: number;
+  hunger: number;
+  currency: number;
   attributes: {
     // Base attributes
     strength: Attribute;

@@ -1,18 +1,66 @@
+
 "use client";
 
 import type { InventoryItem } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Hand, Trash2 } from "lucide-react";
+import { useCharacterStore } from "@/stores/use-character-store";
+import { useToast } from "@/hooks/use-toast";
+import { Hand, Trash2, Info } from "lucide-react";
 
 interface InventoryProps {
   items: InventoryItem[];
   selectedItem: InventoryItem | null;
-  onSelectItem: (item: InventoryItem) => void;
+  onSelectItem: (item: InventoryItem | null) => void;
 }
 
 export default function Inventory({ items, selectedItem, onSelectItem }: InventoryProps) {
+  const { removeItem, updateCharacterStats } = useCharacterStore();
+  const { toast } = useToast();
+
+  const handleUseItem = () => {
+    if (!selectedItem) return;
+
+    if (selectedItem.type === 'Consumable') {
+        if(selectedItem.nutrition) {
+            updateCharacterStats({ health: selectedItem.nutrition });
+            toast({
+                title: 'Item Used',
+                description: `${selectedItem.name} consumed. You recovered ${selectedItem.nutrition} health.`,
+            });
+        }
+        removeItem(selectedItem.id);
+        onSelectItem(null);
+    } else {
+        toast({
+            title: 'Cannot Use Item',
+            description: `You can't "use" a ${selectedItem.type.toLowerCase()} from your inventory.`,
+            variant: 'destructive'
+        })
+    }
+  }
+
+  const handleDropItem = () => {
+    if (!selectedItem) return;
+    removeItem(selectedItem.id);
+    toast({
+        title: 'Item Dropped',
+        description: `${selectedItem.name} has been removed from your inventory.`,
+    });
+    onSelectItem(null);
+  }
 
   const GlowIcon = ({ icon: Icon, isSelected }: { icon: React.ElementType, isSelected: boolean }) => (
     <Icon 
@@ -65,14 +113,53 @@ export default function Inventory({ items, selectedItem, onSelectItem }: Invento
               {selectedItem.nutrition && (
                 <p className="text-sm text-accent mt-2">Nutrition: +{selectedItem.nutrition}</p>
               )}
+               {selectedItem.type !== 'Consumable' && (
+                <div className="mt-4 p-3 bg-black/20 rounded-md text-xs text-muted-foreground flex items-center gap-2">
+                    <Info className="h-4 w-4 shrink-0"/>
+                    <span>This item cannot be "used" directly. It may be a quest item or equipment that provides passive bonuses.</span>
+                </div>
+              )}
             </CardContent>
             <CardFooter className="p-0 mt-4 flex gap-2">
-              <Button className="w-full bg-accent text-background hover:bg-accent/80 transition-all">
-                <Hand className="mr-2 h-4 w-4" /> Use
-              </Button>
-              <Button variant="destructive" className="w-full">
-                <Trash2 className="mr-2 h-4 w-4" /> Drop
-              </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button className="w-full bg-accent text-background hover:bg-accent/80 transition-all" disabled={selectedItem.type !== 'Consumable'}>
+                        <Hand className="mr-2 h-4 w-4" /> Use
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Using this item will consume it permanently. This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleUseItem}>Proceed</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" className="w-full">
+                        <Trash2 className="mr-2 h-4 w-4" /> Drop
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This will permanently remove the item from your inventory. This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDropItem}>Drop Item</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
             </CardFooter>
           </>
         ) : (

@@ -1,14 +1,14 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import type { CharacterProfile } from '@/types';
-import { getCalculatedStats } from '@/lib/character-calculations';
+import { useCharacterStore } from '@/stores/use-character-store';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SkipForward } from 'lucide-react';
+import ActionCheck from './action-check';
 
 const tutorialScript = [
   {
@@ -24,7 +24,7 @@ const tutorialScript = [
     text: 'Attempt to force the door open.',
     check: 'strength',
     successThreshold: 10,
-    isFixedSuccess: true,
+    isFixedSuccess: true, // This check will always succeed for the tutorial
   },
   {
     type: 'narrator',
@@ -39,7 +39,7 @@ const tutorialScript = [
     text: 'Try to hack the console.',
     check: 'intelligence',
     successThreshold: 20,
-    isFixedSuccess: false,
+    isFixedSuccess: false, // This check will always fail for the tutorial
   },
   {
     type: 'narrator',
@@ -61,52 +61,48 @@ const tutorialScript = [
 
 export default function TutorialContent() {
   const router = useRouter();
-  const [character, setCharacter] = useState<CharacterProfile | null>(null);
+  const { character, hasHydrated, loadCharacter } = useCharacterStore();
   const [step, setStep] = useState(0);
   const [showText, setShowText] = useState(false);
-  const [feedback, setFeedback] = useState<string | null>(null);
+  const [isChecking, setIsChecking] = useState(false);
 
   useEffect(() => {
-    const savedCharacter = localStorage.getItem('characterProfile');
-    if (!savedCharacter) {
+    if (!hasHydrated) {
+        loadCharacter();
+    }
+  }, [hasHydrated, loadCharacter]);
+
+  useEffect(() => {
+    if (hasHydrated && !character) {
       router.push('/');
-    } else {
-      setCharacter(JSON.parse(savedCharacter));
+    } else if (character) {
       setShowText(true);
     }
-  }, [router]);
+  }, [router, character, hasHydrated]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     setShowText(false);
-    setFeedback(null);
     setTimeout(() => {
         if (step < tutorialScript.length - 1) {
             setStep(step + 1);
             setShowText(true);
         }
     }, 300); // Wait for fade-out animation
-  };
+  }, [step]);
+  
+  const startActionCheck = () => {
+      setShowText(false);
+      setTimeout(() => {
+          setIsChecking(true);
+      }, 300);
+  }
 
-  const handleAction = () => {
-    if (!character) return;
-
-    const currentStep = tutorialScript[step];
-    if (currentStep.type !== 'action') return;
-
-    const stats = getCalculatedStats(character);
-    let checkValue = 0;
-    if(currentStep.check === 'strength') checkValue = stats.effectiveStrength;
-    if(currentStep.check === 'intelligence') checkValue = stats.effectiveIntelligence;
-
-    const success = currentStep.isFixedSuccess ? true : checkValue >= currentStep.successThreshold;
-
-    const feedbackText = `Your ${currentStep.check} is ${checkValue}. The required value was ${currentStep.successThreshold}. You ${success ? 'succeeded' : 'failed'}.`;
-    setFeedback(feedbackText);
-    
-    setTimeout(() => {
-       handleNext();
-    }, 2000); // Show feedback for 2 seconds
-  };
+  const onCheckComplete = useCallback(() => {
+      setIsChecking(false);
+      setTimeout(() => {
+          handleNext();
+      }, 300);
+  }, [handleNext]);
   
   const finishTutorial = () => {
       localStorage.setItem('tutorialCompleted', 'true');
@@ -118,7 +114,7 @@ export default function TutorialContent() {
     router.push('/');
   }
 
-  if (!character) {
+  if (!character || !hasHydrated) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
         <p className="text-foreground">Loading Character...</p>
@@ -141,43 +137,53 @@ export default function TutorialContent() {
           <CardTitle className="font-headline text-3xl text-primary">Initiation Sequence</CardTitle>
           <CardDescription>Your journey begins now, {character.name}.</CardDescription>
         </CardHeader>
-        <CardContent className="min-h-[200px] flex flex-col justify-center items-center text-center space-y-6">
+        <CardContent className="min-h-[350px] flex flex-col justify-center items-center text-center space-y-6">
             <AnimatePresence mode="wait">
-                <motion.div
-                    key={step}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.5 }}
-                    className="w-full"
-                >
-                    {currentStep.type === 'narrator' && (
-                        <div>
-                            <p className="text-lg leading-relaxed text-foreground/80">{currentStep.text}</p>
-                            <Button onClick={handleNext} className="mt-6 font-headline">Continue</Button>
-                        </div>
-                    )}
-                    {currentStep.type === 'action' && (
-                        <div>
-                           {feedback ? (
-                                <p className="text-lg text-accent">{feedback}</p>
-                           ) : (
-                                <>
-                                    <p className="text-lg text-foreground/80 mb-4">What do you do?</p>
-                                    <Button onClick={handleAction} className="font-headline text-lg py-6">{currentStep.text}</Button>
-                                </>
-                           )}
-                        </div>
-                    )}
-                    {currentStep.type === 'end' && (
-                        <div>
-                             <p className="text-lg leading-relaxed text-foreground/80">{currentStep.text}</p>
-                            <Button onClick={finishTutorial} className="mt-6 font-headline bg-accent text-accent-foreground hover:bg-accent/80">
-                                Enter the Nexus
-                            </Button>
-                        </div>
-                    )}
-                </motion.div>
+                {isChecking ? (
+                    <motion.div
+                        key="action-check"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        <ActionCheck 
+                            check={currentStep.type === 'action' ? currentStep.check : 'strength'}
+                            successThreshold={currentStep.type === 'action' ? currentStep.successThreshold : 0}
+                            isFixedSuccess={currentStep.type === 'action' ? currentStep.isFixedSuccess : undefined}
+                            onComplete={onCheckComplete}
+                        />
+                    </motion.div>
+                ) : (
+                    <motion.div
+                        key={step}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.5 }}
+                        className="w-full"
+                    >
+                        {currentStep.type === 'narrator' && (
+                            <div>
+                                <p className="text-lg leading-relaxed text-foreground/80">{currentStep.text}</p>
+                                <Button onClick={handleNext} className="mt-6 font-headline">Continue</Button>
+                            </div>
+                        )}
+                        {currentStep.type === 'action' && (
+                            <div>
+                                <p className="text-lg text-foreground/80 mb-4">What do you do?</p>
+                                <Button onClick={startActionCheck} className="font-headline text-lg py-6">{currentStep.text}</Button>
+                            </div>
+                        )}
+                        {currentStep.type === 'end' && (
+                            <div>
+                                <p className="text-lg leading-relaxed text-foreground/80">{currentStep.text}</p>
+                                <Button onClick={finishTutorial} className="mt-6 font-headline bg-accent text-accent-foreground hover:bg-accent/80">
+                                    Enter the Nexus
+                                </Button>
+                            </div>
+                        )}
+                    </motion.div>
+                )}
             </AnimatePresence>
         </CardContent>
       </Card>
