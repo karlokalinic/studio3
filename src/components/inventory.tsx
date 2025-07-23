@@ -30,17 +30,14 @@ interface InventoryProps {
 
 const TOTAL_GRID_SLOTS = 25; // 5x5 grid
 
-const GlowIcon = ({ icon, isSelected }: { icon: React.ElementType, isSelected: boolean }) => {
-    const Icon = icon;
-    return (
-        <Icon 
-        className={cn(
-            "h-8 w-8 text-primary/70 transition-all duration-300",
-            isSelected && "text-accent drop-shadow-[0_0_8px_hsl(var(--accent))]"
-        )}
-        />
-    );
-};
+const GlowIcon = ({ icon: Icon, isSelected }: { icon: React.ElementType, isSelected: boolean }) => (
+    <Icon 
+    className={cn(
+        "h-8 w-8 text-primary/70 transition-all duration-300",
+        isSelected && "text-accent drop-shadow-[0_0_8px_hsl(var(--accent))]"
+    )}
+    />
+);
 
 export default function Inventory({ items, selectedItem, onSelectItem, maxSlots }: InventoryProps) {
   const { removeItem, updateCharacterStats, unlockInventorySlot } = useCharacterStore();
