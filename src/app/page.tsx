@@ -17,7 +17,7 @@ import { useCharacterStore } from '@/stores/use-character-store';
 import { questData, worldData } from '@/data/mock-data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Rocket, History } from 'lucide-react';
+import { Rocket, History, Settings, Gamepad2, Trophy, BookOpen } from 'lucide-react';
 import { getCalculatedStats } from '@/lib/character-calculations';
 
 export default function Home() {
@@ -72,20 +72,41 @@ export default function Home() {
             <CardDescription>Your journey across the dimensions awaits.</CardDescription>
           </CardHeader>
           <CardContent>
-             <p className="text-muted-foreground mb-6">Create a new character and begin your adventure, or dive into the lore first.</p>
              <div className="flex flex-col gap-4">
                 <Button 
                     onClick={startNewGame}
                     className="w-full bg-accent text-accent-foreground hover:bg-accent/80 transition-all text-lg py-6 font-headline"
                 >
                     <Rocket className="mr-2" />
-                    Start New Game
+                    New Game
+                </Button>
+                 <Button 
+                    className="w-full"
+                    variant="outline"
+                    disabled
+                >
+                    <Gamepad2 className="mr-2" />
+                    Load Game
                 </Button>
                 <Button asChild className="w-full" variant="outline">
                     <Link href="/explore-the-story">
-                        <History className="mr-2" />
-                        Explore the Story
+                        <BookOpen className="mr-2" />
+                        Lore
                     </Link>
+                </Button>
+                <Button asChild className="w-full" variant="outline">
+                    <Link href="/settings">
+                        <Settings className="mr-2" />
+                        Settings
+                    </Link>
+                </Button>
+                 <Button 
+                    className="w-full"
+                    variant="outline"
+                    disabled
+                >
+                    <Trophy className="mr-2" />
+                    Achievements
                 </Button>
              </div>
           </CardContent>
