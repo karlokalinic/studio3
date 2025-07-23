@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import DevCheats from './dev-cheats';
 
 const lore = {
   core: {
@@ -119,6 +120,10 @@ export default function DevDiary() {
         </p>
       </div>
 
+      <Separator />
+
+      <DevCheats />
+      
       <Separator />
 
       <SectionCard title={lore.core.title}>

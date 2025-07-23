@@ -13,6 +13,7 @@ export default {
         body: ['Roboto', 'sans-serif'],
         headline: ['Orbitron', 'sans-serif'],
         code: ['monospace'],
+        dyslexia: ['Atkinson Hyperlegible', 'sans-serif'],
       },
       colors: {
         background: 'hsl(var(--background))',

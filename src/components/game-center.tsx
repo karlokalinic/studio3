@@ -40,7 +40,9 @@ export default function GameCenter({ stats }: GameCenterProps) {
 
   useEffect(() => {
     // Format currency on the client to avoid hydration mismatch
-    setFormattedCurrency(stats.currency.toLocaleString());
+    if(stats.currency) {
+      setFormattedCurrency(stats.currency.toLocaleString());
+    }
   }, [stats.currency]);
 
   return (
@@ -103,8 +105,11 @@ export default function GameCenter({ stats }: GameCenterProps) {
               <Button
                 variant="ghost"
                 className="justify-start text-lg p-6 hover:bg-accent/20 hover:text-accent"
+                asChild
               >
-                <Settings className="mr-4" /> Settings
+                 <Link href="/settings">
+                  <Settings className="mr-4" /> Settings
+                </Link>
               </Button>
               <Button
                 variant="ghost"
