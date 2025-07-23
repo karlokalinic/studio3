@@ -111,3 +111,18 @@ export interface Quest {
   status: 'Active' | 'Completed';
   progress: number;
 }
+
+export interface Achievement {
+  id: string;
+  name: string;
+  description: string;
+  isSpoiler: boolean;
+  reward: {
+    xp?: number;
+    currency?: number;
+  };
+  icon: string;
+  // A function to check if the achievement is unlocked.
+  // This allows for flexible conditions based on character state, quests, etc.
+  isUnlocked: (character: CharacterProfile, quests: Quest[]) => boolean;
+}

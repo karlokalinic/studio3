@@ -27,7 +27,8 @@ import {
   BookOpen,
   Lightbulb,
   Home,
-  FileText
+  FileText,
+  Trophy,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -123,6 +124,15 @@ export default function GameCenter() {
                 onClick={handleQuit}
               >
                 <Home className="mr-4" /> Main Menu
+              </Button>
+               <Button
+                variant="ghost"
+                className="justify-start text-lg p-6 hover:bg-accent/20 hover:text-accent"
+                asChild
+              >
+                 <Link href="/achievements">
+                  <Trophy className="mr-4" /> Achievements
+                </Link>
               </Button>
                <Button
                 variant="ghost"

@@ -4,8 +4,8 @@
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware'
-import type { CharacterProfile, InventoryItem, Quest } from '@/types';
-import { inventoryData as startingInventory } from '@/data/mock-data';
+import type { CharacterProfile, InventoryItem, Quest, Achievement } from '@/types';
+import { inventoryData as startingInventory, achievementsData } from '@/data/mock-data';
 
 const calculateInitialSlots = (strength: number) => 3 + Math.floor(strength / 5);
 
@@ -13,18 +13,20 @@ interface CharacterState {
     character: CharacterProfile | null;
     inventory: InventoryItem[];
     quests: Quest[];
+    unlockedAchievements: string[];
     hasHydrated: boolean;
     setHasHydrated: (hydrated: boolean) => void;
     createCharacter: (name: string, faction: string, stats: { strength: number, intelligence: number, spirit: number }) => void;
     loadCharacter: () => void;
     resetCharacter: () => void;
     removeItem: (itemId: string) => void;
-    updateCharacterStats: (updates: Partial<{ health: number; energy: number; hunger: number; currency: number }>) => void;
+    updateCharacterStats: (updates: Partial<{ health: number; energy: number; hunger: number; currency: number, xp: number }>) => void;
     unlockInventorySlot: () => void;
     setCharacter: (setter: (char: CharacterProfile | null) => CharacterProfile | null) => void;
     addQuest: (quest: Quest) => void;
     updateQuestProgress: (questId: string, progress: number) => void;
     setInventory: (items: InventoryItem[]) => void;
+    unlockAchievement: (achievementId: string) => void;
 }
 
 export const useCharacterStore = create<CharacterState>()(
@@ -33,6 +35,7 @@ export const useCharacterStore = create<CharacterState>()(
             character: null,
             inventory: [],
             quests: [],
+            unlockedAchievements: [],
             hasHydrated: false,
             setHasHydrated: (hydrated) => {
                 set({ hasHydrated: hydrated });
@@ -77,7 +80,7 @@ export const useCharacterStore = create<CharacterState>()(
                         backstory: `A new face in the Nexus, hailing from the ${faction}, ready to make their mark.`,
                     },
                 };
-                set({ character: newCharacter, inventory: [], quests: [] });
+                set({ character: newCharacter, inventory: [], quests: [], unlockedAchievements: [] });
                 localStorage.removeItem('tutorialCompleted'); // Reset tutorial on new character
             },
             loadCharacter: () => {
@@ -85,7 +88,7 @@ export const useCharacterStore = create<CharacterState>()(
                 // The actual loading is handled by the persist middleware
             },
             resetCharacter: () => {
-                set({ character: null, inventory: [], quests: [] });
+                set({ character: null, inventory: [], quests: [], unlockedAchievements: [] });
                  localStorage.removeItem('tutorialCompleted');
                  if (typeof window !== 'undefined') {
                     localStorage.removeItem('character-storage');
@@ -105,6 +108,7 @@ export const useCharacterStore = create<CharacterState>()(
                     if (updates.energy !== undefined) newStats.energy = Math.min(100, newStats.energy + updates.energy);
                     if (updates.hunger !== undefined) newStats.hunger = Math.min(100, newStats.hunger + updates.hunger);
                     if (updates.currency !== undefined) newStats.currency = newStats.currency + updates.currency;
+                    if (updates.xp !== undefined) newStats.xp = newStats.xp + updates.xp;
                     
                     return { character: newStats };
                 });
@@ -113,12 +117,11 @@ export const useCharacterStore = create<CharacterState>()(
                 set((state) => {
                     if (!state.character) return {};
                     if (state.character.inventorySlots < 25) {
-                        return {
-                            character: {
-                                ...state.character,
-                                inventorySlots: state.character.inventorySlots + 1,
-                            }
-                        }
+                         const char = { ...state.character };
+                         char.inventorySlots += 1;
+                         // Manually trigger achievement check
+                         get().unlockAchievement('achieve-inventory-expanded');
+                         return { character: char };
                     }
                     return {};
                 });
@@ -132,14 +135,19 @@ export const useCharacterStore = create<CharacterState>()(
                     if (state.quests.some(q => q.id === quest.id)) {
                         return {};
                     }
+                    get().unlockAchievement('achieve-first-quest');
                     return { quests: [...state.quests, quest] };
                 });
             },
             updateQuestProgress: (questId, progress) => {
-                set((state) => ({
-                    quests: state.quests.map((q) => {
+                set((state) => {
+                    let questCompleted = false;
+                    const newQuests = state.quests.map((q) => {
                         if (q.id === questId) {
                             const newProgress = Math.min(100, q.progress + progress);
+                            if (newProgress >= 100 && q.status !== 'Completed') {
+                                questCompleted = true;
+                            }
                             return {
                                 ...q,
                                 progress: newProgress,
@@ -147,19 +155,39 @@ export const useCharacterStore = create<CharacterState>()(
                             };
                         }
                         return q;
-                    }),
-                }));
+                    });
+                    if (questCompleted) {
+                         get().unlockAchievement('achieve-complete-retrieval');
+                    }
+                    return { quests: newQuests };
+                });
             },
             setInventory: (items) => {
                 set({ inventory: items });
-            }
+            },
+            unlockAchievement: (achievementId) => {
+                const { character, quests, unlockedAchievements, updateCharacterStats } = get();
+                if (!character || unlockedAchievements.includes(achievementId)) {
+                    return;
+                }
+                
+                const achievement = achievementsData.find(a => a.id === achievementId);
+                if (achievement && achievement.isUnlocked(character, quests)) {
+                    set(state => ({ unlockedAchievements: [...state.unlockedAchievements, achievementId] }));
+                    if (achievement.reward.xp || achievement.reward.currency) {
+                       updateCharacterStats({
+                           xp: achievement.reward.xp || 0,
+                           currency: achievement.reward.currency || 0
+                       });
+                    }
+                }
+            },
         }),
         {
             name: 'character-storage',
             storage: createJSONStorage(() => localStorage),
             onRehydrateStorage: () => (state) => {
                 if (state) {
-                    // Backwards compatibility for old save files
                     if (state.character && !state.character.attunement) {
                         state.character.attunement = { order: 0, chaos: 0, balance: 0 };
                     }
