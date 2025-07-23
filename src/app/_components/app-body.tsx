@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useSettings } from "@/context/settings-context";
@@ -25,7 +26,7 @@ export default function AppBody({
   return (
       <body className={cn(
         "font-body antialiased",
-        settings.dyslexiaFont && 'font-dyslexia'
+        settings.dyslexiaFont && "font-dyslexia"
       )}>
         {children}
       </body>
