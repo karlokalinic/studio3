@@ -5,23 +5,28 @@ export interface PlayerStats {
   currency: number;
 }
 
+export interface Attribute {
+  value: number;
+  description: string;
+}
+
 export interface CharacterProfile {
   name: string;
   level: number;
   xp: number;
   attributes: {
     // Base attributes
-    strength: number;
-    intelligence: number;
-    spirit: number;
-    hp: number;
+    strength: Attribute;
+    intelligence: Attribute;
+    spirit: Attribute;
+    hp: Attribute;
   };
   state: {
     // Dynamic state values
-    fatigue: number; // 0-100
-    fitness: number; // 0-100
-    focus: number; // 0-100
-    mentalClarity: number; // 0-100
+    fatigue: Attribute; 
+    fitness: Attribute; 
+    focus: Attribute; 
+    mentalClarity: Attribute;
   },
   enhancements: {
     cybernetics: string[];
@@ -58,6 +63,7 @@ export interface WorldLocation {
   id: string;
   name: string;
   faction: string;
+  description: string;
   currencyModifier: number;
   position: { top: string; left: string };
 }

@@ -3,7 +3,8 @@
 import Image from "next/image";
 import type { WorldLocation } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MapPin, Users, Coins } from "lucide-react";
+import { MapPin, Users, Coins, Info } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 interface WorldMapProps {
@@ -31,28 +32,49 @@ export default function WorldMap({ locations }: WorldMapProps) {
             data-ai-hint="fantasy map"
           />
           {locations.map((loc) => (
-            <div
-              key={loc.id}
-              className="absolute group cursor-pointer"
-              style={{ top: loc.position.top, left: loc.position.left }}
-              title={loc.name}
-            >
-              <MapPin className="h-6 w-6 text-accent drop-shadow-[0_0_8px_hsl(var(--accent))] group-hover:scale-125 transition-transform" />
-            </div>
+             <TooltipProvider key={loc.id}>
+                <Tooltip delayDuration={150}>
+                    <TooltipTrigger asChild>
+                        <div
+                          className="absolute group cursor-pointer"
+                          style={{ top: loc.position.top, left: loc.position.left }}
+                          title={loc.name}
+                        >
+                          <MapPin className="h-6 w-6 text-accent drop-shadow-[0_0_8px_hsl(var(--accent))] group-hover:scale-125 transition-transform" />
+                        </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p className="font-bold">{loc.name}</p>
+                        <p>{loc.description}</p>
+                    </TooltipContent>
+                </Tooltip>
+             </TooltipProvider>
           ))}
         </div>
         <div>
           <h3 className="font-headline text-lg mb-2 text-primary/80">Regional Info</h3>
           <div className="space-y-3">
             {locations.map((loc) => (
-              <div key={loc.id} className="text-sm p-2 bg-black/20 rounded-md">
-                <div className="flex items-center font-bold text-foreground">
-                    <GlowIcon icon={MapPin} /> {loc.name}
+              <div key={loc.id} className="text-sm p-3 bg-black/20 rounded-md">
+                <div className="flex items-center justify-between font-bold text-foreground">
+                    <div className="flex items-center">
+                        <GlowIcon icon={MapPin} /> {loc.name}
+                    </div>
+                     <TooltipProvider>
+                        <Tooltip delayDuration={150}>
+                            <TooltipTrigger>
+                                <Info className="h-4 w-4 text-muted-foreground/70" />
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs">
+                                <p>{loc.description}</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
                 </div>
-                <div className="flex items-center text-muted-foreground ml-6">
+                <div className="flex items-center text-muted-foreground mt-1 ml-6">
                     <GlowIcon icon={Users} className="h-3 w-3" /> Faction: {loc.faction}
                 </div>
-                 <div className="flex items-center text-muted-foreground ml-6">
+                 <div className="flex items-center text-muted-foreground mt-1 ml-6">
                     <GlowIcon icon={Coins} className="h-3 w-3" /> Currency Rate: x{loc.currencyModifier}
                 </div>
               </div>

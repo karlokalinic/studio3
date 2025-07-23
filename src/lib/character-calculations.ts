@@ -2,9 +2,9 @@ import type { CharacterProfile, CalculatedStats } from '@/types';
 
 // Formula to calculate effective strength
 function calculateEffectiveStrength(profile: CharacterProfile): number {
-  const baseStrength = profile.attributes.strength;
-  const fitnessModifier = (profile.state.fitness / 100) * 0.2 + 0.9; // 0.9 to 1.1 multiplier
-  const fatigueModifier = 1 - (profile.state.fatigue / 100) * 0.5; // Up to 50% reduction
+  const baseStrength = profile.attributes.strength.value;
+  const fitnessModifier = (profile.state.fitness.value / 100) * 0.2 + 0.9; // 0.9 to 1.1 multiplier
+  const fatigueModifier = 1 - (profile.state.fatigue.value / 100) * 0.5; // Up to 50% reduction
 
   let enhancementBonus = 0;
   if (profile.enhancements.cybernetics.includes('AdrenalBooster')) {
@@ -17,9 +17,9 @@ function calculateEffectiveStrength(profile: CharacterProfile): number {
 
 // Formula to calculate effective intelligence
 function calculateEffectiveIntelligence(profile: CharacterProfile): number {
-  const baseIntelligence = profile.attributes.intelligence;
-  const clarityModifier = (profile.state.mentalClarity / 100) * 0.3 + 0.8; // 0.8 to 1.1 multiplier
-  const focusModifier = (profile.state.focus / 100) * 0.25 + 0.85; // 0.85 to 1.1 multiplier
+  const baseIntelligence = profile.attributes.intelligence.value;
+  const clarityModifier = (profile.state.mentalClarity.value / 100) * 0.3 + 0.8; // 0.8 to 1.1 multiplier
+  const focusModifier = (profile.state.focus.value / 100) * 0.25 + 0.85; // 0.85 to 1.1 multiplier
   
   let enhancementBonus = 0;
   if (profile.enhancements.cybernetics.includes('NeuralLink V2')) {
@@ -32,13 +32,13 @@ function calculateEffectiveIntelligence(profile: CharacterProfile): number {
 
 // Formula to calculate max HP
 function calculateMaxHP(profile: CharacterProfile): number {
-  return profile.attributes.hp + (profile.level * 10) + (profile.attributes.strength * 5);
+  return profile.attributes.hp.value + (profile.level * 10) + (profile.attributes.strength.value * 5);
 }
 
 // Formula to calculate critical hit chance
 function calculateCritChance(profile: CharacterProfile): number {
   const intelligenceFactor = calculateEffectiveIntelligence(profile) / 50; 
-  const spiritFactor = profile.attributes.spirit / 100;
+  const spiritFactor = profile.attributes.spirit.value / 100;
   return Math.round(Math.min(100, (intelligenceFactor * 0.1 + spiritFactor * 0.05) * 100)); // Percentage, capped at 100%
 }
 

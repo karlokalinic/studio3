@@ -1,5 +1,5 @@
 import type { PlayerStats, CharacterProfile, InventoryItem, Quest, WorldLocation } from '@/types';
-import { Sword, HeartPulse, Shield, Bot, Map, ChevronsRight, LocateFixed } from 'lucide-react';
+import { Sword, HeartPulse, Shield, Bot, Map } from 'lucide-react';
 
 export const playerStats: PlayerStats = {
   health: 85,
@@ -13,16 +13,16 @@ export const characterData: CharacterProfile = {
   level: 12,
   xp: 4500,
   attributes: {
-    strength: 18,
-    intelligence: 14,
-    spirit: 15,
-    hp: 120,
+    strength: { value: 18, description: 'Raw physical power. Affects melee damage and carry capacity.' },
+    intelligence: { value: 14, description: 'Cognitive ability, problem-solving, and hacking skills.' },
+    spirit: { value: 15, description: 'Mental fortitude and connection to dimensional energies. Affects willpower and magic resistance.' },
+    hp: { value: 120, description: 'Health Points. Represents your character\'s life force.' },
   },
   state: {
-    fatigue: 25,
-    fitness: 80,
-    focus: 90,
-    mentalClarity: 75,
+    fatigue: { value: 25, description: 'Tiredness level. High fatigue negatively impacts physical performance.' },
+    fitness: { value: 80, description: 'Overall physical condition. High fitness improves strength and endurance.' },
+    focus: { value: 90, description: 'Mental concentration. High focus improves the effectiveness of tasks requiring intelligence.' },
+    mentalClarity: { value: 75, description: 'Clarity of thought. High clarity enhances decision-making and cognitive speed.' },
   },
   enhancements: {
     cybernetics: ['NeuralLink V2', 'AdrenalBooster'],
@@ -52,7 +52,7 @@ export const questData: Quest[] = [
 ];
 
 export const worldData: WorldLocation[] = [
-  { id: 'loc1', name: 'Neo-Kyoto', faction: 'The Corporation', currencyModifier: 1.2, position: { top: '30%', left: '25%' }},
-  { id: 'loc2', name: 'The Undercity', faction: 'Outcasts', currencyModifier: 0.8, position: { top: '65%', left: '40%' }},
-  { id: 'loc3', name: 'Aethelgard', faction: 'The Nexus Guard', currencyModifier: 1.0, position: { top: '50%', left: '70%' }},
+  { id: 'loc1', name: 'Neo-Kyoto', faction: 'Solaris Coalition', currencyModifier: 1.2, position: { top: '30%', left: '25%' }, description: 'A gleaming metropolis governed by corporate technocrats. Order and progress are valued above all.' },
+  { id: 'loc2', name: 'The Undercity', faction: 'Outcasts', currencyModifier: 0.8, position: { top: '65%', left: '40%' }, description: 'A sprawling, chaotic network of tunnels and settlements beneath Neo-Kyoto. A haven for criminals and the disenfranchised.' },
+  { id: 'loc3', name: 'Aethelgard', faction: 'Sky Citadels', currencyModifier: 1.0, position: { top: '50%', left: '70%' }, description: 'A floating city-state built on principles of free trade and individualism. Controlled by powerful merchant guilds.' },
 ];

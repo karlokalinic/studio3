@@ -1,20 +1,35 @@
 "use client";
 
-import type { CharacterProfile, CalculatedStats } from "@/types";
+import type { CharacterProfile, CalculatedStats, Attribute } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { getCalculatedStats } from "@/lib/character-calculations";
 import { useEffect, useState } from "react";
-import { GitCommitHorizontal, GitMerge, GitPullRequest } from "lucide-react";
+import { GitCommitHorizontal, GitMerge, GitPullRequest, Info } from "lucide-react";
 
 interface CharacterProfileProps {
   profile: CharacterProfile;
 }
 
-const Stat = ({ label, value, unit, baseValue }: { label: string; value: string | number; unit?: string, baseValue?: number }) => (
+const Stat = ({ label, value, unit, baseValue, description }: { label: string; value: string | number; unit?: string; baseValue?: number; description?: string }) => (
   <div className="flex justify-between items-center text-sm">
-    <span className="text-muted-foreground">{label}</span>
+    <div className="flex items-center gap-1.5">
+      <span className="text-muted-foreground">{label}</span>
+      {description && (
+        <TooltipProvider>
+            <Tooltip delayDuration={150}>
+                <TooltipTrigger>
+                    <Info className="h-3 w-3 text-muted-foreground/70" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                    <p>{description}</p>
+                </TooltipContent>
+            </Tooltip>
+        </TooltipProvider>
+      )}
+    </div>
     <span className="font-bold text-accent">
       {value}{unit}
       {baseValue !== undefined && value !== baseValue && (
@@ -42,6 +57,8 @@ export default function CharacterProfile({ profile }: CharacterProfileProps) {
   useEffect(() => {
     setCalculatedStats(getCalculatedStats(profile));
   }, [profile]);
+
+  const { attributes, state } = profile;
   
   return (
     <Card className="bg-card/50 border-primary/20 shadow-lg shadow-primary/5">
@@ -51,13 +68,23 @@ export default function CharacterProfile({ profile }: CharacterProfileProps) {
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
+          <h3 className="font-headline text-lg mb-2 text-primary/80">Base Attributes</h3>
+           <div className="space-y-2">
+            <Stat label="Strength" value={attributes.strength.value} description={attributes.strength.description} />
+            <Stat label="Intelligence" value={attributes.intelligence.value} description={attributes.intelligence.description} />
+            <Stat label="Spirit" value={attributes.spirit.value} description={attributes.spirit.description} />
+            <Stat label="Base HP" value={attributes.hp.value} description={attributes.hp.description} />
+          </div>
+        </div>
+        <Separator />
+        <div>
           <h3 className="font-headline text-lg mb-2 text-primary/80">Calculated Stats</h3>
           <div className="space-y-2">
             {calculatedStats ? (
               <>
-                <Stat label="Eff. Strength" value={calculatedStats.effectiveStrength} baseValue={profile.attributes.strength} />
-                <Stat label="Eff. Intelligence" value={calculatedStats.effectiveIntelligence} baseValue={profile.attributes.intelligence} />
-                <Stat label="Max HP" value={calculatedStats.maxHP} baseValue={profile.attributes.hp}/>
+                <Stat label="Eff. Strength" value={calculatedStats.effectiveStrength} baseValue={profile.attributes.strength.value} />
+                <Stat label="Eff. Intelligence" value={calculatedStats.effectiveIntelligence} baseValue={profile.attributes.intelligence.value} />
+                <Stat label="Max HP" value={calculatedStats.maxHP} baseValue={profile.attributes.hp.value}/>
                 <Stat label="Crit. Chance" value={calculatedStats.critChance} unit="%" />
               </>
             ) : <p className="text-muted-foreground">Calculating...</p>}
@@ -67,10 +94,10 @@ export default function CharacterProfile({ profile }: CharacterProfileProps) {
         <div>
           <h3 className="font-headline text-lg mb-2 text-primary/80">State</h3>
           <div className="space-y-2">
-            <Stat label="Fatigue" value={profile.state.fatigue} unit="%" />
-            <Stat label="Fitness" value={profile.state.fitness} unit="%" />
-            <Stat label="Focus" value={profile.state.focus} unit="%" />
-            <Stat label="Clarity" value={profile.state.mentalClarity} unit="%" />
+            <Stat label="Fatigue" value={state.fatigue.value} unit="%" description={state.fatigue.description}/>
+            <Stat label="Fitness" value={state.fitness.value} unit="%" description={state.fitness.description}/>
+            <Stat label="Focus" value={state.focus.value} unit="%" description={state.focus.description}/>
+            <Stat label="Clarity" value={state.mentalClarity.value} unit="%" description={state.mentalClarity.description}/>
           </div>
         </div>
         <Separator />
