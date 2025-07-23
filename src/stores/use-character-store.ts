@@ -7,6 +7,7 @@ import type { CharacterProfile, InventoryItem } from '@/types';
 import { inventoryData } from '@/data/mock-data';
 
 const generateRandomStat = () => Math.floor(Math.random() * 8) + 8; // Random number between 8 and 15
+const calculateInitialSlots = (strength: number) => 10 + Math.floor(strength / 2);
 
 interface CharacterState {
     character: CharacterProfile | null;
@@ -18,6 +19,7 @@ interface CharacterState {
     resetCharacter: () => void;
     removeItem: (itemId: string) => void;
     updateCharacterStats: (updates: Partial<{ health: number; energy: number; hunger: number; currency: number }>) => void;
+    unlockInventorySlot: () => void;
 }
 
 export const useCharacterStore = create<CharacterState>()(
@@ -34,6 +36,7 @@ export const useCharacterStore = create<CharacterState>()(
                     name: name,
                     level: 1,
                     xp: 0,
+                    inventorySlots: calculateInitialSlots(stats.strength),
                     health: 100,
                     energy: 100,
                     hunger: 100,
@@ -63,7 +66,7 @@ export const useCharacterStore = create<CharacterState>()(
                         backstory: `A new face in the Nexus, hailing from the ${faction}, ready to make their mark.`,
                     },
                 };
-                set({ character: newCharacter, inventory: [...inventoryData] }); // Start with mock inventory
+                set({ character: newCharacter, inventory: [...inventoryData].slice(0, 5) }); // Start with a few items from mock data
                 localStorage.removeItem('tutorialCompleted'); // Reset tutorial on new character
             },
             loadCharacter: () => {
@@ -90,6 +93,20 @@ export const useCharacterStore = create<CharacterState>()(
                     if (updates.currency) newStats.currency = newStats.currency + updates.currency;
                     
                     return { character: newStats };
+                });
+            },
+            unlockInventorySlot: () => {
+                set((state) => {
+                    if (!state.character) return {};
+                    if (state.character.inventorySlots < 30) {
+                        return {
+                            character: {
+                                ...state.character,
+                                inventorySlots: state.character.inventorySlots + 1,
+                            }
+                        }
+                    }
+                    return {};
                 });
             }
         }),

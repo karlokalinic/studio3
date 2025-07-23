@@ -1,5 +1,5 @@
 import type { PlayerStats, CharacterProfile, InventoryItem, Quest, WorldLocation } from '@/types';
-import { Sword, HeartPulse, Shield, Bot, Map } from 'lucide-react';
+import { Sword, HeartPulse, Shield, Bot, Map, Key } from 'lucide-react';
 
 export const playerStats: PlayerStats = {
   health: 85,
@@ -12,6 +12,7 @@ export const characterData: CharacterProfile = {
   name: "Kaelen",
   level: 12,
   xp: 4500,
+  inventorySlots: 15,
   attributes: {
     strength: { value: 18, description: 'Raw physical power. Affects melee damage and carry capacity.' },
     intelligence: { value: 14, description: 'Cognitive ability, problem-solving, and hacking skills.' },
@@ -44,6 +45,7 @@ export const inventoryData: InventoryItem[] = [
   { id: 'item-3', name: 'Aegis Vest', type: 'Armor', value: 1200, description: 'Lightweight vest that can deflect energy projectiles.', icon: Shield },
   { id: 'item-4', name: 'Data Chip', type: 'Quest Item', value: 0, description: 'Encrypted data for the Cy-Gnostics.', icon: Bot },
   { id: 'item-5', name: 'Ancient Map', type: 'Quest Item', value: 0, description: 'A mysterious map fragment.', icon: Map },
+  { id: 'item-6', name: 'Slot Expansion Key', type: 'Key', value: 1000, description: 'A rare cybernetic key that can re-route power to unlock an additional inventory slot.', icon: Key },
 ];
 
 export const questData: Quest[] = [

@@ -17,11 +17,15 @@ import { questData, worldData } from '@/data/mock-data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Rocket, History } from 'lucide-react';
+import { getCalculatedStats } from '@/lib/character-calculations';
 
 export default function Home() {
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const router = useRouter();
   const { character, inventory, loadCharacter, hasHydrated } = useCharacterStore();
+  const [characterStats, setCharacterStats] = useState<{
+    inventorySlots: number;
+  } | null>(null);
 
   useEffect(() => {
     loadCharacter();
@@ -37,6 +41,8 @@ export default function Home() {
         } else if (inventory.length === 0) {
             setSelectedItem(null);
         }
+        const stats = getCalculatedStats(character);
+        setCharacterStats(stats);
     }
   }, [character, router, hasHydrated, inventory, selectedItem]);
 
@@ -54,7 +60,7 @@ export default function Home() {
      )
   }
 
-  if (!character) {
+  if (!character || !characterStats) {
     return (
       <main className="min-h-screen bg-background p-4 md:p-8 font-body text-foreground flex items-center justify-center">
         <Card className="max-w-md w-full text-center bg-card/50 border-primary/20 shadow-lg shadow-primary/5">
@@ -103,6 +109,7 @@ export default function Home() {
               items={inventory} 
               selectedItem={selectedItem}
               onSelectItem={setSelectedItem}
+              maxSlots={characterStats.inventorySlots}
             />
           </div>
           

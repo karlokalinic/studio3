@@ -42,6 +42,10 @@ function calculateCritChance(profile: CharacterProfile): number {
   return Math.round(Math.min(100, (intelligenceFactor * 0.1 + spiritFactor * 0.05) * 100)); // Percentage, capped at 100%
 }
 
+// Formula to calculate inventory slots
+function calculateInventorySlots(profile: CharacterProfile): number {
+    return profile.inventorySlots;
+}
 
 // Main function to get all calculated stats
 export function getCalculatedStats(profile: CharacterProfile): CalculatedStats {
@@ -50,5 +54,6 @@ export function getCalculatedStats(profile: CharacterProfile): CalculatedStats {
     effectiveIntelligence: calculateEffectiveIntelligence(profile),
     maxHP: calculateMaxHP(profile),
     critChance: calculateCritChance(profile),
+    inventorySlots: calculateInventorySlots(profile),
   };
 }

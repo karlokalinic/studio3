@@ -15,6 +15,7 @@ export interface CharacterProfile {
   name: string;
   level: number;
   xp: number;
+  inventorySlots: number;
   health: number;
   energy: number;
   hunger: number;
@@ -52,12 +53,13 @@ export interface CalculatedStats {
   effectiveIntelligence: number;
   maxHP: number;
   critChance: number;
+  inventorySlots: number;
 }
 
 export interface InventoryItem {
   id: string;
   name: string;
-  type: 'Weapon' | 'Armor' | 'Consumable' | 'Quest Item';
+  type: 'Weapon' | 'Armor' | 'Consumable' | 'Quest Item' | 'Key';
   value: number;
   description: string;
   nutrition?: number;
