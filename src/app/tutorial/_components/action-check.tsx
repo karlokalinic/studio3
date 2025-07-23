@@ -84,7 +84,7 @@ export default function ActionCheck({ check, successThreshold, isFixedSuccess, o
         </div>
 
         {/* Card Front */}
-        <div className="absolute w-full h-full bg-card rounded-xl flex flex-col items-center justify-center p-6 backface-hidden" style={{transform: 'rotateY(180deg)'}}>
+        <div className="absolute w-full h-full bg-card rounded-xl flex flex-col items-center justify-center p-6 backface-hidden" style={{transform: 'rotateY(0deg)'}}>
             <h3 className="font-headline text-xl text-primary capitalize">{check} Check</h3>
             <p className="text-sm text-muted-foreground">Target: {successThreshold}</p>
             <div className="my-6">
