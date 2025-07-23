@@ -23,6 +23,7 @@ interface CharacterState {
     unlockInventorySlot: () => void;
     setCharacter: (setter: (char: CharacterProfile | null) => CharacterProfile | null) => void;
     addQuest: (quest: Quest) => void;
+    updateQuestProgress: (questId: string, progress: number) => void;
     setInventory: (items: InventoryItem[]) => void;
 }
 
@@ -134,6 +135,21 @@ export const useCharacterStore = create<CharacterState>()(
                     return { quests: [...state.quests, quest] };
                 });
             },
+            updateQuestProgress: (questId, progress) => {
+                set((state) => ({
+                    quests: state.quests.map((q) => {
+                        if (q.id === questId) {
+                            const newProgress = Math.min(100, q.progress + progress);
+                            return {
+                                ...q,
+                                progress: newProgress,
+                                status: newProgress >= 100 ? 'Completed' : 'Active',
+                            };
+                        }
+                        return q;
+                    }),
+                }));
+            },
             setInventory: (items) => {
                 set({ inventory: items });
             }
@@ -153,3 +169,5 @@ export const useCharacterStore = create<CharacterState>()(
         }
     )
 );
+
+    

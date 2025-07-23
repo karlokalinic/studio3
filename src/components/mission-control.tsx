@@ -1,15 +1,15 @@
 
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from './ui/button';
 import { useCharacterStore } from '@/stores/use-character-store';
 import { ScrollArea } from './ui/scroll-area';
-import { questData } from '@/data/mock-data';
+import { questData, type Quest } from '@/data/mock-data';
 
-const story = [
+const introStory = [
     {
         id: 1,
         type: 'narrator',
@@ -37,66 +37,105 @@ const story = [
     }
 ];
 
+const retrievalQuestStory = {
+    id: 'q1-retrieval',
+    title: 'Retrieval on Terra Nexus',
+    description: "You have a job to do. The package is somewhere in Sector-G. Time is ticking.",
+    choices: [
+        { text: "Travel to the ruins of Sector-G", consequence: { type: 'progress', questId: 'q1-retrieval', progress: 25, message: "The journey to Terra Nexus is a blur of hyperspace and flickering ship lights. You arrive at the desolate ruins of Sector-G, a graveyard of rusted metal and shattered dreams." }},
+        { text: "Check local bounty boards for information", consequence: { type: 'progress', questId: 'q1-retrieval', progress: 5, message: "You find a dusty terminal. Most bounties are for petty thieves, but one catches your eye: 'Inquiry - Fallen Courier - Sector-G - Reward'. Someone else is interested." } },
+        { text: "Ask around at the local cantina", consequence: { type: 'progress', questId: 'q1-retrieval', progress: 10, message: "A grizzled spacer scoffs at your questions. 'Sector-G? That's suicide, kid. Courier didn't stand a chance.' He points you in the general direction, for a price." } },
+    ]
+}
+
 export default function MissionControl() {
-    const { addQuest, quests } = useCharacterStore();
+    const { addQuest, quests, updateQuestProgress } = useCharacterStore();
     const [history, setHistory] = useState<any[]>([]);
     const [storyStep, setStoryStep] = useState(0);
+    const [currentStory, setCurrentStory] = useState<any>(null);
 
-    const advanceStory = useCallback(() => {
-        if (storyStep < story.length) {
-            setHistory(prev => [...prev, story[storyStep]]);
+    const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+    const advanceIntroStory = useCallback(() => {
+        if (storyStep < introStory.length) {
+            setHistory(prev => [...prev, introStory[storyStep]]);
             setStoryStep(prev => prev + 1);
         }
     }, [storyStep]);
 
+     // Auto-scroll to bottom of history
     useEffect(() => {
-        // Automatically advance the story if the current block is narration
-        const currentBlock = story[storyStep];
-        if (currentBlock && currentBlock.type === 'narrator') {
+        if (scrollAreaRef.current) {
+            const scrollableView = scrollAreaRef.current.querySelector('div');
+            if (scrollableView) {
+                scrollableView.scrollTop = scrollableView.scrollHeight;
+            }
+        }
+    }, [history]);
+
+    // Decide which story to show
+    useEffect(() => {
+        const activeRetrievalQuest = quests.find(q => q.id === 'q1-retrieval' && q.status === 'Active');
+        if (activeRetrievalQuest) {
+            setCurrentStory(retrievalQuestStory);
+        } else if (quests.length === 0) {
+            setCurrentStory({ choices: introStory.find(s => s.type === 'choice')?.options || [] });
+            if(history.length === 0) {
+                 // Start intro story if it hasn't started
+                advanceIntroStory();
+            }
+        }
+    }, [quests, advanceIntroStory, history.length]);
+
+    // Automatically advance the intro story if the current block is narration
+    useEffect(() => {
+        const currentBlock = introStory[storyStep];
+        if (quests.length === 0 && currentBlock && currentBlock.type === 'narrator') {
             const timer = setTimeout(() => {
-                advanceStory();
-            }, 1500); // Add a delay for readability
+                advanceIntroStory();
+            }, 2000); // Add a delay for readability
             return () => clearTimeout(timer);
         }
-    }, [storyStep, advanceStory]);
-    
-    // Start story if no quests are active
-    useEffect(() => {
-        if (quests.length === 0 && history.length === 0) {
-            advanceStory();
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [quests]);
+    }, [storyStep, advanceIntroStory, quests]);
 
     const handleChoice = (option: any) => {
-        // Add user choice to history
         const choiceEntry = { id: `choice-${Date.now()}`, type: 'player_choice', text: option.text };
         setHistory(prev => [...prev, choiceEntry]);
 
+        const { consequence } = option;
+
         // Handle consequence
-        if (option.consequence.type === 'quest_start') {
-            const questToAdd = questData.find(q => q.id === option.consequence.questId);
+        if (consequence.type === 'quest_start') {
+            const questToAdd = questData.find(q => q.id === consequence.questId);
             if(questToAdd) {
                 addQuest(questToAdd);
+                const endOfSegment = { id: 'end-intro', type: 'narrator', text: 'The line goes dead. You are left alone with your thoughts and your mission.' };
+                setHistory(prev => [...prev, endOfSegment]);
             }
         }
-        
-        // Add a concluding remark and end this story segment
-        const endOfSegment = { id: 'end', type: 'narrator', text: 'The line goes dead. You are left alone with your thoughts and your mission.' };
-        setHistory(prev => [...prev, endOfSegment]);
-        setStoryStep(story.length); // Mark story as complete
+
+        if (consequence.type === 'progress') {
+            updateQuestProgress(consequence.questId, consequence.progress);
+            const progressMessage = { id: `progress-${Date.now()}`, type: 'narrator', text: consequence.message };
+            setHistory(prev => [...prev, progressMessage]);
+        }
     }
 
-    const currentBlock = story[storyStep];
+    const currentBlock = introStory[storyStep];
+    const isIntroActive = quests.length === 0 && storyStep < introStory.length;
 
     return (
         <Card className="bg-card/50 border-primary/20 shadow-lg shadow-primary/5 flex flex-col h-[600px]">
             <CardHeader>
-                <CardTitle className="font-headline text-2xl text-primary">Mission Control</CardTitle>
-                <CardDescription>This is your direct line to the unfolding story.</CardDescription>
+                <CardTitle className="font-headline text-2xl text-primary">
+                     {currentStory?.title || "Mission Control"}
+                </CardTitle>
+                <CardDescription>
+                     {currentStory?.description || "This is your direct line to the unfolding story."}
+                </CardDescription>
             </CardHeader>
             <CardContent className="flex-grow overflow-hidden">
-                <ScrollArea className="h-full pr-4">
+                <ScrollArea className="h-full pr-4" ref={scrollAreaRef}>
                      <div className="space-y-4">
                         <AnimatePresence>
                         {history.map((item, index) => (
@@ -119,17 +158,17 @@ export default function MissionControl() {
                     </div>
                 </ScrollArea>
             </CardContent>
-            {currentBlock?.type === 'choice' && (
+            {(isIntroActive && currentBlock?.type === 'choice') || (currentStory && currentStory.id === 'q1-retrieval') ? (
                 <CardFooter className="p-6 pt-4 border-t border-primary/20">
                     <div className="w-full">
-                        <p className="text-center mb-4 font-bold">{currentBlock.text}</p>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {currentBlock.options.map((option: any, index: number) => (
+                        <p className="text-center mb-4 font-bold">{isIntroActive ? currentBlock.text : "What's your next move?"}</p>
+                        <div className="flex flex-col gap-2">
+                            {(isIntroActive ? currentBlock.options : currentStory.choices).map((option: any, index: number) => (
                                 <Button 
                                     key={index} 
                                     variant="outline"
                                     onClick={() => handleChoice(option)}
-                                    className="hover:bg-accent hover:text-accent-foreground transition-colors"
+                                    className="hover:bg-accent hover:text-accent-foreground transition-colors justify-start text-left h-auto py-3"
                                 >
                                     {option.text}
                                 </Button>
@@ -137,7 +176,9 @@ export default function MissionControl() {
                         </div>
                     </div>
                 </CardFooter>
-            )}
+            ) : null}
         </Card>
     );
 }
+
+    
