@@ -1,7 +1,6 @@
 
 
 import type { PlayerStats, CharacterProfile, InventoryItem, Quest, WorldLocation } from '@/types';
-import { Sword, HeartPulse, Shield, Bot, Map, Key } from 'lucide-react';
 
 export const playerStats: PlayerStats = {
   health: 85,
@@ -51,12 +50,12 @@ export const characterData: CharacterProfile = {
 };
 
 export const inventoryData: InventoryItem[] = [
-  { id: 'item-1', name: 'Plasma Katana', type: 'Weapon', value: 800, description: 'A blade of pure energy. Cuts through almost anything.', icon: Sword },
-  { id: 'item-2', name: 'Nano-Medkit', type: 'Consumable', value: 50, description: 'Heals minor wounds instantly.', nutrition: 25, icon: HeartPulse },
-  { id: 'item-3', name: 'Aegis Vest', type: 'Armor', value: 1200, description: 'Lightweight vest that can deflect energy projectiles.', icon: Shield },
-  { id: 'item-4', name: 'Data Chip', type: 'Quest Item', value: 0, description: 'Encrypted data for the Cy-Gnostics.', icon: Bot },
-  { id: 'item-5', name: 'Ancient Map', type: 'Quest Item', value: 0, description: 'A mysterious map fragment.', icon: Map },
-  { id: 'item-6', name: 'Slot Expansion Key', type: 'Key', value: 1000, description: 'A rare cybernetic key that can re-route power to unlock an additional inventory slot.', icon: Key },
+  { id: 'item-1', name: 'Plasma Katana', type: 'Weapon', value: 800, description: 'A blade of pure energy. Cuts through almost anything.', icon: 'Sword' },
+  { id: 'item-2', name: 'Nano-Medkit', type: 'Consumable', value: 50, description: 'Heals minor wounds instantly.', nutrition: 25, icon: 'HeartPulse' },
+  { id: 'item-3', name: 'Aegis Vest', type: 'Armor', value: 1200, description: 'Lightweight vest that can deflect energy projectiles.', icon: 'Shield' },
+  { id: 'item-4', name: 'Data Chip', type: 'Quest Item', value: 0, description: 'Encrypted data for the Cy-Gnostics.', icon: 'Bot' },
+  { id: 'item-5', name: 'Ancient Map', type: 'Quest Item', value: 0, description: 'A mysterious map fragment.', icon: 'Map' },
+  { id: 'item-6', name: 'Slot Expansion Key', type: 'Key', value: 1000, description: 'A rare cybernetic key that can re-route power to unlock an additional inventory slot.', icon: 'Key' },
 ];
 
 export const questData: Quest[] = [

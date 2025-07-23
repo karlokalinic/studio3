@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useCharacterStore } from "@/stores/use-character-store";
 import { useToast } from "@/hooks/use-toast";
-import { Hand, Trash2, Info, Lock } from "lucide-react";
+import { Hand, Trash2, Info, Lock, Sword, HeartPulse, Shield, Bot, Map, Key, HelpCircle } from "lucide-react";
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface InventoryProps {
@@ -27,6 +27,17 @@ interface InventoryProps {
   onSelectItem: (item: InventoryItem | null) => void;
   maxSlots: number;
 }
+
+const iconMap: { [key: string]: React.ElementType } = {
+    Sword,
+    HeartPulse,
+    Shield,
+    Bot,
+    Map,
+    Key,
+    HelpCircle
+};
+
 
 const TOTAL_GRID_SLOTS = 25; // 5x5 grid
 
@@ -99,7 +110,7 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
               const isSelected = item && selectedItem?.id === item.id;
               
               if (item && isUnlocked) {
-                 const IconComponent = item.icon;
+                 const IconComponent = iconMap[item.icon] || HelpCircle;
                  return (
                     <motion.div
                       key={item.id}

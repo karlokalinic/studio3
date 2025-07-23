@@ -90,7 +90,7 @@ export interface InventoryItem {
   value: number;
   description: string;
   nutrition?: number;
-  icon: React.ElementType;
+  icon: string;
 }
 
 export interface WorldLocation {
