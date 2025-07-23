@@ -32,17 +32,7 @@ export default function StatInternalsContent() {
 
   return (
     <div className="min-h-screen bg-background text-foreground font-body p-4 md:p-8">
-      <div className="container mx-auto">
-        <div className="mb-8">
-          <Button asChild variant="outline">
-            <Link href="/">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Game
-            </Link>
-          </Button>
-        </div>
         <StatInternals profile={character} />
-      </div>
     </div>
   );
 }
