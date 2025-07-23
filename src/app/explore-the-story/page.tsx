@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -83,9 +84,9 @@ export default function LorePage() {
             {lore.factions.list.map(faction => (
                 <div key={faction.name} className="p-4 bg-black/20 rounded-lg">
                     <h4 className="font-headline text-lg text-primary">{faction.name} <span className="text-sm text-muted-foreground font-body font-normal">- {faction.type}</span></h4>
-                    <p><strong className="text-primary/80">Values:</strong> {faction.values}</p>
-                    <p><strong className="text-primary/80">Structure:</strong> {faction.structure}</p>
-                    <p><strong className="text-primary/80">Conflicts:</strong> {faction.conflicts}</p>
+                    <p className="text-muted-foreground"><strong className="text-primary/80">Values:</strong> {faction.values}</p>
+                    <p className="text-muted-foreground"><strong className="text-primary/80">Structure:</strong> {faction.structure}</p>
+                    <p className="text-muted-foreground"><strong className="text-primary/80">Conflicts:</strong> {faction.conflicts}</p>
                 </div>
             ))}
             </div>
