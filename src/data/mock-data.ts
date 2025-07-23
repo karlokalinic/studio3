@@ -1,3 +1,4 @@
+
 import type { PlayerStats, CharacterProfile, InventoryItem, Quest, WorldLocation } from '@/types';
 import { Sword, HeartPulse, Shield, Bot, Map, Key } from 'lucide-react';
 
@@ -13,6 +14,10 @@ export const characterData: CharacterProfile = {
   level: 12,
   xp: 4500,
   inventorySlots: 15,
+  health: 100,
+  energy: 100,
+  hunger: 100,
+  currency: 100,
   attributes: {
     strength: { value: 18, description: 'Raw physical power. Affects melee damage and carry capacity.' },
     intelligence: { value: 14, description: 'Cognitive ability, problem-solving, and hacking skills.' },
@@ -49,8 +54,8 @@ export const inventoryData: InventoryItem[] = [
 ];
 
 export const questData: Quest[] = [
-  { id: 'q1', title: 'The Ghost in the Machine', status: 'Active', description: 'The Cy-Gnostics want you to deliver a data chip to their contact in the Undercity. The trip is perilous.', moralChoice: 'Hand over the data chip as is, or decrypt it first to see what secrets it holds?', outcomes: 'Betraying the Cy-Gnostics could be profitable, but they have long memories.'},
-  { id: 'q2', title: 'Echoes of the Past', status: 'Active', description: 'A mysterious signal is broadcasting from the ruins of Old-Terra. Investigate its source.', moralChoice: 'The signal could be a trap or a cry for help. Proceed with caution or aggression?', outcomes: 'What you find might change your understanding of the world.'},
+  { id: 'q1', title: 'The Ghost in the Machine', status: 'Active', progress: 75, description: 'The Cy-Gnostics want you to deliver a data chip to their contact in the Undercity. The trip is perilous.', moralChoice: 'Hand over the data chip as is, or decrypt it first to see what secrets it holds?', outcomes: 'Betraying the Cy-Gnostics could be profitable, but they have long memories.'},
+  { id: 'q2', title: 'Echoes of the Past', status: 'Active', progress: 20, description: 'A mysterious signal is broadcasting from the ruins of Old-Terra. Investigate its source.', moralChoice: 'The signal could be a trap or a cry for help. Proceed with caution or aggression?', outcomes: 'What you find might change your understanding of the world.'},
 ];
 
 export const worldData: WorldLocation[] = [

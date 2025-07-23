@@ -1,4 +1,5 @@
 
+
 export interface PlayerStats {
   health: number;
   energy: number;
@@ -82,4 +83,5 @@ export interface Quest {
   moralChoice: string;
   outcomes: string;
   status: 'Active' | 'Completed';
+  progress: number;
 }
