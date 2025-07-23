@@ -26,7 +26,8 @@ import {
   Archive,
   BookOpen,
   Lightbulb,
-  Home
+  Home,
+  FileText
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -163,6 +164,15 @@ export default function GameCenter() {
               >
                 <Link href="/dev-insights">
                   <Lightbulb className="mr-4"/> Dev Insights
+                </Link>
+              </Button>
+              <Button
+                variant="ghost"
+                className="justify-start text-lg p-6 hover:bg-accent/20 hover:text-accent"
+                asChild
+              >
+                <Link href="/project-analysis">
+                  <FileText className="mr-4"/> Project Analysis
                 </Link>
               </Button>
             </div>
