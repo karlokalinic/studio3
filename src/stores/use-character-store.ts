@@ -18,6 +18,7 @@ interface CharacterState {
     removeItem: (itemId: string) => void;
     updateCharacterStats: (updates: Partial<{ health: number; energy: number; hunger: number; currency: number }>) => void;
     unlockInventorySlot: () => void;
+    setCharacter: (setter: (char: CharacterProfile | null) => CharacterProfile | null) => void;
 }
 
 export const useCharacterStore = create<CharacterState>()(
@@ -74,6 +75,9 @@ export const useCharacterStore = create<CharacterState>()(
             resetCharacter: () => {
                 set({ character: null, inventory: [] });
                  localStorage.removeItem('tutorialCompleted');
+                 if (typeof window !== 'undefined') {
+                    localStorage.removeItem('character-storage');
+                 }
             },
             removeItem: (itemId) => {
                 set((state) => ({
@@ -106,7 +110,10 @@ export const useCharacterStore = create<CharacterState>()(
                     }
                     return {};
                 });
-            }
+            },
+            setCharacter: (setter) => {
+                set((state) => ({ character: setter(state.character) }));
+            },
         }),
         {
             name: 'character-storage',

@@ -2,6 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useCharacterStore } from '@/stores/use-character-store';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -31,7 +32,8 @@ const GlowIcon = ({ icon: Icon }: { icon: React.ElementType }) => (
 );
 
 export default function GameCenter() {
-  const { character } = useCharacterStore();
+  const { character, resetCharacter } = useCharacterStore();
+  const router = useRouter();
   const [formattedCurrency, setFormattedCurrency] = useState<string | null>(
     null
   );
@@ -42,6 +44,11 @@ export default function GameCenter() {
       setFormattedCurrency(character.currency.toLocaleString());
     }
   }, [character?.currency]);
+
+  const handleQuit = () => {
+    resetCharacter();
+    router.push('/');
+  }
 
   if (!character) {
     return (
@@ -137,6 +144,7 @@ export default function GameCenter() {
               <Button
                 variant="ghost"
                 className="justify-start text-lg p-6 hover:bg-accent/20 hover:text-accent"
+                onClick={handleQuit}
               >
                 <LogOut className="mr-4" /> Quit Game
               </Button>

@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { Zap } from 'lucide-react';
+import { useCharacterStore } from '@/stores/use-character-store';
 
 const FlashingScreen = () => {
   const [isFlashing, setIsFlashing] = useState(false);
@@ -31,13 +32,42 @@ const FlashingScreen = () => {
 
 export default function DevCheats() {
   const { toast } = useToast();
+  const { setCharacter } = useCharacterStore();
 
   const handleCheat = (cheatName: string) => {
+    setCharacter((prevCharacter) => {
+      if (!prevCharacter) return null;
+
+      const newCharacter = { ...prevCharacter };
+
+      switch (cheatName) {
+        case 'Max Currency':
+          newCharacter.currency = 999999;
+          break;
+        case 'Max Level':
+          newCharacter.level = 99;
+          newCharacter.xp = 999999;
+          break;
+        case 'God Mode':
+          newCharacter.health = 100;
+          newCharacter.energy = 100;
+          newCharacter.hunger = 100;
+          newCharacter.attributes.strength.value = 99;
+          newCharacter.attributes.intelligence.value = 99;
+          newCharacter.attributes.spirit.value = 99;
+          break;
+        case 'Reset Quests':
+          // This would require more complex quest state management
+          // For now, we'll just show a toast
+          break;
+      }
+      return newCharacter;
+    });
+
     toast({
       title: 'Cheat Activated',
       description: `${cheatName} has been applied.`,
     });
-    // In a real scenario, this would dispatch an action to update game state.
   };
 
   return (
