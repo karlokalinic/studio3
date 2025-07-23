@@ -11,6 +11,7 @@ import GameCenter from '@/components/game-center';
 import Inventory from '@/components/inventory';
 import QuestLog from '@/components/quest-log';
 import WorldMap from '@/components/world-map';
+import StatInternals from '@/components/stat-internals';
 
 import { useCharacterStore } from '@/stores/use-character-store';
 import { questData, worldData } from '@/data/mock-data';
@@ -98,30 +99,21 @@ export default function Home() {
           <GameCenter />
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          <div className="lg:col-span-1 xl:col-span-1 space-y-8">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          <div className="xl:col-span-1 space-y-8">
             <CharacterProfile profile={character} />
             <QuestLog quests={questData} />
+            <WorldMap locations={worldData} />
           </div>
 
-          <div className="lg:col-span-2 xl:col-span-2 space-y-8">
+          <div className="xl:col-span-2 space-y-8">
             <Inventory 
               items={inventory} 
               selectedItem={selectedItem}
               onSelectItem={setSelectedItem}
               maxSlots={characterStats.inventorySlots}
             />
-          </div>
-          
-          <div className="lg:col-span-3 xl:col-span-1 space-y-8">
-             <div className="bg-card/50 border-primary/20 shadow-lg shadow-primary/5 p-6 rounded-lg text-center">
-                  <h3 className="font-headline text-2xl text-primary mb-4">Discover the Universe</h3>
-                  <p className="text-muted-foreground mb-6">Dive deep into the lore, factions, and history of the Nexus Chronicles.</p>
-                  <Button asChild className="w-full bg-accent text-accent-foreground hover:bg-accent/80 transition-all text-lg py-6 font-headline">
-                    <Link href="/explore-the-story">Explore the Story</Link>
-                  </Button>
-              </div>
-            <WorldMap locations={worldData} />
+            <StatInternals profile={character} />
           </div>
         </div>
       </div>

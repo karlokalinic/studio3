@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from "next/image";
@@ -81,7 +82,15 @@ export default function WorldMap({ locations }: WorldMapProps) {
             ))}
           </div>
         </div>
+         <div className="bg-card/50 border-primary/20 shadow-lg shadow-primary/5 p-6 rounded-lg text-center">
+              <h3 className="font-headline text-2xl text-primary mb-4">Discover the Universe</h3>
+              <p className="text-muted-foreground mb-6">Dive deep into the lore, factions, and history of the Nexus Chronicles.</p>
+              <Button asChild className="w-full bg-accent text-accent-foreground hover:bg-accent/80 transition-all text-lg py-6 font-headline">
+                <Link href="/explore-the-story">Explore the Story</Link>
+              </Button>
+          </div>
       </CardContent>
     </Card>
   );
 }
+
