@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import type { PlayerStats } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -14,6 +15,12 @@ const GlowIcon = ({ icon: Icon }: { icon: React.ElementType }) => (
 );
 
 export default function GameCenter({ stats }: GameCenterProps) {
+  const [formattedCurrency, setFormattedCurrency] = useState<string | null>(null);
+
+  useEffect(() => {
+    setFormattedCurrency(stats.currency.toLocaleString());
+  }, [stats.currency]);
+
   return (
     <div className="bg-card/50 rounded-lg border border-primary/20 p-4 shadow-lg shadow-primary/5 flex flex-col md:flex-row items-center justify-between gap-4">
       <h1 className="text-3xl font-headline text-primary drop-shadow-[0_0_8px_hsl(var(--primary))]">Nexus Chronicles</h1>
@@ -34,7 +41,7 @@ export default function GameCenter({ stats }: GameCenterProps) {
 
         <div className="flex items-center font-bold text-lg text-accent" title="Nexus Kristali">
             <GlowIcon icon={CircleDollarSign} />
-            {stats.currency.toLocaleString()}
+            {formattedCurrency || '...'}
         </div>
       </div>
       
