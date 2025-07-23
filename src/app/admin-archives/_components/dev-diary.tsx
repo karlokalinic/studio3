@@ -208,9 +208,9 @@ export default function DevDiary() {
             <Separator className="my-6"/>
              <h4 className="font-headline text-lg text-primary/90 mb-2">Expandability & Outcomes:</h4>
              <p className="text-muted-foreground">{lore.quests.outcomes}</p>
-             <div className="mt-4 p-4 border-l-4 border-accent bg-accent/10">
-                <p className="font-bold text-accent-foreground">Analysis</p>
-                <p className="text-accent-foreground/80">This quest structure is highly expandable. New "layers" can be inserted to extend the investigation, or branches can be added at each decision point. For example, a choice in Layer 5 could lead to a whole new arc dealing with the fallout of the assassination, or preventing it could trigger a civil war within the resistance movement. The modular design allows for near-infinite narrative depth by connecting outcomes to the global faction and reputation systems.</p>
+             <div className="mt-4">
+                <p className="font-bold text-foreground">Analysis</p>
+                <p className="text-foreground/80">This quest structure is highly expandable. New "layers" can be inserted to extend the investigation, or branches can be added at each decision point. For example, a choice in Layer 5 could lead to a whole new arc dealing with the fallout of the assassination, or preventing it could trigger a civil war within the resistance movement. The modular design allows for near-infinite narrative depth by connecting outcomes to the global faction and reputation systems.</p>
              </div>
         </div>
       </SectionCard>
