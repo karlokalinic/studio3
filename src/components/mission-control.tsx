@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'use-sync-external-store/shim';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from './ui/button';
@@ -135,5 +135,3 @@ export default function MissionControl() {
         </Card>
     );
 }
-
-    
