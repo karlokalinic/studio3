@@ -30,9 +30,9 @@ const introStory = [
         type: 'choice',
         text: "How do you respond?",
         options: [
-            { text: "Fine. Point me in the right direction.", consequence: { type: 'quest_start', questId: 'q1-retrieval' } },
-            { text: "Who are you? And what makes you think I owe you anything?", consequence: { type: 'reputation_change', faction: 'Unknown', change: -10 } },
-            { text: "[Remain Silent]", consequence: { type: 'nothing' } },
+            { text: "Fine. Point me in the right direction.", consequence: { type: 'quest_start', questId: 'q1-retrieval', message: "The voice says, 'Good. The less we have to talk, the better. Your mission data is being uploaded now. Don't screw this up.'" } },
+            { text: "Who are you? And what makes you think I owe you anything?", consequence: { type: 'reputation_change', faction: 'Unknown', change: -10, message: "A moment of silence. 'The questions you should be asking are about how you're going to survive the next 24 hours without our help. Now, about that job...'" } },
+            { text: "[Remain Silent]", consequence: { type: 'nothing', message: "The silence hangs in the air before the voice sighs. 'Playing the strong, silent type? Fine. Wastes my time. A job has been added to your log. Get it done.'" } },
         ]
     }
 ];
@@ -80,11 +80,12 @@ export default function MissionControl() {
         if (activeRetrievalQuest) {
             setCurrentStory(retrievalQuestStory);
         } else if (quests.length === 0 && !hasStartedIntro.current) {
-            setCurrentStory({ choices: introStory.find(s => s.type === 'choice')?.options || [] });
-            hasStartedIntro.current = true;
-            advanceIntroStory();
+            setCurrentStory({ id: 'intro', choices: introStory.find(s => s.type === 'choice')?.options || [] });
+            if (storyStep === 0) {
+              advanceIntroStory();
+            }
         }
-    }, [quests, advanceIntroStory, history.length]);
+    }, [quests, advanceIntroStory, storyStep]);
 
     // Automatically advance the intro story if the current block is narration
     useEffect(() => {
@@ -100,30 +101,51 @@ export default function MissionControl() {
     const handleChoice = (option: any) => {
         const choiceEntry = { id: `choice-${Date.now()}`, type: 'player_choice', text: option.text };
         setHistory(prev => [...prev, choiceEntry]);
-
+        
         const { consequence } = option;
 
         setTimeout(() => {
-            // Handle consequence
+            const consequenceMessage = { id: `consequence-${Date.now()}`, type: 'narrator', text: consequence.message };
+            setHistory(prev => [...prev, consequenceMessage]);
+
             if (consequence.type === 'quest_start') {
                 const questToAdd = questData.find(q => q.id === consequence.questId);
-                if(questToAdd) {
+                if(questToAdd && !quests.some(q => q.id === consequence.questId)) {
                     addQuest(questToAdd);
-                    const endOfSegment = { id: 'end-intro', type: 'narrator', text: 'The line goes dead. You are left alone with your thoughts and your mission.' };
-                    setHistory(prev => [...prev, endOfSegment]);
                 }
+                 const endOfSegment = { id: 'end-intro', type: 'narrator', text: 'The line goes dead. You are left alone with your thoughts and your mission.' };
+                 setTimeout(() => setHistory(prev => [...prev, endOfSegment]), 1500);
             }
 
             if (consequence.type === 'progress') {
                 updateQuestProgress(consequence.questId, consequence.progress);
-                const progressMessage = { id: `progress-${Date.now()}`, type: 'narrator', text: consequence.message };
-                setHistory(prev => [...prev, progressMessage]);
             }
+
+            // For non-quest-starting choices in the intro, we need to re-present the options
+            if (currentStory?.id === 'intro' && consequence.type !== 'quest_start') {
+                 const finalChoiceBlock = introStory.find(s => s.type === 'choice');
+                 if (finalChoiceBlock) {
+                    const rePresentChoice = { id: `re-present-${Date.now()}`, type: 're-present-choice', ...finalChoiceBlock };
+                    setTimeout(() => setHistory(prev => [...prev, rePresentChoice]), 1500);
+                 }
+            }
+
         }, 500);
     }
 
     const currentBlock = introStory[storyStep];
-    const isIntroActive = quests.length === 0 && storyStep < introStory.length;
+    const isIntroActive = quests.length === 0 && storyStep < introStory.length && currentStory?.id === 'intro';
+    const lastHistoryItem = history[history.length - 1];
+
+    let choiceBlock: any = null;
+    if (isIntroActive && currentBlock?.type === 'choice') {
+        choiceBlock = currentBlock;
+    } else if (lastHistoryItem?.type === 're-present-choice') {
+        choiceBlock = lastHistoryItem;
+    } else if (currentStory?.id === 'q1-retrieval') {
+        choiceBlock = currentStory;
+    }
+
 
     return (
         <Card className="bg-card/50 border-primary/20 shadow-lg shadow-primary/5 flex flex-col h-[700px] md:h-[600px]">
@@ -147,7 +169,7 @@ export default function MissionControl() {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.3 }}
                             >
-                                {item.type === 'narrator' && (
+                                {(item.type === 'narrator') && (
                                      <p className="text-muted-foreground italic">"{item.text}"</p>
                                 )}
                                 {item.type === 'player_choice' && (
@@ -159,13 +181,28 @@ export default function MissionControl() {
                     </div>
                 </ScrollArea>
             </CardContent>
-            {(isIntroActive && currentBlock?.type === 'choice') || (currentStory && currentStory.id === 'q1-retrieval') ? (
+            {choiceBlock ? (
                 <CardFooter className="p-6 pt-4 border-t border-primary/20">
-                    <div className="w-full">
-                        <p className="text-center mb-4 font-bold">{isIntroActive ? currentBlock.text : "What's your next move?"}</p>
+                    <motion.div 
+                        key={choiceBlock.id || 'quest-choices'}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.5 }}
+                        className="w-full"
+                    >
+                        <p className="text-center mb-4 font-bold">{choiceBlock.text || "What's your next move?"}</p>
                         <div className="flex flex-col gap-2">
-                            {(isIntroActive ? currentBlock.options : currentStory.choices).map((option: any, index: number) => (
+                            {choiceBlock.options ? choiceBlock.options.map((option: any, index: number) => (
                                 <Button 
+                                    key={index} 
+                                    variant="outline"
+                                    onClick={() => handleChoice(option)}
+                                    className="hover:bg-accent hover:text-accent-foreground transition-colors justify-start text-left h-auto py-3"
+                                >
+                                    {option.text}
+                                </Button>
+                            )) : choiceBlock.choices.map((option: any, index: number) => (
+                                 <Button 
                                     key={index} 
                                     variant="outline"
                                     onClick={() => handleChoice(option)}
@@ -175,7 +212,7 @@ export default function MissionControl() {
                                 </Button>
                             ))}
                         </div>
-                    </div>
+                    </motion.div>
                 </CardFooter>
             ) : null}
         </Card>
