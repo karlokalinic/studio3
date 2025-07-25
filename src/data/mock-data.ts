@@ -1,185 +1,152 @@
 
-
 import type { PlayerStats, CharacterProfile, InventoryItem, Quest, WorldLocation, Achievement } from '@/types';
 
 export const playerStats: PlayerStats = {
-  health: 85,
-  energy: 70,
-  hunger: 90,
-  currency: 1337,
+  vitality: 85,
+  stamina: 70,
+  sanity: 90,
+  kamen: 10,
+  mracnik: 1,
+  prasinskeKovanice: 0
 };
 
 export const characterData: CharacterProfile = {
-  name: "Kaelen",
-  level: 12,
-  xp: 4500,
-  inventorySlots: 15,
-  health: 100,
-  energy: 100,
-  hunger: 100,
-  currency: 100,
+  name: "Elysar Valentis",
+  level: 1,
+  xp: 0,
+  inventorySlots: 3,
+  vitality: 100,
+  stamina: 100,
+  sanity: 100,
+  kamen: 10,
+  mracnik: 1,
+  prasinskeKovanice: 0,
   attributes: {
-    strength: { value: 18, description: 'Raw physical power. Affects melee damage and carry capacity.' },
-    intelligence: { value: 14, description: 'Cognitive ability, problem-solving, and hacking skills.' },
-    spirit: { value: 15, description: 'Mental fortitude and connection to dimensional energies. Affects willpower and magic resistance.' },
-    hp: { value: 120, description: 'Health Points. Represents your character\'s life force.' },
+    intellect: { value: 3, description: 'Knowledge of ancient languages, symbols, and research.' },
+    strength: { value: 1, description: 'Physical power for moving obstacles.' },
+    adaptation: { value: 1, description: 'Ability to react to sudden situations (uses a D6 roll).' },
   },
   state: {
-    fatigue: { value: 25, description: 'Tiredness level. High fatigue negatively impacts physical performance.' },
-    fitness: { value: 80, description: 'Overall physical condition. High fitness improves strength and endurance.' },
-    focus: { value: 90, description: 'Mental concentration. High focus improves the effectiveness of tasks requiring intelligence.' },
-    mentalClarity: { value: 75, description: 'Clarity of thought. High clarity enhances decision-making and cognitive speed.' },
-  },
-  enhancements: {
-    cybernetics: ['NeuralLink V2', 'AdrenalBooster'],
-    implants: ['Subdermal Weave'],
-  },
-  attunement: {
-    order: 10,
-    chaos: 5,
-    balance: 2,
+    fatigue: { value: 0, description: 'Tiredness level. High fatigue negatively impacts performance.' },
+    hunger: {value: 100, description: 'Satiation level.'},
+    focus: { value: 100, description: 'Mental concentration. High focus improves the effectiveness of tasks requiring intelligence.' },
+    mentalClarity: { value: 100, description: 'Clarity of thought. High clarity enhances decision-making and cognitive speed.' },
   },
   metadata: {
-    age: 28,
-    gender: "Non-binary",
-    orientation: "Pansexual",
-    style: "Cyber-punk Ronin",
-    origin: "Neo-Kyoto Sector 7",
-    backstory: "A former corporate enforcer seeking redemption in the shattered worlds.",
+    age: 47,
+    gender: "Male",
+    origin: "Lumenor",
+    backstory: "An esteemed scholar from the city of Lumenor, your relentless pursuit of truth led you to uncover corruption at the highest levels of the Empire. For this, you were sentenced to the lightless depths of Fort Umbralis. Your mind is your only weapon.",
   },
 };
 
 export const inventoryData: InventoryItem[] = [
-  { id: 'item-1', name: 'Plasma Katana', type: 'Weapon', value: 800, description: 'A blade of pure energy. Cuts through almost anything.', icon: 'Sword' },
-  { id: 'item-2', name: 'Nano-Medkit', type: 'Consumable', value: 50, description: 'Heals minor wounds instantly.', nutrition: 25, icon: 'HeartPulse' },
-  { id: 'item-3', name: 'Aegis Vest', type: 'Armor', value: 1200, description: 'Lightweight vest that can deflect energy projectiles.', icon: 'Shield' },
-  { id: 'item-4', name: 'Data Chip', type: 'Quest Item', value: 0, description: 'Encrypted data for the Cy-Gnostics.', icon: 'Bot' },
-  { id: 'item-5', name: 'Ancient Map', type: 'Quest Item', value: 0, description: 'A mysterious map fragment.', icon: 'Map' },
-  { id: 'item-6', name: 'Slot Expansion Key', type: 'Key', value: 1000, description: 'A rare cybernetic key that can re-route power to unlock an additional inventory slot.', icon: 'Key' },
+  { id: 'item-1', name: 'Tattered Rags', type: 'Armor', value: 1, description: 'The threadbare uniform of a prisoner.', icon: 'Shield' },
+  { id: 'item-2', name: 'Stale Bread', type: 'Consumable', value: 0, description: 'Barely edible, but it\'s something.', nutrition: 5, icon: 'HeartPulse' },
+  { id: 'item-3', name: 'Phosphorescent Pebble', type: 'Currency', value: 1, description: 'A small stone that glows faintly. The primary currency among prisoners.', icon: 'Gem' },
 ];
 
 export const questData: Quest[] = [
     { 
-        id: 'q1-retrieval', 
-        title: 'The Retrieval', 
+        id: 'q1-escape', 
+        title: 'The First Step', 
         status: 'Active', 
         progress: 0, 
-        description: 'Retrieve the package from the fallen courier in the ruins of Terra Nexus Sector-G.', 
-        moralChoice: 'The contents of the package are unknown. Do you deliver it sealed, or investigate first?',
-        outcomes: 'Your employer values discretion, but knowledge is power.'
+        description: 'You are trapped in a cell. Your first goal is to acquire a tool. Without one, the deeper passages are inaccessible.', 
+        moralChoice: 'Do you risk stealing from a fellow prisoner, or attempt to bribe a guard with your meager resources?',
+        outcomes: 'Your choice will set the tone for your escape and your reputation within the prison.'
     }
 ];
 
 export const worldData: WorldLocation[] = [
-  { id: 'loc1', name: 'Neo-Kyoto', faction: 'Solaris Coalition', currencyModifier: 1.2, position: { top: '30%', left: '25%' }, description: 'A gleaming metropolis governed by corporate technocrats. Order and progress are valued above all.' },
-  { id: 'loc2', name: 'The Undercity', faction: 'Outcasts', currencyModifier: 0.8, position: { top: '65%', left: '40%' }, description: 'A sprawling, chaotic network of tunnels and settlements beneath Neo-Kyoto. A haven for criminals and the disenfranchised.' },
-  { id: 'loc3', name: 'Aethelgard', faction: 'Sky Citadels', currencyModifier: 1.0, position: { top: '50%', left: '70%' }, description: 'A floating city-state built on principles of free trade and individualism. Controlled by powerful merchant guilds.' },
+  { id: 'loc1', name: 'Upper Blocks', faction: 'Political Prisoners', currencyModifier: 1.0, position: { top: '30%', left: '25%' }, description: 'Relatively clean, but under constant surveillance. Home to nobles and intellectuals.' },
+  { id: 'loc2', name: 'The Mines', faction: 'Laborers', currencyModifier: 1.0, position: { top: '65%', left: '40%' }, description: 'Forced labor happens here. Dangerous, but a source of rare minerals.' },
+  { id: 'loc3', name: 'The Catacombs', faction: 'The Forgotten', currencyModifier: 1.0, position: { top: '50%', left: '70%' }, description: 'The deepest, most dangerous level. Rumored to hold ancient secrets and horrors.' },
 ];
 
-// Achievements Data
+// Achievements Data for Fort Umbralis
 export const achievementsData: Achievement[] = [
   {
     id: 'achieve-start-journey',
-    name: 'A Step into the Nexus',
-    description: 'Complete the tutorial and begin your journey.',
+    name: 'The Wretched',
+    description: 'Begin your sentence in Fort Umbralis.',
     isSpoiler: false,
     reward: { xp: 100 },
     icon: 'Footprints',
-    isUnlocked: (char, quests) => localStorage.getItem('tutorialCompleted') === 'true',
+    isUnlocked: (char, quests) => !!char,
   },
   {
     id: 'achieve-first-quest',
-    name: 'On the Job',
-    description: "Accept your first quest, 'The Retrieval'.",
+    name: 'A Glimmer of Hope',
+    description: "Formulate your first plan to escape.",
     isSpoiler: false,
     reward: { xp: 50 },
     icon: 'Briefcase',
-    isUnlocked: (char, quests) => quests.some(q => q.id === 'q1-retrieval'),
+    isUnlocked: (char, quests) => quests.some(q => q.id === 'q1-escape'),
   },
-  // This is a spoiler achievement. The player must complete the first quest to unlock it.
-  // In the UI, the name and description will be hidden until it's unlocked.
   {
-    id: 'achieve-complete-retrieval',
-    name: 'Package Delivered',
-    description: "Complete 'The Retrieval' quest.",
+    // A tool is required to progress, a key milestone.
+    id: 'achieve-got-tool',
+    name: 'The First Tool',
+    description: "Acquire your first tool, a symbol of hope.",
     isSpoiler: true,
-    reward: { xp: 250, currency: 500 },
+    reward: { xp: 250, currency: 5 }, // 5 Kamen
     icon: 'PackageCheck',
-    isUnlocked: (char, quests) => quests.some(q => q.id === 'q1-retrieval' && q.status === 'Completed'),
+    isUnlocked: (char, quests) => false, // Placeholder for future logic
   },
   {
     id: 'achieve-reach-level-5',
-    name: 'Seasoned Walker',
-    description: 'Reach character level 5.',
+    name: 'Seasoned Convict',
+    description: 'Survive long enough to reach level 5.',
     isSpoiler: false,
     reward: { xp: 200 },
     icon: 'Star',
     isUnlocked: (char, quests) => char.level >= 5,
   },
   {
-    id: 'achieve-reach-level-10',
-    name: 'Nexus Veteran',
-    description: 'Reach character level 10.',
-    isSpoiler: false,
-    reward: { xp: 500 },
-    icon: 'Badge',
-    isUnlocked: (char, quests) => char.level >= 10,
-  },
-  {
     id: 'achieve-rich',
-    name: 'Kristali Kingpin',
-    description: 'Amass 10,000 Nexus Kristali.',
+    name: 'Stone Baron',
+    description: 'Amass 100 Kamen.',
     isSpoiler: false,
     reward: { xp: 1000 },
     icon: 'CircleDollarSign',
-    isUnlocked: (char, quests) => char.currency >= 10000,
+    isUnlocked: (char, quests) => char.kamen >= 100,
   },
   {
-    id: 'achieve-max-strength',
-    name: 'Peak Physique',
-    description: 'Push your base Strength attribute to 20 or higher.',
+    id: 'achieve-mracnik-hoarder',
+    name: 'Crystal Collector',
+    description: 'Hold 10 Mračnik at once.',
     isSpoiler: false,
     reward: { xp: 750 },
     icon: 'Dumbbell',
-    isUnlocked: (char, quests) => char.attributes.strength.value >= 20,
+    isUnlocked: (char, quests) => char.mracnik >= 10,
   },
   {
-    id: 'achieve-max-intelligence',
-    name: 'Giga-Brain',
-    description: 'Push your base Intelligence attribute to 20 or higher.',
-    isSpoiler: false,
-    reward: { xp: 750 },
-    icon: 'BrainCircuit',
-    isUnlocked: (char, quests) => char.attributes.intelligence.value >= 20,
-  },
-  // This is a spoiler achievement, unlocked by a choice in a future quest.
-  // The player must choose to betray their employer.
-  {
-    id: 'achieve-betrayal',
-    name: 'Double-Crosser',
-    description: 'Betray your employer during a critical mission.',
+    // Player finds a way to communicate with another prisoner in a different language
+    id: 'achieve-secret-message',
+    name: 'Whispers in the Dark',
+    description: 'Successfully send or receive a secret message using a non-standard language.',
     isSpoiler: true,
-    reward: { currency: -1000, xp: 500 }, // A penalty and a reward
-    icon: 'Swords',
-    isUnlocked: (char, quests) => false, // Placeholder for future quest logic
+    reward: { xp: 500 },
+    icon: 'Languages',
+    isUnlocked: (char, quests) => false, 
   },
-  // This is a secret achievement for finding a hidden area.
   {
-    id: 'achieve-secret-area',
-    name: '???',
-    description: 'You found a place that should not exist.',
+    id: 'achieve-first-permadeath',
+    name: 'And So It Ends...',
+    description: 'Die for the first time.',
     isSpoiler: true,
-    reward: { xp: 1000 },
-    icon: 'HelpCircle',
-    isUnlocked: (char, quests) => false, // Placeholder
+    reward: { xp: 0 },
+    icon: 'Skull',
+    isUnlocked: (char, quests) => false, 
   },
-  {
-    id: 'achieve-inventory-expanded',
-    name: 'Hoarder',
-    description: 'Unlock your first extra inventory slot.',
-    isSpoiler: false,
-    reward: { xp: 150 },
-    icon: 'Grid',
-    isUnlocked: (char, quests) => char.inventorySlots > 3 + Math.floor(char.attributes.strength.value / 5),
+   {
+    id: 'achieve-second-life',
+    name: 'A New Face, An Old Grudge',
+    description: 'Start a new game after your first death, carrying the whispers of the past.',
+    isSpoiler: true,
+    reward: { xp: 100 },
+    icon: 'History',
+    isUnlocked: (char, quests) => false, 
   },
 ];

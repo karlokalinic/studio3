@@ -32,32 +32,24 @@ const FullCharacterSheet = ({ profile, calculatedStats }: { profile: CharacterPr
                         <CardTitle className="font-headline text-3xl text-primary">{profile.name}</CardTitle>
                         <CardDescription>Lvl {profile.level} ({profile.xp} XP) - {profile.metadata.origin}</CardDescription>
                     </div>
-                    <Button asChild variant="outline">
-                        <Link href="/character-sheet">
-                            <ExternalLink className="mr-2 h-4 w-4" />
-                            View Stat Internals
-                        </Link>
-                    </Button>
                 </div>
             </CardHeader>
             <CardContent className="space-y-6">
                  <div>
                     <h3 className="font-headline text-xl mb-2 text-primary/80">Base Attributes</h3>
                     <div className="divide-y divide-primary/10">
+                        <Stat label="Intellect" value={attributes.intellect.value} description={attributes.intellect.description} />
                         <Stat label="Strength" value={attributes.strength.value} description={attributes.strength.description} />
-                        <Stat label="Intelligence" value={attributes.intelligence.value} description={attributes.intelligence.description} />
-                        <Stat label="Spirit" value={attributes.spirit.value} description={attributes.spirit.description} />
-                        <Stat label="Base HP" value={attributes.hp.value} description={attributes.hp.description} />
+                        <Stat label="Adaptation" value={attributes.adaptation.value} description={attributes.adaptation.description} />
                     </div>
                 </div>
                 <Separator />
                 <div>
                     <h3 className="font-headline text-xl mb-2 text-primary/80">Calculated Stats</h3>
                     <div className="divide-y divide-primary/10">
-                        <Stat label="Effective Strength" value={calculatedStats.effectiveStrength} description="Your actual physical power in combat and for physical checks, after all modifiers." />
-                        <Stat label="Effective Intelligence" value={calculatedStats.effectiveIntelligence} description="Your actual cognitive power for hacking, analysis, and knowledge checks."/>
-                        <Stat label="Max HP" value={calculatedStats.maxHP} description="Your total health pool."/>
-                        <Stat label="Critical Hit Chance" value={calculatedStats.critChance} unit="%" description="The probability of landing a critical hit, influenced by your intelligence and spirit."/>
+                        <Stat label="Effective Intellect" value={calculatedStats.effectiveIntellect} description="Your actual cognitive power for research and puzzles." />
+                        <Stat label="Effective Strength" value={calculatedStats.effectiveStrength} description="Your actual physical power for moving objects."/>
+                        <Stat label="Max Vitality" value={calculatedStats.maxHP} description="Your total health pool."/>
                          <Stat label="Inventory Slots" value={calculatedStats.inventorySlots} description="The number of items you can carry."/>
                     </div>
                 </div>
@@ -66,17 +58,9 @@ const FullCharacterSheet = ({ profile, calculatedStats }: { profile: CharacterPr
                     <h3 className="font-headline text-xl mb-2 text-primary/80">Dynamic State</h3>
                      <div className="divide-y divide-primary/10">
                         <Stat label="Fatigue" value={state.fatigue.value} unit="%" description={state.fatigue.description}/>
-                        <Stat label="Fitness" value={state.fitness.value} unit="%" description={state.fitness.description}/>
+                        <Stat label="Hunger" value={state.hunger.value} unit="%" description={state.hunger.description}/>
                         <Stat label="Focus" value={state.focus.value} unit="%" description={state.focus.description}/>
                         <Stat label="Mental Clarity" value={state.mentalClarity.value} unit="%" description={state.mentalClarity.description}/>
-                    </div>
-                </div>
-                <Separator />
-                <div>
-                    <h3 className="font-headline text-xl mb-2 text-primary/80">Enhancements</h3>
-                    <div className="text-sm text-muted-foreground space-y-2">
-                        <p><strong className="font-semibold text-primary/80">Cybernetics:</strong> {profile.enhancements.cybernetics.join(', ') || 'None'}</p>
-                        <p><strong className="font-semibold text-primary/80">Implants:</strong> {profile.enhancements.implants.join(', ') || 'None'}</p>
                     </div>
                 </div>
                 <Separator />
@@ -85,8 +69,7 @@ const FullCharacterSheet = ({ profile, calculatedStats }: { profile: CharacterPr
                      <div className="divide-y divide-primary/10">
                         <Stat label="Age" value={profile.metadata.age} />
                         <Stat label="Gender" value={profile.metadata.gender} />
-                        <Stat label="Orientation" value={profile.metadata.orientation} />
-                        <Stat label="Style" value={profile.metadata.style} />
+                        <Stat label="Origin" value={profile.metadata.origin} />
                     </div>
                 </div>
                 <Separator />

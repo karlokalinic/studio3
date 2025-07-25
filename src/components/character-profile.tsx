@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { getCalculatedStats } from "@/lib/character-calculations";
 import { useEffect, useState } from "react";
-import { Info, UserRound, BookCopy } from "lucide-react";
+import { Info, UserRound, BookCopy, Brain, Dumbbell, Dices } from "lucide-react";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { useSettings } from "@/context/settings-context";
@@ -77,20 +77,6 @@ export default function CharacterProfile({ profile }: CharacterProfileProps) {
                         </TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
-                 <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                             <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-accent">
-                                <Link href="/character-sheet">
-                                    <BookCopy className="h-5 w-5" />
-                                </Link>
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>View Stat Internals</p>
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
             </div>
         </div>
         <CardDescription>Lvl {profile.level} ({profile.xp} XP) - {profile.metadata.origin}</CardDescription>
@@ -99,9 +85,18 @@ export default function CharacterProfile({ profile }: CharacterProfileProps) {
         <div>
           <h3 className="font-headline text-lg mb-2 text-primary/80">Base Attributes</h3>
            <div className="space-y-2">
-            <Stat label="Strength" value={attributes.strength.value} />
-            <Stat label="Intelligence" value={attributes.intelligence.value} />
-            <Stat label="Spirit" value={attributes.spirit.value} />
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-muted-foreground text-sm"><Brain className="h-4 w-4 text-primary" /> Intellect</div>
+                <span className="font-bold text-lg text-primary">{attributes.intellect.value}</span>
+            </div>
+             <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-muted-foreground text-sm"><Dumbbell className="h-4 w-4 text-primary" /> Strength</div>
+                <span className="font-bold text-lg text-primary">{attributes.strength.value}</span>
+            </div>
+             <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-muted-foreground text-sm"><Dices className="h-4 w-4 text-primary" /> Adaptation</div>
+                <span className="font-bold text-lg text-primary">{attributes.adaptation.value}</span>
+            </div>
           </div>
         </div>
         <Separator />
@@ -110,10 +105,9 @@ export default function CharacterProfile({ profile }: CharacterProfileProps) {
           <div className="space-y-2">
             {calculatedStats ? (
               <>
-                <Stat label="Eff. Strength" value={calculatedStats.effectiveStrength} baseValue={profile.attributes.strength.value} description="Your actual physical power in combat and for physical checks, after all modifiers." />
-                <Stat label="Eff. Intelligence" value={calculatedStats.effectiveIntelligence} baseValue={profile.attributes.intelligence.value} description="Your actual cognitive power for hacking, analysis, and knowledge checks."/>
-                <Stat label="Max HP" value={calculatedStats.maxHP} baseValue={profile.attributes.hp.value} description="Your total health pool."/>
-                <Stat label="Crit. Chance" value={calculatedStats.critChance} unit="%" description="The probability of landing a critical hit, influenced by your intelligence and spirit."/>
+                <Stat label="Eff. Strength" value={calculatedStats.effectiveStrength} baseValue={profile.attributes.strength.value} description="Your actual physical power for checks, after all modifiers." />
+                <Stat label="Eff. Intellect" value={calculatedStats.effectiveIntellect} baseValue={profile.attributes.intellect.value} description="Your actual cognitive power for checks."/>
+                <Stat label="Max Vitality" value={calculatedStats.maxHP} baseValue={100} description="Your total health pool."/>
               </>
             ) : <p className="text-muted-foreground">Calculating...</p>}
           </div>

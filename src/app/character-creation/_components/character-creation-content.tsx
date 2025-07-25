@@ -20,15 +20,15 @@ const ConceptStep = ({ onNext }: { onNext: (concept: string) => void }) => {
     const [concept, setConcept] = useState('');
     return (
         <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 50 }} className="space-y-4 text-center">
-            <Label htmlFor="character-concept" className="text-lg text-primary">Describe Your Character Concept</Label>
+            <Label htmlFor="character-concept" className="text-lg text-primary">Describe Your Prisoner</Label>
             <Textarea
                 id="character-concept"
                 value={concept}
                 onChange={(e) => setConcept(e.target.value)}
-                placeholder="e.g., 'a grizzled space-pirate haunted by their past', 'a rookie explorer full of optimism', 'a cynical smuggler with a heart of gold'"
+                placeholder="e.g., 'a framed soldier seeking justice', 'a heretical priest questioning his faith', 'a master forger betrayed by her clients'. Leave blank for the default story."
                 className="text-lg min-h-[100px] text-center"
             />
-            <Button onClick={() => onNext(concept)} disabled={!concept.trim()} className="font-headline text-lg py-6">
+            <Button onClick={() => onNext(concept)} className="font-headline text-lg py-6">
                 Synthesize Identity <Sparkles className="ml-2" />
             </Button>
         </motion.div>
@@ -62,10 +62,10 @@ const SynthesisStep = ({ preset, onConfirm, onRetry }: { preset: CharacterPreset
 
 
 const FinalizeStep = ({ preset, faction, onSave }: { preset: CharacterPreset, faction: string, onSave: (name: string, finalStats: any) => void }) => {
-    const [characterName, setCharacterName] = useState('');
+    const [characterName, setCharacterName] = useState(preset.name);
     const [isSaving, setIsSaving] = useState(false);
     
-    const handleSave = (finalStats: { strength: number; intelligence: number; spirit: number; }) => {
+    const handleSave = (finalStats: { intellect: number; strength: number; adaptation: number; }) => {
         if (characterName.trim() === '') {
             alert('Please enter a name for your character.');
             return;
@@ -82,11 +82,11 @@ const FinalizeStep = ({ preset, faction, onSave }: { preset: CharacterPreset, fa
                     id="character-name"
                     value={characterName}
                     onChange={(e) => setCharacterName(e.target.value)}
-                    placeholder="Enter the name for your legend..."
+                    placeholder="Enter your character's name..."
                     className="text-lg text-center"
                 />
             </div>
-            <p className="text-sm text-center text-muted-foreground">Based on your concept: <strong className="text-accent">{preset.name}</strong></p>
+            <p className="text-sm text-center text-muted-foreground">Based on the archetype: <strong className="text-accent">{preset.name}</strong></p>
             <StatRoller onConfirm={handleSave} isSaving={isSaving} />
         </motion.div>
     )
@@ -96,7 +96,7 @@ const FinalizeStep = ({ preset, faction, onSave }: { preset: CharacterPreset, fa
 export default function CharacterCreationContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const faction = searchParams.get('faction') || 'Unaligned';
+    const faction = searchParams.get('faction') || 'Political Prisoner';
 
     const createCharacter = useCharacterStore((state) => state.createCharacter);
     const [step, setStep] = useState<CreationStep>('concept');
@@ -117,7 +117,7 @@ export default function CharacterCreationContent() {
         setCharacterPreset(null);
     }
 
-    const handleSave = (name: string, finalStats: { strength: number; intelligence: number; spirit: number; }) => {
+    const handleSave = (name: string, finalStats: { intellect: number; strength: number; adaptation: number; }) => {
         if (!characterPreset) return;
         createCharacter(name, faction, finalStats, characterPreset);
         
@@ -130,8 +130,8 @@ export default function CharacterCreationContent() {
         <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-4">
             <Card className="w-full max-w-2xl bg-card/50 border-primary/20">
                 <CardHeader>
-                    <CardTitle className="font-headline text-3xl text-primary text-center">Create Your Character</CardTitle>
-                    <CardDescription className="text-center">Your origin is with the <strong className="text-accent">{faction}</strong>.</CardDescription>
+                    <CardTitle className="font-headline text-3xl text-primary text-center">Create Your Prisoner</CardTitle>
+                    <CardDescription className="text-center">Your sentence begins in the <strong className="text-accent">{faction}</strong> block.</CardDescription>
                 </CardHeader>
                 <CardContent className="min-h-[350px] flex flex-col justify-center">
                     <AnimatePresence mode="wait">
@@ -141,7 +141,7 @@ export default function CharacterCreationContent() {
                     </AnimatePresence>
                 </CardContent>
                 <CardFooter>
-                    <p className="text-xs text-muted-foreground text-center w-full">Your choices and attributes shape your core potential.</p>
+                    <p className="text-xs text-muted-foreground text-center w-full">Your choices and attributes shape your chances of survival.</p>
                 </CardFooter>
             </Card>
         </div>

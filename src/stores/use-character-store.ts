@@ -1,14 +1,11 @@
 
-
 'use client'
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware'
 import type { CharacterProfile, InventoryItem, Quest, Achievement } from '@/types';
-import { inventoryData as startingInventory, achievementsData } from '@/data/mock-data';
+import { achievementsData } from '@/data/mock-data';
 import type { CharacterPreset } from '@/lib/character-synthesis';
-
-const calculateInitialSlots = (strength: number) => 3 + Math.floor(strength / 5);
 
 interface CharacterState {
     character: CharacterProfile | null;
@@ -17,11 +14,11 @@ interface CharacterState {
     unlockedAchievements: string[];
     hasHydrated: boolean;
     setHasHydrated: (hydrated: boolean) => void;
-    createCharacter: (name: string, faction: string, stats: { strength: number, intelligence: number, spirit: number }, preset: CharacterPreset) => void;
+    createCharacter: (name: string, faction: string, stats: { intellect: number, strength: number, adaptation: number }, preset: CharacterPreset) => void;
     loadCharacter: () => void;
     resetCharacter: () => void;
     removeItem: (itemId: string) => void;
-    updateCharacterStats: (updates: Partial<{ health: number; energy: number; hunger: number; currency: number, xp: number }>) => void;
+    updateCharacterStats: (updates: Partial<{ vitality: number; stamina: number; sanity: number; kamen: number; mracnik: number; prasinskeKovanice: number, xp: number }>) => void;
     unlockInventorySlot: () => void;
     setCharacter: (setter: (char: CharacterProfile | null) => CharacterProfile | null) => void;
     addQuest: (quest: Quest) => void;
@@ -29,6 +26,8 @@ interface CharacterState {
     setInventory: (items: InventoryItem[]) => void;
     unlockAchievement: (achievementId: string) => void;
 }
+
+const calculateInitialSlots = (strength: number) => 3 + Math.floor(strength / 2);
 
 export const useCharacterStore = create<CharacterState>()(
     persist(
@@ -43,40 +42,30 @@ export const useCharacterStore = create<CharacterState>()(
             },
             createCharacter: (name, faction, stats, preset) => {
                 const newCharacter: CharacterProfile = {
-                    name: name,
+                    name: name || preset.name,
                     level: 1,
                     xp: 0,
                     inventorySlots: calculateInitialSlots(stats.strength),
-                    health: 100,
-                    energy: 100,
-                    hunger: 100,
-                    currency: 50,
+                    vitality: 100,
+                    stamina: 100,
+                    sanity: 100,
+                    kamen: 15,
+                    mracnik: 0,
+                    prasinskeKovanice: 0,
                     attributes: {
-                        strength: { value: stats.strength, description: 'Raw physical power. Affects melee damage and carry capacity.' },
-                        intelligence: { value: stats.intelligence, description: 'Cognitive ability, problem-solving, and hacking skills.' },
-                        spirit: { value: stats.spirit, description: 'Mental fortitude and connection to dimensional energies. Affects willpower and magic resistance.' },
-                        hp: { value: 100, description: 'Health Points. Represents your character\'s life force.' },
+                        intellect: { value: stats.intellect, description: 'Knowledge of ancient languages, symbols, and research.' },
+                        strength: { value: stats.strength, description: 'Physical power for moving obstacles.' },
+                        adaptation: { value: stats.adaptation, description: 'Ability to react to sudden situations (uses a D6 roll).' },
                     },
                     state: {
-                        fatigue: { value: 0, description: 'Tiredness level. High fatigue negatively impacts physical performance.' },
-                        fitness: { value: 100, description: 'Overall physical condition. High fitness improves strength and endurance.' },
+                        fatigue: { value: 0, description: 'Tiredness level. High fatigue negatively impacts performance.' },
+                        hunger: { value: 100, description: 'Satiation level.'},
                         focus: { value: 100, description: 'Mental concentration. High focus improves the effectiveness of tasks requiring intelligence.' },
                         mentalClarity: { value: 100, description: 'Clarity of thought. High clarity enhances decision-making and cognitive speed.' },
-                    },
-                    enhancements: {
-                        cybernetics: [],
-                        implants: [],
-                    },
-                    attunement: {
-                        order: 0,
-                        chaos: 0,
-                        balance: 0,
                     },
                     metadata: {
                         age: preset.age,
                         gender: preset.gender,
-                        orientation: "Not specified",
-                        style: preset.style,
                         origin: faction,
                         backstory: preset.backstory,
                     },
@@ -86,7 +75,6 @@ export const useCharacterStore = create<CharacterState>()(
             },
             loadCharacter: () => {
                 // This function is mostly to trigger rehydration from storage
-                // The actual loading is handled by the persist middleware
             },
             resetCharacter: () => {
                 set({ character: null, inventory: [], quests: [], unlockedAchievements: [] });
@@ -105,10 +93,12 @@ export const useCharacterStore = create<CharacterState>()(
                     if (!state.character) return {};
 
                     const newStats = { ...state.character };
-                    if (updates.health !== undefined) newStats.health = Math.min(100, newStats.health + updates.health);
-                    if (updates.energy !== undefined) newStats.energy = Math.min(100, newStats.energy + updates.energy);
-                    if (updates.hunger !== undefined) newStats.hunger = Math.min(100, newStats.hunger + updates.hunger);
-                    if (updates.currency !== undefined) newStats.currency = newStats.currency + updates.currency;
+                    if (updates.vitality !== undefined) newStats.vitality = Math.min(100, newStats.vitality + updates.vitality);
+                    if (updates.stamina !== undefined) newStats.stamina = Math.min(100, newStats.stamina + updates.stamina);
+                    if (updates.sanity !== undefined) newStats.sanity = Math.min(100, newStats.sanity + updates.sanity);
+                    if (updates.kamen !== undefined) newStats.kamen = newStats.kamen + updates.kamen;
+                    if (updates.mracnik !== undefined) newStats.mracnik = newStats.mracnik + updates.mracnik;
+                    if (updates.prasinskeKovanice !== undefined) newStats.prasinskeKovanice = newStats.prasinskeKovanice + updates.prasinskeKovanice;
                     if (updates.xp !== undefined) newStats.xp = newStats.xp + updates.xp;
                     
                     return { character: newStats };
@@ -120,7 +110,6 @@ export const useCharacterStore = create<CharacterState>()(
                     if (state.character.inventorySlots < 25) {
                          const char = { ...state.character };
                          char.inventorySlots += 1;
-                         // Manually trigger achievement check
                          get().unlockAchievement('achieve-inventory-expanded');
                          return { character: char };
                     }
@@ -132,7 +121,6 @@ export const useCharacterStore = create<CharacterState>()(
             },
             addQuest: (quest) => {
                 set((state) => {
-                    // Prevent adding duplicate quests
                     if (state.quests.some(q => q.id === quest.id)) {
                         return {};
                     }
@@ -178,7 +166,7 @@ export const useCharacterStore = create<CharacterState>()(
                     if (achievement.reward.xp || achievement.reward.currency) {
                        updateCharacterStats({
                            xp: achievement.reward.xp || 0,
-                           currency: achievement.reward.currency || 0
+                           kamen: achievement.reward.currency || 0
                        });
                     }
                 }
@@ -189,9 +177,6 @@ export const useCharacterStore = create<CharacterState>()(
             storage: createJSONStorage(() => localStorage),
             onRehydrateStorage: () => (state) => {
                 if (state) {
-                    if (state.character && !state.character.attunement) {
-                        state.character.attunement = { order: 0, chaos: 0, balance: 0 };
-                    }
                     state.setHasHydrated(true);
                 }
             },

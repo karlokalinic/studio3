@@ -7,8 +7,8 @@ import AppBody from './_components/app-body';
 
 
 export const metadata: Metadata = {
-  title: 'Nexus Chronicles',
-  description: 'A futuristic adventure game.',
+  title: 'Fort Umbralis',
+  description: 'A dark fantasy prison escape RPG.',
 };
 
 export default function RootLayout({

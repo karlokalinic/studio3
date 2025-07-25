@@ -7,10 +7,10 @@ import { Label } from '@/components/ui/label';
 import { Dices, Save } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const generateRandomStat = () => Math.floor(Math.random() * 8) + 8; // Random number between 8 and 15
+const generateRandomStat = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
 
 interface StatRollerProps {
-    onConfirm: (stats: { strength: number; intelligence: number; spirit: number; }) => void;
+    onConfirm: (stats: { intellect: number; strength: number; adaptation: number; }) => void;
     isSaving: boolean;
 }
 
@@ -32,7 +32,7 @@ const StatDisplay = ({ label, value }: { label: string; value: number }) => {
 
 
 export default function StatRoller({ onConfirm, isSaving }: StatRollerProps) {
-    const [stats, setStats] = useState({ strength: 10, intelligence: 10, spirit: 10 });
+    const [stats, setStats] = useState({ intellect: 3, strength: 1, adaptation: 1 });
     const [isRolling, setIsRolling] = useState(false);
     const [remainingRerolls, setRemainingRerolls] = useState(3);
 
@@ -41,9 +41,9 @@ export default function StatRoller({ onConfirm, isSaving }: StatRollerProps) {
         let counter = 0;
         const interval = setInterval(() => {
             setStats({
-                strength: generateRandomStat(),
-                intelligence: generateRandomStat(),
-                spirit: generateRandomStat(),
+                intellect: generateRandomStat(1, 5),
+                strength: generateRandomStat(1, 3),
+                adaptation: generateRandomStat(1, 6),
             });
             counter++;
             if (counter >= 15) { // Roll for ~1.5 seconds
@@ -70,11 +70,11 @@ export default function StatRoller({ onConfirm, isSaving }: StatRollerProps) {
     return (
         <div className="space-y-4">
             <div>
-                <h3 className="font-headline text-xl text-primary/90 mb-2 text-center">Roll for Attributes</h3>
+                <h3 className="font-headline text-xl text-primary/90 mb-2 text-center">Determine Core Attributes</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <StatDisplay label="Intellect" value={stats.intellect} />
                     <StatDisplay label="Strength" value={stats.strength} />
-                    <StatDisplay label="Intelligence" value={stats.intelligence} />
-                    <StatDisplay label="Spirit" value={stats.spirit} />
+                    <StatDisplay label="Adaptation (D6)" value={stats.adaptation} />
                 </div>
             </div>
             
@@ -82,7 +82,7 @@ export default function StatRoller({ onConfirm, isSaving }: StatRollerProps) {
                 <div className="w-full flex flex-col">
                      <Button onClick={() => onConfirm(stats)} className="w-full text-lg font-headline py-6" disabled={isRolling || isSaving}>
                         <Save className="mr-2" />
-                        {isSaving ? 'Saving...' : 'Confirm and Begin'}
+                        {isSaving ? 'Saving...' : 'Confirm and Begin Sentence'}
                     </Button>
                 </div>
                 <div className="w-full flex flex-col">

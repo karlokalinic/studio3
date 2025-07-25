@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
@@ -15,18 +14,17 @@ import DifficultySlider from '@/app/settings/_components/difficulty-slider';
 import { inventoryData } from '@/data/mock-data';
 
 const tutorialScript = [
-  // ... existing tutorial steps ...
   {
     type: 'narrator',
-    text: "The air hums with a strange energy. You feel a disorienting pull, as if reality itself is folding around you. Your memory is a haze, but one thing is clear: you are a Nexus Walker, and you've just arrived in an unknown dimension.",
+    text: "The first thing you notice is the cold. It seeps from the stone floor, through your thin rags, and into your bones. The second is the darkness, absolute and oppressive. A faint, phosphorescent glow from the walls is your only guide.",
   },
   {
     type: 'narrator',
-    text: "But before you proceed, you must decide the nature of the path you'll walk. The Nexus is a place of infinite possibilities, and your journey can be as forgiving or as brutal as you wish.",
+    text: "Before you proceed, you must decide the nature of the path you'll walk. Fort Umbralis is a place of infinite suffering, but your journey can be as forgiving or as brutal as you wish.",
   },
   {
     type: 'difficulty',
-    text: "Choose your difficulty. This will affect the challenge you face in the worlds ahead. This can be changed later in the settings menu.",
+    text: "Choose your difficulty. This will affect the challenge you face. This can be changed later in the settings menu, but your first choice echoes in eternity.",
   },
   {
     type: 'narrator',
@@ -36,43 +34,43 @@ const tutorialScript = [
     type: 'action',
     text: 'Attempt to force the door open.',
     check: 'strength',
-    successThreshold: 10,
-    isFixedSuccess: true, // This check will always succeed for the tutorial
+    successThreshold: 2,
+    isFixedSuccess: true, 
   },
   {
     type: 'narrator',
-    text: "With a surge of adrenaline, you slam your shoulder into the door. The ancient metal groans and gives way! That was a Strength check. Your 'Effective Strength' was high enough to succeed. This stat is calculated from your base Strength, but also affected by things like your current fitness, fatigue, and the difficulty you chose. Always keep an eye on your character's state!",
+    text: "With a grunt of effort, you slam your shoulder into the door. The ancient metal groans and gives way! That was a Strength check. Your 'Effective Strength' was high enough to succeed. This stat is calculated from your base Strength, but also affected by things like your current fatigue and the difficulty you chose.",
   },
   {
     type: 'narrator',
-    text: 'Beyond the door is a dark corridor. At the far end, a single console flickers with a faint light. As you approach, a holographic challenge appears: a complex cryptographic puzzle. This requires a sharp mind.',
+    text: 'Beyond the door is a dark corridor. At the far end, a single, ancient lever is set into the wall, covered in cryptic symbols. This requires a sharp mind to decipher.',
   },
   {
     type: 'action',
-    text: 'Try to hack the console.',
-    check: 'intelligence',
-    successThreshold: 20,
-    isFixedSuccess: false, // This check will always fail for the tutorial
+    text: 'Try to decipher the lever\'s mechanism.',
+    check: 'intellect',
+    successThreshold: 4,
+    isFixedSuccess: false, 
   },
   {
     type: 'narrator',
-    text: "The symbols swim before your eyes, the logic just out of reach. The console flashes red: 'ACCESS DENIED'. A jolt of psionic feedback rattles your mind. That was an Intelligence check, and you failed. Don't worry, failure is part of the journey. Sometimes, you'll need to find another way, improve your skills, or find equipment to help.",
+    text: "The symbols swim before your eyes, their logic just out of reach. You pull the lever, and a section of the floor gives way! You tumble into the darkness below. That was an Intellect check, and you failed. Failure is part of the journey. Sometimes, you'll need to find another way, or improve your skills.",
   },
   {
     type: 'narrator',
-    text: 'Suddenly, the console sparks violently and a hidden door slides open nearby, revealing a brightly lit room. It seems your failed attempt triggered a failsafe. A voice echoes from the room: "Interesting... very interesting. Step forward, Walker."',
+    text: 'You land in a heap in a lower chamber. The fall has winded you, but you are alive. A ghostly voice echoes in the chamber: "A new soul arrives. The darkness tests all who enter. I can offer you a boon to aid your struggle, but all gifts come with a price."',
   },
     {
     type: 'choice',
-    text: "The voice continues, 'I can give you a gift to begin your journey, but only one. Choose wisely. This choice will have permanent consequences.' Before you, two streams of energy materialize.",
+    text: "The voice continues, 'I can bolster your body, or fortify your mind. Choose wisely, for this choice is permanent.' Before you, two spectral energies materialize.",
     options: [
-      { text: 'Embrace the Kinetic Force', consequence: { type: 'stat_change', payload: { hp: -50, energy: 50 }, message: 'You feel a surge of raw power, but your body is weakened by the strain.' } },
-      { text: 'Harness the Psionic Shield', consequence: { type: 'stat_change', payload: { hp: 50, energy: -50 }, message: 'A protective energy envelops you, but your inner reserves feel drained.' } },
+      { text: 'Bolster the Body', consequence: { type: 'stat_change', payload: { vitality: 20, sanity: -10 }, message: 'You feel a surge of resilience, but the spiritual intrusion frays your sanity.' } },
+      { text: 'Fortify the Mind', consequence: { type: 'stat_change', payload: { vitality: -10, sanity: 20 }, message: 'Your mind feels sharper, a bulwark against the darkness, but your physical form weakens.' } },
     ]
   },
   {
     type: 'narrator',
-    text: "The energy fades, leaving you irrevocably changed. Your journey begins now, marked by the choice you just made. Remember that every decision, big or small, can shape your path in the Nexus.",
+    text: "The energy fades, leaving you irrevocably changed. Your escape begins now, marked by the choice you just made. Remember that every decision, big or small, can shape your path in Fort Umbralis.",
   },
   {
     type: 'end',
@@ -93,14 +91,14 @@ const ChoiceConsequence = ({ consequence, onAcknowledged }: { consequence: any, 
             <h3 className="font-headline text-2xl text-accent mb-4">Consequence</h3>
             <p className="text-lg text-muted-foreground mb-2">{consequence.message}</p>
             <div className="flex justify-center gap-4 text-xl font-bold my-4">
-                {consequence.payload.hp !== 0 && (
-                    <span className={`flex items-center gap-2 ${consequence.payload.hp > 0 ? 'text-green-400' : 'text-red-400'}`}>
-                        <Shield /> {consequence.payload.hp > 0 ? '+' : ''}{consequence.payload.hp} Max Health
+                {consequence.payload.vitality !== 0 && (
+                    <span className={`flex items-center gap-2 ${consequence.payload.vitality > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                        <Shield /> {consequence.payload.vitality > 0 ? '+' : ''}{consequence.payload.vitality} Max Vitality
                     </span>
                 )}
-                {consequence.payload.energy !== 0 && (
-                     <span className={`flex items-center gap-2 ${consequence.payload.energy > 0 ? 'text-blue-400' : 'text-red-400'}`}>
-                        <Zap /> {consequence.payload.energy > 0 ? '+' : ''}{consequence.payload.energy} Max Energy
+                {consequence.payload.sanity !== 0 && (
+                     <span className={`flex items-center gap-2 ${consequence.payload.sanity > 0 ? 'text-blue-400' : 'text-red-400'}`}>
+                        <Zap /> {consequence.payload.sanity > 0 ? '+' : ''}{consequence.payload.sanity} Max Sanity
                     </span>
                 )}
             </div>
@@ -141,24 +139,11 @@ export default function TutorialContent() {
     setShowText(false);
     setTimeout(() => {
         if (step < tutorialScript.length - 1) {
-            const nextStep = tutorialScript[step + 1];
-            if (nextStep.type === 'narrator' && settings) {
-                let dynamicText = nextStep.text;
-                if(dynamicText.includes("difficulty you chose")) {
-                    dynamicText = dynamicText.replace("difficulty you chose", `difficulty you chose (${settings.difficulty})`);
-                }
-                const mutableStep = {...nextStep, text: dynamicText};
-                setStep(currentStep => {
-                    tutorialScript[currentStep + 1] = mutableStep;
-                    return currentStep + 1;
-                });
-            } else {
-                 setStep(step + 1);
-            }
+            setStep(step + 1);
             setShowText(true);
         }
     }, 300);
-  }, [step, settings]);
+  }, [step]);
   
   const startActionCheck = () => {
       setShowText(false);
@@ -180,17 +165,8 @@ export default function TutorialContent() {
           if (!char) return null;
           return {
             ...char,
-            attributes: {
-              ...char.attributes,
-              hp: {
-                ...char.attributes.hp,
-                value: char.attributes.hp.value + (consequenceData.payload.hp || 0)
-              },
-               energy: { // Assuming energy could be a base attribute
-                ...char.attributes.spirit, // Using spirit as a stand-in for energy logic
-                value: char.energy + (consequenceData.payload.energy || 0)
-              }
-            }
+            vitality: char.vitality + (consequenceData.payload.vitality || 0),
+            sanity: char.sanity + (consequenceData.payload.sanity || 0)
           }
        })
     }
@@ -214,10 +190,10 @@ export default function TutorialContent() {
     setSetting('difficulty', value);
     switch(value) {
         case 'Story-Only':
-            setDifficultyFeedback("Oh, a tourist! Well, enjoy the sights, I suppose we'll handle the actual dangers for you.");
+            setDifficultyFeedback("You seek only the narrative. The guards will overlook your transgressions, this time.");
             break;
         case 'Ultimate':
-            setDifficultyFeedback("You... you're sure? The Nexus doesn't forgive mistakes on this path. May you find whatever it is you're looking for before it finds you.");
+            setDifficultyFeedback("You embrace the true nature of this place. The darkness will show no mercy.");
             break;
         default:
             setDifficultyFeedback('');
@@ -227,7 +203,7 @@ export default function TutorialContent() {
   if (!character || !hasHydrated || !settings) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
-        <p className="text-foreground">Loading Character...</p>
+        <p className="text-foreground">Loading Prisoner Data...</p>
       </div>
     );
   }
@@ -244,8 +220,8 @@ export default function TutorialContent() {
 
       <Card className="w-full max-w-3xl bg-card/50 border-primary/20 shadow-xl shadow-primary/10">
         <CardHeader>
-          <CardTitle className="font-headline text-3xl text-primary">Initiation Sequence</CardTitle>
-          <CardDescription>Your journey begins now, {character.name}.</CardDescription>
+          <CardTitle className="font-headline text-3xl text-primary">Initiation</CardTitle>
+          <CardDescription>Your sentence begins now, {character.name}.</CardDescription>
         </CardHeader>
         <CardContent className="min-h-[350px] flex flex-col justify-center items-center text-center space-y-6">
             <AnimatePresence mode="wait">
@@ -309,8 +285,8 @@ export default function TutorialContent() {
                         {currentStep.type === 'end' && (
                             <div>
                                 <p className="text-lg leading-relaxed text-foreground/80">{currentStep.text}</p>
-                                <Button onClick={finishTutorial} className="mt-6 font-headline bg-accent text-accent-foreground hover:bg-accent/80">
-                                    Enter the Nexus
+                                <Button onClick={finishTutorial} className="mt-6 font-headline bg-primary text-primary-foreground hover:bg-primary/80">
+                                    Begin the Escape
                                 </Button>
                             </div>
                         )}

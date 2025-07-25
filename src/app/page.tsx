@@ -7,8 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useCharacterStore } from '@/stores/use-character-store';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Rocket, Settings, Gamepad2, BookOpen, Play } from 'lucide-react';
-import { useSettings } from '@/context/settings-context';
+import { Rocket, Settings, Gamepad2, BookOpen, Play, Skull } from 'lucide-react';
 import Image from 'next/image';
 
 const MainMenu = () => {
@@ -23,19 +22,19 @@ const MainMenu = () => {
         <main className="min-h-screen bg-background font-body text-foreground flex items-center justify-center p-4">
              <Image
                 src="https://placehold.co/1920x1080.png"
-                alt="Cosmic background"
+                alt="Dark, oppressive fortress background"
                 fill
                 objectFit="cover"
                 className="-z-10 opacity-20"
-                data-ai-hint="nebula stars"
+                data-ai-hint="dark fortress medieval"
                 />
             <Card className="max-w-md w-full text-center bg-card/50 border-primary/20 shadow-2xl shadow-primary/10 backdrop-blur-sm">
                 <CardHeader>
                     <CardTitle className="font-headline text-4xl text-primary drop-shadow-[0_0_10px_hsl(var(--primary))]">
-                        Nexus Chronicles
+                        Fort Umbralis
                     </CardTitle>
                     <CardDescription className="text-foreground/80">
-                        Your journey across the shattered dimensions awaits.
+                        The mind is the only key that can unlock this cage.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -43,20 +42,20 @@ const MainMenu = () => {
                         {character && (
                              <Button 
                                 onClick={handleContinue}
-                                className="w-full bg-accent text-accent-foreground hover:bg-accent/80 transition-all text-lg py-6 font-headline"
+                                className="w-full bg-primary text-primary-foreground hover:bg-primary/80 transition-all text-lg py-6 font-headline"
                             >
                                 <Play className="mr-2" />
-                                Continue Chronicle
+                                Continue Escape
                             </Button>
                         )}
                         <Button 
                             asChild
-                            className={`w-full text-lg py-6 font-headline ${!character ? 'bg-accent text-accent-foreground hover:bg-accent/80 transition-all' : ''}`}
+                            className={`w-full text-lg py-6 font-headline ${!character ? 'bg-primary text-primary-foreground hover:bg-primary/80 transition-all' : ''}`}
                             variant={character ? 'outline' : 'default'}
                         >
                            <Link href="/new-game">
-                             <Rocket className="mr-2" />
-                             New Game
+                             <Skull className="mr-2" />
+                             New Prisoner
                            </Link>
                         </Button>
                         <Button 
@@ -70,7 +69,7 @@ const MainMenu = () => {
                         <Button asChild className="w-full" variant="outline">
                             <Link href="/explore-the-story">
                                 <BookOpen className="mr-2" />
-                                Explore The Story
+                                Read the Chronicle
                             </Link>
                         </Button>
                         <Button asChild className="w-full" variant="outline">
@@ -97,7 +96,6 @@ export default function HomePage() {
     const router = useRouter();
 
     useEffect(() => {
-        // Manually trigger hydration check from zustand persist middleware
         useCharacterStore.persist.rehydrate();
         setHasHydrated(true);
     }, [setHasHydrated]);

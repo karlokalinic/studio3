@@ -59,7 +59,7 @@ const AchievementCard = ({
                         <p className="font-bold text-accent">Rewards:</p>
                         <ul className="list-disc list-inside text-sm">
                             {achievement.reward.xp && <li>{achievement.reward.xp} XP</li>}
-                            {achievement.reward.currency && <li>{achievement.reward.currency} Kristali</li>}
+                            {achievement.reward.currency && <li>{achievement.reward.currency} Kamen</li>}
                         </ul>
                     </div>
                 )}
@@ -75,7 +75,7 @@ export default function AchievementsContent() {
   if (!character) {
       return (
         <div className="flex items-center justify-center min-h-screen">
-            <p>Please start a game to view achievements.</p>
+            <p>Begin your sentence to view achievements.</p>
         </div>
       );
   }
@@ -90,7 +90,7 @@ export default function AchievementsContent() {
           Achievements
         </h1>
         <p className="mt-6 text-lg leading-8 text-foreground/80">
-          Your chronicle of accomplishments across the Nexus.
+          A chronicle of your deeds in the darkness.
         </p>
          <p className="mt-2 font-bold text-xl text-accent">
             {unlockedCount} / {totalCount} Unlocked

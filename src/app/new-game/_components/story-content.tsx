@@ -2,7 +2,6 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
@@ -23,34 +22,33 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useCharacterStore } from '@/stores/use-character-store';
 
 const factions = [
   {
-    name: 'Solaris Coalition',
-    description: 'A technocratic republic that values order, progress, and security. Governed by elected councils and scientific meritocracy.',
+    name: 'Upper Blocks',
+    description: 'Sentenced for political crimes. Your mind is your greatest asset, but you are under constant, unforgiving surveillance.',
     logoUrl: '/faction-solaris.png',
-    dataAiHint: 'sun symbol futuristic'
+    dataAiHint: 'golden key logo'
   },
   {
-    name: 'Abyssal Depths',
-    description: 'An underwater federation guided by mysticism, tradition, and isolation. Led by elder councils and a form of tribal democracy.',
+    name: 'The Mines',
+    description: 'Sentenced to hard labor. Your body will be tested, but the tunnels hold secrets and rare resources for those strong enough to take them.',
     logoUrl: '/faction-abyssal.png',
-    dataAiHint: 'kraken logo futuristic'
+    dataAiHint: 'pickaxe logo'
   },
   {
-    name: 'Sky Citadels',
-    description: 'A collection of aerial city-states built on freedom, trade, and individualism. Ruled by powerful merchant princes and trade guilds.',
+    name: 'The Catacombs',
+    description: 'Thrown into the forgotten depths for unspeakable crimes. Sanity is a currency here, and the darkness offers power to those who listen.',
     logoUrl: '/faction-sky.png',
-    dataAiHint: 'floating castle logo'
+    dataAiHint: 'skull logo dark'
   },
   {
-    name: 'Void Walkers',
-    description: 'Interdimensional nomads who seek knowledge and transcendence. A loose confederation bound by a master-apprentice system.',
+    name: 'The Cult of Darkness',
+    description: 'You are not a prisoner, but an acolyte. You have willingly entered Fort Umbralis to serve the shadows and seek purification through suffering.',
     logoUrl: '/faction-void.png',
-    dataAiHint: 'galaxy portal logo'
+    dataAiHint: 'tentacle eye logo'
   },
 ];
 
@@ -144,14 +142,14 @@ const FactionLink = ({ faction }: { faction: typeof factions[0] }) => {
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                <AlertDialogTitle>Start a New Game?</AlertDialogTitle>
+                <AlertDialogTitle>Start a New Sentence?</AlertDialogTitle>
                 <AlertDialogDescription>
-                    You already have a character. Starting a new game will delete your existing character and progress. Are you sure you want to continue?
+                    You already have a prisoner in Fort Umbralis. Starting over will mean their death, and all progress will be lost. The next prisoner will only inherit rumors of what came before. Are you sure?
                 </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleNewGame}>Start New Game</AlertDialogAction>
+                <AlertDialogAction onClick={handleNewGame}>Accept Your Fate</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
@@ -163,11 +161,11 @@ export default function StoryContent() {
     <div className="relative isolate overflow-hidden min-h-screen">
        <Image
           src="https://placehold.co/1920x1080.png"
-          alt="Cosmic background"
+          alt="Dark, oppressive fortress"
           fill
           objectFit="cover"
           className="-z-10 opacity-20"
-          data-ai-hint="nebula stars"
+          data-ai-hint="dark fortress medieval"
         />
       <div className="mx-auto max-w-5xl px-6 py-24 sm:py-32 lg:px-8">
         <motion.div
@@ -177,12 +175,10 @@ export default function StoryContent() {
           transition={{ duration: 0.8, ease: 'easeOut' }}
         >
           <h1 className="font-headline text-4xl font-bold tracking-tight text-primary drop-shadow-[0_0_10px_hsl(var(--primary))] sm:text-6xl">
-            Nexus Chronicles
+            Sentence Begins
           </h1>
           <p className="mt-6 text-lg leading-8 text-foreground/80">
-            The year is 2387. Two centuries have passed since the "Great
-            Disconnection"—a cataclysm that shattered technological networks and
-            tore open portals to other dimensions.
+            Four centuries ago, the Empire built its darkest prison, a monument to despair called Fort Umbralis. Here, a fanatical sect believed that only through profound darkness could the soul be purified. You are its newest resident.
           </p>
         </motion.div>
 
@@ -192,30 +188,11 @@ export default function StoryContent() {
           initial="hidden"
           animate="visible"
         >
-          <AnimatedCard>
-            <CardHeader>
-              <CardTitle className="font-headline text-accent text-2xl">
-                The Dawn of a New Era
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">
-                In the wake of the collapse, survivors built hybrid civilizations,
-                blending salvaged technology with newfound magic. From the ashes,
-                a new kind of hero was born: the Nexus Walkers. These rare
-                individuals possess the unique ability to traverse the chaotic
-                pathways between realities, holding the key to the future of a
-                fractured universe. They are explorers, mercenaries, and pioneers
-                charting the unknown territories of a cosmos reborn.
-              </p>
-            </CardContent>
-          </AnimatedCard>
-
           <motion.div variants={itemVariants}>
             <h2 className="text-center font-headline text-3xl font-bold text-primary mb-8">
-              Choose your Allegiance
+              Choose your Starting Block
             </h2>
-             <p className="text-center text-muted-foreground mb-8">This will begin your journey. If you have an existing character, your progress will be overwritten.</p>
+             <p className="text-center text-muted-foreground mb-8">This will determine your origin. If you have an existing prisoner, they will be lost to the darkness.</p>
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
               {factions.map((faction) => (
                  <FactionLink key={faction.name} faction={faction} />
@@ -223,38 +200,8 @@ export default function StoryContent() {
             </div>
           </motion.div>
 
-          <AnimatedCard>
-            <CardHeader>
-              <CardTitle className="font-headline text-accent text-2xl">
-                The Galactic Structure
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4 text-muted-foreground">
-              <p>
-                The known universe revolves around the{' '}
-                <strong className="text-primary/90">Central Nexus System</strong>
-                , a hub of bustling activity with planets like the sprawling{' '}
-                <strong className="text-primary/90">Terra Nexus</strong>, the
-                aquatic world of{' '}
-                <strong className="text-primary/90">Aqua Nexus</strong>, and the
-                resource-rich <strong className="text-primary/90">Geo Nexus</strong>.
-              </p>
-              <p>
-                Beyond lies the{' '}
-                <strong className="text-primary/90">Outer Rim</strong>, a lawless
-                frontier of 12 systems, and the{' '}
-                <strong className="text-primary/90">Void Spaces</strong>—treacherous,
-                unstable dimensions that connect everything. For the bravest of
-                Nexus Walkers, the{' '}
-                <strong className="text-primary/90">Unknown Sectors</strong>{' '}
-                await, promising untold riches and unimaginable dangers.
-              </p>
-            </CardContent>
-          </AnimatedCard>
         </motion.div>
       </div>
     </div>
   );
 }
-
-    

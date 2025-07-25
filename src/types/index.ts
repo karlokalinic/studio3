@@ -1,10 +1,11 @@
 
-
 export interface PlayerStats {
-  health: number;
-  energy: number;
-  hunger: number;
-  currency: number;
+  vitality: number;
+  stamina: number;
+  sanity: number;
+  kamen: number;
+  mracnik: number;
+  prasinskeKovanice: number;
 }
 
 export interface Attribute {
@@ -17,76 +18,44 @@ export interface CharacterProfile {
   level: number;
   xp: number;
   inventorySlots: number;
-  health: number;
-  energy: number;
-  hunger: number;
-  currency: number;
+  vitality: number;
+  stamina: number;
+  sanity: number;
+  kamen: number;
+  mracnik: number;
+  prasinskeKovanice: number;
   attributes: {
-    // Base attributes
+    intellect: Attribute;
     strength: Attribute;
-    intelligence: Attribute;
-    spirit: Attribute;
-    hp: Attribute;
+    adaptation: Attribute;
   };
   state: {
-    // Dynamic state values
     fatigue: Attribute; 
-    fitness: Attribute; 
+    hunger: Attribute; 
     focus: Attribute; 
     mentalClarity: Attribute;
   },
-  enhancements: {
-    cybernetics: string[];
-    implants: string[];
-  },
-  attunement: {
-    // Nexus Attunement values
-    order: number; // 0-100
-    chaos: number; // 0-100
-    balance: number; // 0-100
-  }
   metadata: {
     age: number;
     gender: string;
-    orientation: string;
-    style: string;
     origin: string;
     backstory: string;
   };
 }
 
 export interface CalculatedStats {
-  // Core Effective Stats
   effectiveStrength: number;
-  effectiveIntelligence: number;
-  effectiveSpirit: number;
-  
-  // Combat Stats
+  effectiveIntellect: number;
+  effectiveAdaptation: number;
   maxHP: number;
-  critChance: number;
-  critDamage: number;
-  dodgeChance: number;
-  psionicResistance: number;
-  
-  // Utility Stats
   carryWeight: number;
-  hackingSpeed: number; // Lower is better
-  barterBonus: number; // Percentage
   inventorySlots: number;
-  
-  // Nexus Stats
-  nexusResonance: number; // 0-100, affects mystery abilities
-
-  // Curses & Penalties
-  adrenalBurnoutPenalty: number; // A modifier, e.g., 0.9 means 10% reduction
-  analysisParalysisChance: number; // Percentage chance to lose a turn
-  feedbackLoopDamage: number; // Flat damage on psionic failure
 }
 
 export interface InventoryItem {
   id: string;
   name: string;
-  type: 'Weapon' | 'Armor' | 'Consumable' | 'Quest Item' | 'Key';
+  type: 'Weapon' | 'Armor' | 'Consumable' | 'Quest Item' | 'Key' | 'Currency';
   value: number;
   description: string;
   nutrition?: number;
@@ -119,10 +88,8 @@ export interface Achievement {
   isSpoiler: boolean;
   reward: {
     xp?: number;
-    currency?: number;
+    currency?: number; // Represents 'Kamen'
   };
   icon: string;
-  // A function to check if the achievement is unlocked.
-  // This allows for flexible conditions based on character state, quests, etc.
   isUnlocked: (character: CharacterProfile, quests: Quest[]) => boolean;
 }

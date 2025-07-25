@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useCharacterStore } from "@/stores/use-character-store";
 import { useToast } from "@/hooks/use-toast";
-import { Hand, Trash2, Info, Lock, Sword, HeartPulse, Shield, Bot, Map, Key, HelpCircle } from "lucide-react";
+import { Hand, Trash2, Info, Lock, Sword, HeartPulse, Shield, Bot, Map, Key, HelpCircle, Gem, Sparkles, Coins } from "lucide-react";
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface InventoryProps {
@@ -35,6 +35,9 @@ const iconMap: { [key: string]: React.ElementType } = {
     Bot,
     Map,
     Key,
+    Gem,
+    Sparkles,
+    Coins,
     HelpCircle
 };
 
@@ -50,10 +53,10 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
 
     if (selectedItem.type === 'Consumable') {
         if(selectedItem.nutrition) {
-            updateCharacterStats({ health: selectedItem.nutrition });
+            updateCharacterStats({ vitality: selectedItem.nutrition });
             toast({
                 title: 'Item Used',
-                description: `${selectedItem.name} consumed. You recovered ${selectedItem.nutrition} health.`,
+                description: `${selectedItem.name} consumed. You recovered ${selectedItem.nutrition} vitality.`,
             });
         }
         removeItem(selectedItem.id);
@@ -161,18 +164,18 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
             <CardHeader className="p-0 mb-4">
               <CardTitle className="font-headline text-2xl text-accent">{selectedItem.name}</CardTitle>
               <CardDescription>
-                {selectedItem.type} - Value: {selectedItem.value} Kristali
+                {selectedItem.type}
               </CardDescription>
             </CardHeader>
             <CardContent className="p-0 flex-grow">
               <p className="text-muted-foreground">{selectedItem.description}</p>
               {selectedItem.nutrition && (
-                <p className="text-sm text-accent mt-2">Nutrition: +{selectedItem.nutrition}</p>
+                <p className="text-sm text-green-400 mt-2">Nutrition: +{selectedItem.nutrition}</p>
               )}
                {!canBeUsed && selectedItem.type !== 'Consumable' && selectedItem.type !== 'Key' && (
                 <div className="mt-4 p-3 bg-black/20 rounded-md text-xs text-muted-foreground flex items-center gap-2">
                     <Info className="h-4 w-4 shrink-0"/>
-                    <span>This item cannot be "used" directly. It may be a quest item or equipment that provides passive bonuses.</span>
+                    <span>This item cannot be "used" directly. It may be a quest item or provide passive bonuses.</span>
                 </div>
               )}
             </CardContent>
