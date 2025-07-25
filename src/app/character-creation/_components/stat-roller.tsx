@@ -10,7 +10,6 @@ import { motion } from 'framer-motion';
 const generateRandomStat = () => Math.floor(Math.random() * 8) + 8; // Random number between 8 and 15
 
 interface StatRollerProps {
-    onRandomize: () => void;
     onConfirm: (stats: { strength: number; intelligence: number; spirit: number; }) => void;
     isSaving: boolean;
 }
@@ -71,7 +70,7 @@ export default function StatRoller({ onConfirm, isSaving }: StatRollerProps) {
     return (
         <div className="space-y-4">
             <div>
-                <h3 className="font-headline text-xl text-primary/90 mb-2">Roll for Attributes</h3>
+                <h3 className="font-headline text-xl text-primary/90 mb-2 text-center">Roll for Attributes</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <StatDisplay label="Strength" value={stats.strength} />
                     <StatDisplay label="Intelligence" value={stats.intelligence} />
@@ -79,20 +78,19 @@ export default function StatRoller({ onConfirm, isSaving }: StatRollerProps) {
                 </div>
             </div>
             
-            <div className="flex gap-4">
+            <div className="flex flex-col gap-4 pt-4">
+                <div className="w-full flex flex-col">
+                     <Button onClick={() => onConfirm(stats)} className="w-full text-lg font-headline py-6" disabled={isRolling || isSaving}>
+                        <Save className="mr-2" />
+                        {isSaving ? 'Saving...' : 'Confirm and Begin'}
+                    </Button>
+                </div>
                 <div className="w-full flex flex-col">
                     <Button onClick={handleReroll} variant="outline" className="w-full" disabled={isRolling || isSaving || remainingRerolls <= 0}>
                         <Dices className="mr-2" />
-                        {isRolling ? 'Rolling...' : 'Re-roll'}
+                        {isRolling ? 'Rolling...' : `Re-roll (${remainingRerolls} left)`}
                     </Button>
-                    <p className="text-xs text-muted-foreground text-center mt-2">
-                        Remaining Re-rolls: {remainingRerolls}
-                    </p>
                 </div>
-                <Button onClick={() => onConfirm(stats)} className="w-full text-lg font-headline py-6" disabled={isRolling || isSaving}>
-                    <Save className="mr-2" />
-                    {isSaving ? 'Saving...' : 'Confirm and Begin'}
-                </Button>
             </div>
         </div>
     )

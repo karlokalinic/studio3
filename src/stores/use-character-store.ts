@@ -6,6 +6,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware'
 import type { CharacterProfile, InventoryItem, Quest, Achievement } from '@/types';
 import { inventoryData as startingInventory, achievementsData } from '@/data/mock-data';
+import type { CharacterPreset } from '@/lib/character-synthesis';
 
 const calculateInitialSlots = (strength: number) => 3 + Math.floor(strength / 5);
 
@@ -16,7 +17,7 @@ interface CharacterState {
     unlockedAchievements: string[];
     hasHydrated: boolean;
     setHasHydrated: (hydrated: boolean) => void;
-    createCharacter: (name: string, faction: string, stats: { strength: number, intelligence: number, spirit: number }) => void;
+    createCharacter: (name: string, faction: string, stats: { strength: number, intelligence: number, spirit: number }, preset: CharacterPreset) => void;
     loadCharacter: () => void;
     resetCharacter: () => void;
     removeItem: (itemId: string) => void;
@@ -40,7 +41,7 @@ export const useCharacterStore = create<CharacterState>()(
             setHasHydrated: (hydrated) => {
                 set({ hasHydrated: hydrated });
             },
-            createCharacter: (name, faction, stats) => {
+            createCharacter: (name, faction, stats, preset) => {
                 const newCharacter: CharacterProfile = {
                     name: name,
                     level: 1,
@@ -72,12 +73,12 @@ export const useCharacterStore = create<CharacterState>()(
                         balance: 0,
                     },
                     metadata: {
-                        age: 25,
-                        gender: "Not specified",
+                        age: preset.age,
+                        gender: preset.gender,
                         orientation: "Not specified",
-                        style: "Adventurer",
+                        style: preset.style,
                         origin: faction,
-                        backstory: `A new face in the Nexus, hailing from the ${faction}, ready to make their mark.`,
+                        backstory: preset.backstory,
                     },
                 };
                 set({ character: newCharacter, inventory: [], quests: [], unlockedAchievements: [] });
