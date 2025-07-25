@@ -160,7 +160,9 @@ export const Node = ({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <NodeContent name={name} icon={Icon} colorClass={colorClass} />
+        <div role="button" className="flex items-center justify-center">
+            <NodeContent name={name} icon={Icon} colorClass={colorClass} />
+        </div>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

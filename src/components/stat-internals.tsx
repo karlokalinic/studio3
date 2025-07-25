@@ -61,7 +61,7 @@ export default function StatInternals({ profile }: { profile: CharacterProfile }
               <Node name="Eff. Intellect" icon={BrainCircuit} colorClass="primary" description="Your actual cognitive power for checks. High focus improves it, but critical failure on a check can cause mental clarity to drop." formula="(INT * Focus) + DifficultyMod"/>
             </div>
             <div style={{ gridColumn: '5', gridRow: 3 }} className="flex justify-center items-center">
-              <Node name="Eff. Strength" icon={Weight} colorClass="primary" description="Your actual physical power for checks. High vitality boosts it, but using it adds to your fatigue." formula="(STR * (1 - Fatigue)) + DifficultyMod"/>
+              <Node name="Eff. Strength" icon={Weight} colorClass="primary" description="Your actual physical power for checks. High vitality boosts it, but using it adds to your fatigue." formula="(STR * (1 - Fatigue)) + DiffMod"/>
             </div>
             <div style={{ gridColumn: '7', gridRow: 3 }} className="flex justify-center items-center">
               <Node name="Eff. Adaptation" icon={Clover} colorClass="primary" description="Your luck in dire situations. High values can turn failure into success, but a critical fail on an Adaptation check can result in losing an item." formula="(ADP + (Sanity/100)) + DiffMod" />
