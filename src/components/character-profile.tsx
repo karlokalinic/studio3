@@ -67,7 +67,19 @@ export default function CharacterProfile({ profile }: CharacterProfileProps) {
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-accent">
-                                <Link href="/character-profile">
+                                <Link href="/character-sheet/stat-internals">
+                                    <BookCopy className="h-5 w-5" />
+                                </Link>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>View Stat Internals</p>
+                        </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-accent">
+                                <Link href="/character-sheet">
                                     <UserRound className="h-5 w-5" />
                                 </Link>
                             </Button>
