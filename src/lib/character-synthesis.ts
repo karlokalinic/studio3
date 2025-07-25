@@ -14,45 +14,24 @@ const cleanInput = (input: string): string[] => {
 };
 
 /**
- * The "synthesis" algorithm. It takes a player's text prompt and finds the best
- * matching character preset based on keyword scoring.
- * @param concept - The player's input string describing their character.
+ * The "synthesis" algorithm. It takes a faction/origin and finds a
+ * matching character preset.
+ * @param origin - The character's origin, determined by the psych test.
  * @returns The character preset that best matches the input concept.
  */
-export function synthesizeCharacter(concept: string): CharacterPreset {
-    const inputKeywords = cleanInput(concept);
+export function synthesizeCharacter(origin: string): CharacterPreset {
+    const originKeywords = cleanInput(origin);
 
-    if (inputKeywords.length === 0) {
-        // If input is empty or just noise, return a random preset
-        return characterPresets[Math.floor(Math.random() * characterPresets.length)];
-    }
-
-    let bestMatch: CharacterPreset = characterPresets[0];
-    let highestScore = -1;
-
-    characterPresets.forEach(preset => {
-        let currentScore = 0;
-        preset.keywords.forEach(keyword => {
-            if (inputKeywords.includes(keyword)) {
-                currentScore++;
-            }
-        });
-
-        // A small bonus for matching the primary archetype for stronger association
-        if (inputKeywords.includes(preset.keywords[0])) {
-            currentScore += 1;
-        }
-
-        if (currentScore > highestScore) {
-            highestScore = currentScore;
-            bestMatch = preset;
-        }
+    const possiblePresets = characterPresets.filter(preset => {
+        // Check if any of the preset's keywords match the origin's keywords
+        return preset.keywords.some(pk => originKeywords.includes(pk));
     });
-    
-    // If no keywords matched at all, fall back to a random preset to ensure variety.
-    if (highestScore === 0) {
-        return characterPresets[Math.floor(Math.random() * characterPresets.length)];
+
+    if (possiblePresets.length > 0) {
+        // If we found matching presets, return a random one from the filtered list
+        return possiblePresets[Math.floor(Math.random() * possiblePresets.length)];
     }
 
-    return bestMatch;
+    // If no specific presets match the origin, return a truly random one as a fallback.
+    return characterPresets[Math.floor(Math.random() * characterPresets.length)];
 }

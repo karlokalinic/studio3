@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCharacterStore } from '@/stores/use-character-store';
 import { Button } from '@/components/ui/button';
@@ -9,32 +9,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import StatRoller from './stat-roller';
-import { Textarea } from '@/components/ui/textarea';
 import { motion, AnimatePresence } from 'framer-motion';
 import { synthesizeCharacter, type CharacterPreset } from '@/lib/character-synthesis';
 import { ArrowRight, Sparkles, RefreshCw } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Skeleton } from '@/components/ui/skeleton';
 
-type CreationStep = 'concept' | 'synthesis' | 'finalize';
+type CreationStep = 'synthesis' | 'finalize';
 
-const ConceptStep = ({ onNext }: { onNext: (concept: string) => void }) => {
-    const [concept, setConcept] = useState('');
-    return (
-        <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 50 }} className="space-y-4 text-center">
-            <Label htmlFor="character-concept" className="text-lg text-primary">Describe Your Character Concept</Label>
-            <Textarea
-                id="character-concept"
-                value={concept}
-                onChange={(e) => setConcept(e.target.value)}
-                placeholder="e.g., 'a cynical void-smuggler with a heart of gold', 'a disgraced corporate enforcer seeking redemption', 'a brilliant xenobotanist who crash-landed on a forgotten planet'. Leave blank for a random story."
-                className="text-lg min-h-[100px] text-center"
-            />
-            <Button onClick={() => onNext(concept)} className="font-headline text-lg py-6">
-                Synthesize Identity <Sparkles className="ml-2" />
-            </Button>
-        </motion.div>
-    );
-};
 
 const SynthesisStep = ({ preset, onConfirm, onRetry }: { preset: CharacterPreset, onConfirm: () => void, onRetry: () => void }) => {
     return (
@@ -115,6 +97,18 @@ const FinalizeStep = ({ preset, faction, onSave }: { preset: CharacterPreset, fa
     )
 }
 
+const LoadingState = () => (
+    <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center space-y-4">
+        <p className="text-lg text-accent animate-pulse">Analyzing psych profile...</p>
+        <p className="text-muted-foreground">Synthesizing identity from memory engrams. Please stand by.</p>
+        <Skeleton className="h-24 w-full" />
+        <div className="flex justify-between gap-4">
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+        </div>
+    </motion.div>
+)
+
 
 export default function CharacterCreationContent() {
     const router = useRouter();
@@ -122,27 +116,31 @@ export default function CharacterCreationContent() {
     const faction = searchParams.get('faction') || 'Nomad';
 
     const createCharacter = useCharacterStore((state) => state.createCharacter);
-    const [step, setStep] = useState<CreationStep>('concept');
+    const [step, setStep] = useState<CreationStep>('synthesis');
     const [characterPreset, setCharacterPreset] = useState<CharacterPreset | null>(null);
-    const [isSynthesizing, setIsSynthesizing] = useState(false);
+    const [isSynthesizing, setIsSynthesizing] = useState(true);
 
-    const handleConceptSubmit = async (concept: string) => {
+    const generateCharacter = useCallback(() => {
         setIsSynthesizing(true);
         // Simulate a slight delay for the "AI" to think
-        await new Promise(res => setTimeout(res, 500));
-        const preset = synthesizeCharacter(concept);
-        setCharacterPreset(preset);
-        setStep('synthesis');
-        setIsSynthesizing(false);
-    };
+        setTimeout(() => {
+            const preset = synthesizeCharacter(faction);
+            setCharacterPreset(preset);
+            setIsSynthesizing(false);
+            setStep('synthesis');
+        }, 1500);
+    }, [faction]);
+
+    useEffect(() => {
+        generateCharacter();
+    }, [generateCharacter]);
 
     const handleConfirmPreset = () => {
         setStep('finalize');
     };
 
     const handleRetry = () => {
-        setStep('concept');
-        setCharacterPreset(null);
+        generateCharacter();
     }
 
     const handleSave = (name: string, orientation: string, finalStats: { intellect: number; strength: number; adaptation: number; }) => {
@@ -159,17 +157,12 @@ export default function CharacterCreationContent() {
             <Card className="w-full max-w-2xl bg-card/50 border-primary/20">
                 <CardHeader>
                     <CardTitle className="font-headline text-3xl text-primary text-center">Create Your Character</CardTitle>
-                    <CardDescription className="text-center">Your journey begins as a member of the <strong className="text-accent">{faction}</strong> faction.</CardDescription>
+                    <CardDescription className="text-center">Your psych profile has determined your sentence will begin in the <strong className="text-accent">{faction}</strong>.</CardDescription>
                 </CardHeader>
                 <CardContent className="min-h-[350px] flex flex-col justify-center">
                     <AnimatePresence mode="wait">
                          {isSynthesizing ? (
-                             <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center space-y-4">
-                                <p className="text-lg text-accent animate-pulse">Synthesizing identity from memory engrams...</p>
-                                <p className="text-muted-foreground">Please stand by.</p>
-                            </motion.div>
-                         ) : step === 'concept' ? (
-                            <ConceptStep key="concept" onNext={handleConceptSubmit} />
+                            <LoadingState />
                          ) : step === 'synthesis' && characterPreset ? (
                              <SynthesisStep key="synthesis" preset={characterPreset} onConfirm={handleConfirmPreset} onRetry={handleRetry} />
                          ) : step === 'finalize' && characterPreset ? (
@@ -178,7 +171,7 @@ export default function CharacterCreationContent() {
                     </AnimatePresence>
                 </CardContent>
                 <CardFooter>
-                    <p className="text-xs text-muted-foreground text-center w-full">Your choices and attributes shape your journey across the stars.</p>
+                    <p className="text-xs text-muted-foreground text-center w-full">Your choices and attributes shape your journey through the darkness.</p>
                 </CardFooter>
             </Card>
         </div>
