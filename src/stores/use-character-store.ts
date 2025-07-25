@@ -4,7 +4,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware'
 import type { CharacterProfile, InventoryItem, Quest, Achievement } from '@/types';
-import { achievementsData } from '@/data/mock-data';
+import { achievementsData, inventoryData } from '@/data/mock-data';
 import type { CharacterPreset } from '@/lib/character-synthesis';
 
 interface CharacterState {

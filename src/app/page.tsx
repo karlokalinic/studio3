@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useCharacterStore } from '@/stores/use-character-store';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Rocket, Settings, Gamepad2, BookOpen, Play, Skull } from 'lucide-react';
+import { Settings, Gamepad2, BookOpen, Play, Skull } from 'lucide-react';
 import Image from 'next/image';
 
 const MainMenu = () => {
