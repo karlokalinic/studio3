@@ -43,7 +43,7 @@ const wikiData = {
     elements: [
       { name: 'Resources', description: 'Food, water, and light are scarce and often controlled by guards or stronger prisoners. Zagađenje from ancient minerals can cause sickness.' },
       { name: 'Mental Health', description: 'Lack of light, food, sleep, or traumatic events can erode your sanity, leading to paranoia, hallucinations, and potentially fatal actions.' },
-      { name: 'Movement', description: 'Movement is heavily restricted. Prisoners get one 'Pass' per day to move between zones. Additional movement requires bribery, tools, or risky, unobserved dashes.' },
+      { name: 'Movement', description: "Movement is heavily restricted. Prisoners get one 'Pass' per day to move between zones. Additional movement requires bribery, tools, or risky, unobserved dashes." },
     ]
   },
   factions: {
