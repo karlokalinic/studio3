@@ -70,7 +70,7 @@ export const useCharacterStore = create<CharacterState>()(
                         backstory: preset.backstory,
                     },
                 };
-                set({ character: newCharacter, inventory: [], quests: [], unlockedAchievements: [] });
+                set({ character: newCharacter, inventory: [], quests: [], unlockedAchievements: ['achieve-start-journey'] });
                 localStorage.removeItem('tutorialCompleted'); // Reset tutorial on new character
             },
             loadCharacter: () => {
