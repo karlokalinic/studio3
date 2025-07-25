@@ -38,12 +38,8 @@ function calculateMaxHP(profile: CharacterProfile, effectiveStrength: number): n
   return 100 + (profile.level * 5) + (effectiveStrength * 5);
 }
 
-function calculateCarryWeight(effStr: number): number {
-    return 10 + (effStr * 2);
-}
-
 function calculateInventorySlots(profile: CharacterProfile): number {
-    return profile.inventorySlots;
+    return 10 + Math.floor(profile.attributes.strength.value / 2);
 }
 
 // Main function to get all calculated stats
@@ -57,7 +53,6 @@ export function getCalculatedStats(profile: CharacterProfile, difficulty: Diffic
     effectiveIntellect,
     effectiveAdaptation,
     maxHP: calculateMaxHP(profile, effectiveStrength),
-    carryWeight: calculateCarryWeight(effectiveStrength),
     inventorySlots: calculateInventorySlots(profile),
   };
 }

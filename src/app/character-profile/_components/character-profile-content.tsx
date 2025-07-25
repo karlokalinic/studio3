@@ -16,21 +16,21 @@ const Stat = ({ label, value, unit, description }: { label: string; value: strin
     <div className="flex justify-between items-start text-sm py-2">
         <div>
             <p className="font-bold text-primary/90">{label}</p>
-            <p className="text-xs text-muted-foreground">{description}</p>
+            {description && <p className="text-xs text-muted-foreground">{description}</p>}
         </div>
         <p className="font-mono text-lg text-accent whitespace-nowrap pl-4">{value}{unit}</p>
     </div>
 );
 
 const FullCharacterSheet = ({ profile, calculatedStats }: { profile: CharacterProfile, calculatedStats: CalculatedStats }) => {
-    const { attributes, state } = profile;
+    const { attributes, state, metadata } = profile;
     return (
          <Card className="bg-card/50 border-primary/20 shadow-lg shadow-primary/5">
             <CardHeader>
                 <div className="flex justify-between items-start">
                     <div>
                         <CardTitle className="font-headline text-3xl text-primary">{profile.name}</CardTitle>
-                        <CardDescription>Lvl {profile.level} ({profile.xp} XP) - {profile.metadata.origin}</CardDescription>
+                        <CardDescription>Lvl {profile.level} ({profile.xp} XP) - {metadata.origin}</CardDescription>
                     </div>
                 </div>
             </CardHeader>
@@ -50,7 +50,7 @@ const FullCharacterSheet = ({ profile, calculatedStats }: { profile: CharacterPr
                         <Stat label="Effective Intellect" value={calculatedStats.effectiveIntellect} description="Your actual cognitive power for research and puzzles." />
                         <Stat label="Effective Strength" value={calculatedStats.effectiveStrength} description="Your actual physical power for moving objects."/>
                         <Stat label="Max Vitality" value={calculatedStats.maxHP} description="Your total health pool."/>
-                         <Stat label="Inventory Slots" value={profile.inventorySlots} description="The number of items you can carry."/>
+                         <Stat label="Inventory Slots" value={calculatedStats.inventorySlots} description="The number of items you can carry."/>
                     </div>
                 </div>
                 <Separator />
@@ -67,16 +67,18 @@ const FullCharacterSheet = ({ profile, calculatedStats }: { profile: CharacterPr
                 <div>
                     <h3 className="font-headline text-xl mb-2 text-primary/80">Metadata</h3>
                      <div className="divide-y divide-primary/10">
-                        <Stat label="Age" value={profile.metadata.age} />
-                        <Stat label="Gender" value={profile.metadata.gender} />
-                        <Stat label="Origin" value={profile.metadata.origin} />
+                        <Stat label="Age" value={metadata.age} />
+                        <Stat label="Gender" value={metadata.gender} />
+                        <Stat label="Orientation" value={metadata.orientation} />
+                        <Stat label="Style" value={metadata.style} />
+                        <Stat label="Origin" value={metadata.origin} />
                     </div>
                 </div>
                 <Separator />
                 <div>
                     <h3 className="font-headline text-xl mb-2 text-primary/80">Backstory</h3>
                     <p className="text-sm text-muted-foreground italic leading-relaxed">
-                        "{profile.metadata.backstory}"
+                        "{metadata.backstory}"
                     </p>
                 </div>
             </CardContent>
@@ -103,8 +105,8 @@ export default function CharacterProfileContent() {
     if (!character || !calculatedStats) {
         return (
              <div className="min-h-screen flex flex-col items-center justify-center text-center">
-                <p className="text-2xl font-headline text-destructive mb-4">No Prisoner Data Found</p>
-                <p className="text-muted-foreground mb-8">Please start a new sentence to create a prisoner.</p>
+                <p className="text-2xl font-headline text-destructive mb-4">No Character Data Found</p>
+                <p className="text-muted-foreground mb-8">Please start a new game to create a character.</p>
                 <Button asChild>
                     <Link href="/">
                         <ArrowLeft className="mr-2 h-4 w-4" />

@@ -16,21 +16,21 @@ const Stat = ({ label, value, unit, description }: { label: string; value: strin
     <div className="flex justify-between items-start text-sm py-2">
         <div>
             <p className="font-bold text-primary/90">{label}</p>
-            <p className="text-xs text-muted-foreground">{description}</p>
+            {description && <p className="text-xs text-muted-foreground">{description}</p>}
         </div>
         <p className="font-mono text-lg text-accent whitespace-nowrap pl-4">{value}{unit}</p>
     </div>
 );
 
 const FullCharacterSheet = ({ profile, calculatedStats }: { profile: CharacterProfile, calculatedStats: CalculatedStats }) => {
-     const { attributes, state } = profile;
+     const { attributes, state, metadata } = profile;
     return (
          <Card className="bg-card/50 border-primary/20 shadow-lg shadow-primary/5">
             <CardHeader>
                 <div className="flex justify-between items-start">
                     <div>
                         <CardTitle className="font-headline text-3xl text-primary">{profile.name}</CardTitle>
-                        <CardDescription>Lvl {profile.level} ({profile.xp} XP) - {profile.metadata.origin}</CardDescription>
+                        <CardDescription>Lvl {profile.level} ({profile.xp} XP) - {metadata.origin}</CardDescription>
                     </div>
                 </div>
             </CardHeader>
@@ -67,16 +67,18 @@ const FullCharacterSheet = ({ profile, calculatedStats }: { profile: CharacterPr
                 <div>
                     <h3 className="font-headline text-xl mb-2 text-primary/80">Metadata</h3>
                      <div className="divide-y divide-primary/10">
-                        <Stat label="Age" value={profile.metadata.age} />
-                        <Stat label="Gender" value={profile.metadata.gender} />
-                        <Stat label="Origin" value={profile.metadata.origin} />
+                        <Stat label="Age" value={metadata.age} />
+                        <Stat label="Gender" value={metadata.gender} />
+                        <Stat label="Orientation" value={metadata.orientation} />
+                        <Stat label="Style" value={metadata.style} />
+                        <Stat label="Origin" value={metadata.origin} />
                     </div>
                 </div>
                 <Separator />
                 <div>
                     <h3 className="font-headline text-xl mb-2 text-primary/80">Backstory</h3>
                     <p className="text-sm text-muted-foreground italic leading-relaxed">
-                        "{profile.metadata.backstory}"
+                        "{metadata.backstory}"
                     </p>
                 </div>
             </CardContent>
@@ -118,14 +120,6 @@ export default function CharacterSheetContent() {
     return (
         <div className="min-h-screen bg-background text-foreground font-body p-4 md:p-8">
             <div className="container mx-auto">
-                <div className="mb-8">
-                    <Button asChild variant="outline">
-                        <Link href="/">
-                            <ArrowLeft className="mr-2 h-4 w-4" />
-                            Back to Game
-                        </Link>
-                    </Button>
-                </div>
                 <FullCharacterSheet profile={character} calculatedStats={calculatedStats} />
             </div>
         </div>

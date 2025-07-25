@@ -39,6 +39,8 @@ export interface CharacterProfile {
   metadata: {
     age: number;
     gender: string;
+    orientation: string;
+    style: string;
     origin: string;
     backstory: string;
   };
@@ -49,7 +51,6 @@ export interface CalculatedStats {
   effectiveIntellect: number;
   effectiveAdaptation: number;
   maxHP: number;
-  carryWeight: number;
   inventorySlots: number;
 }
 

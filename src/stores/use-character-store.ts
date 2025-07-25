@@ -14,7 +14,7 @@ interface CharacterState {
     unlockedAchievements: string[];
     hasHydrated: boolean;
     setHasHydrated: (hydrated: boolean) => void;
-    createCharacter: (name: string, faction: string, stats: { intellect: number, strength: number, adaptation: number }, preset: CharacterPreset) => void;
+    createCharacter: (name: string, faction: string, stats: { intellect: number, strength: number, adaptation: number }, preset: CharacterPreset, orientation: string) => void;
     loadCharacter: () => void;
     resetCharacter: () => void;
     removeItem: (itemId: string) => void;
@@ -27,8 +27,6 @@ interface CharacterState {
     unlockAchievement: (achievementId: string) => void;
 }
 
-const calculateInitialSlots = (strength: number) => 3 + Math.floor(strength / 2);
-
 export const useCharacterStore = create<CharacterState>()(
     persist(
         (set, get) => ({
@@ -40,16 +38,16 @@ export const useCharacterStore = create<CharacterState>()(
             setHasHydrated: (hydrated) => {
                 set({ hasHydrated: hydrated });
             },
-            createCharacter: (name, faction, stats, preset) => {
+            createCharacter: (name, faction, stats, preset, orientation) => {
                 const newCharacter: CharacterProfile = {
                     name: name || preset.name,
                     level: 1,
                     xp: 0,
-                    inventorySlots: calculateInitialSlots(stats.strength),
+                    inventorySlots: 10 + Math.floor(stats.strength / 2),
                     vitality: 100,
                     stamina: 100,
                     sanity: 100,
-                    currency: 0,
+                    currency: 1000,
                     kamen: 15,
                     mracnik: 0,
                     prasinskeKovanice: 0,
@@ -67,6 +65,8 @@ export const useCharacterStore = create<CharacterState>()(
                     metadata: {
                         age: preset.age,
                         gender: preset.gender,
+                        orientation: orientation,
+                        style: preset.style,
                         origin: faction,
                         backstory: preset.backstory,
                     },
