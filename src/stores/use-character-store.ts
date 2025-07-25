@@ -18,7 +18,7 @@ interface CharacterState {
     loadCharacter: () => void;
     resetCharacter: () => void;
     removeItem: (itemId: string) => void;
-    updateCharacterStats: (updates: Partial<{ vitality: number; stamina: number; sanity: number; kamen: number; mracnik: number; prasinskeKovanice: number, xp: number }>) => void;
+    updateCharacterStats: (updates: Partial<{ vitality: number; stamina: number; sanity: number; currency: number; kamen: number; mracnik: number; prasinskeKovanice: number, xp: number }>) => void;
     unlockInventorySlot: () => void;
     setCharacter: (setter: (char: CharacterProfile | null) => CharacterProfile | null) => void;
     addQuest: (quest: Quest) => void;
@@ -49,6 +49,7 @@ export const useCharacterStore = create<CharacterState>()(
                     vitality: 100,
                     stamina: 100,
                     sanity: 100,
+                    currency: 0,
                     kamen: 15,
                     mracnik: 0,
                     prasinskeKovanice: 0,
@@ -100,6 +101,7 @@ export const useCharacterStore = create<CharacterState>()(
                     if (updates.mracnik !== undefined) newStats.mracnik = newStats.mracnik + updates.mracnik;
                     if (updates.prasinskeKovanice !== undefined) newStats.prasinskeKovanice = newStats.prasinskeKovanice + updates.prasinskeKovanice;
                     if (updates.xp !== undefined) newStats.xp = newStats.xp + updates.xp;
+                    if (updates.currency !== undefined) newStats.currency = newStats.currency + updates.currency;
                     
                     return { character: newStats };
                 });
@@ -146,7 +148,7 @@ export const useCharacterStore = create<CharacterState>()(
                         return q;
                     });
                     if (questCompleted) {
-                         get().unlockAchievement('achieve-complete-retrieval');
+                         get().unlockAchievement('achieve-complete-first-quest');
                     }
                     return { quests: newQuests };
                 });
@@ -166,7 +168,7 @@ export const useCharacterStore = create<CharacterState>()(
                     if (achievement.reward.xp || achievement.reward.currency) {
                        updateCharacterStats({
                            xp: achievement.reward.xp || 0,
-                           kamen: achievement.reward.currency || 0
+                           currency: achievement.reward.currency || 0
                        });
                     }
                 }

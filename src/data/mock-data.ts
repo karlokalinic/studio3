@@ -18,6 +18,7 @@ export const characterData: CharacterProfile = {
   vitality: 100,
   stamina: 100,
   sanity: 100,
+  currency: 0,
   kamen: 10,
   mracnik: 1,
   prasinskeKovanice: 0,
@@ -85,7 +86,24 @@ export const achievementsData: Achievement[] = [
     isUnlocked: (char, quests) => quests.some(q => q.id === 'q1-escape'),
   },
   {
-    // A tool is required to progress, a key milestone.
+    id: 'achieve-complete-first-quest',
+    name: 'The First Step',
+    description: "Complete your first quest.",
+    isSpoiler: false,
+    reward: { xp: 150, currency: 10 },
+    icon: 'Milestone',
+    isUnlocked: (char, quests) => quests.some(q => q.id === 'q1-escape' && q.status === 'Completed'),
+  },
+  {
+    id: 'achieve-inventory-expanded',
+    name: 'Deeper Pockets',
+    description: "Unlock an additional inventory slot.",
+    isSpoiler: false,
+    reward: { xp: 50 },
+    icon: 'PackagePlus',
+    isUnlocked: (char, quests) => char.inventorySlots > 3, 
+  },
+  {
     id: 'achieve-got-tool',
     name: 'The First Tool',
     description: "Acquire your first tool, a symbol of hope.",

@@ -24,6 +24,7 @@ export interface CharacterProfile {
   kamen: number;
   mracnik: number;
   prasinskeKovanice: number;
+  currency: number;
   attributes: {
     intellect: Attribute;
     strength: Attribute;

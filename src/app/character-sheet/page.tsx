@@ -1,10 +1,10 @@
 
 'use client';
 
-import StatInternalsContent from './_components/stat-internals-content';
+import CharacterSheetContent from './_components/character-sheet-content';
 
 export default function CharacterSheetPage() {
     return (
-        <StatInternalsContent />
+        <CharacterSheetContent />
     )
 }
