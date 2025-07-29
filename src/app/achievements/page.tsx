@@ -10,16 +10,19 @@ import { Suspense, useEffect } from 'react';
 import { achievementsData } from '@/data/mock-data';
 
 export default function AchievementsPage() {
-    const { character, unlockAchievement } = useCharacterStore();
+    const { character, unlockedAchievements, unlockAchievement } = useCharacterStore();
     const backHref = character ? "/game" : "/";
 
     useEffect(() => {
-        if(character) {
+        if (character) {
             achievementsData.forEach(ach => {
-                unlockAchievement(ach.id);
+                if (!unlockedAchievements.includes(ach.id)) {
+                    unlockAchievement(ach.id);
+                }
             });
         }
-    }, [character, unlockAchievement]);
+    }, [character, unlockAchievement, unlockedAchievements]);
+
 
   return (
     <div className="min-h-screen bg-background text-foreground font-body">

@@ -71,7 +71,14 @@ export const useCharacterStore = create<CharacterState>()(
                         backstory: preset.backstory,
                     },
                 };
-                set({ character: newCharacter, inventory: [], quests: [], unlockedAchievements: ['achieve-start-journey'] });
+                set({ character: newCharacter, inventory: [], quests: [], unlockedAchievements: [] });
+                
+                // Manually trigger unlock for the first achievement after creation
+                const startJourney = achievementsData.find(a => a.id === 'achieve-start-journey');
+                if (startJourney && startJourney.isUnlocked(newCharacter, [])) {
+                    get().unlockAchievement(startJourney.id);
+                }
+
                 localStorage.removeItem('tutorialCompleted'); // Reset tutorial on new character
             },
             loadCharacter: () => {

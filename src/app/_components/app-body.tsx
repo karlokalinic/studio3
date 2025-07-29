@@ -21,7 +21,7 @@ export default function AppBody({
 
       document.body.classList.toggle('font-dyslexia', settings.dyslexiaFont);
     }
-  }, [settings?.theme, settings?.dyslexiaFont]);
+  }, [settings]);
 
   if (!settings) return <body><div className="flex items-center justify-center min-h-screen">Loading settings...</div></body>;
 

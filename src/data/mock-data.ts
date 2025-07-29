@@ -36,6 +36,8 @@ export const characterData: CharacterProfile = {
   metadata: {
     age: 47,
     gender: "Male",
+    orientation: 'Undisclosed',
+    style: 'Worn Scholar Robes',
     origin: "Lumenor",
     backstory: "An esteemed scholar from the city of Lumenor, your relentless pursuit of truth led you to uncover corruption at the highest levels of the Empire. For this, you were sentenced to the lightless depths of Fort Umbralis. Your mind is your only weapon.",
   },
@@ -101,7 +103,7 @@ export const achievementsData: Achievement[] = [
     isSpoiler: false,
     reward: { xp: 50 },
     icon: 'PackagePlus',
-    isUnlocked: (char, quests) => char.inventorySlots > 3, 
+    isUnlocked: (char, quests) => char.inventorySlots > 10, 
   },
   {
     id: 'achieve-got-tool',
@@ -110,7 +112,7 @@ export const achievementsData: Achievement[] = [
     isSpoiler: true,
     reward: { xp: 250, currency: 5 }, // 5 Kamen
     icon: 'PackageCheck',
-    isUnlocked: (char, quests) => false, // Placeholder for future logic
+    isUnlocked: (char, quests) => char.inventory.some(i => i.type === 'Key'),
   },
   {
     id: 'achieve-reach-level-5',
@@ -124,23 +126,22 @@ export const achievementsData: Achievement[] = [
   {
     id: 'achieve-rich',
     name: 'Stone Baron',
-    description: 'Amass 100 Kamen.',
+    description: 'Amass 500 Kamen.',
     isSpoiler: false,
     reward: { xp: 1000 },
     icon: 'CircleDollarSign',
-    isUnlocked: (char, quests) => char.kamen >= 100,
+    isUnlocked: (char, quests) => char.kamen >= 500,
   },
   {
     id: 'achieve-mracnik-hoarder',
     name: 'Crystal Collector',
-    description: 'Hold 10 Mračnik at once.',
+    description: 'Hold 25 Mračnik at once.',
     isSpoiler: false,
     reward: { xp: 750 },
     icon: 'Dumbbell',
-    isUnlocked: (char, quests) => char.mracnik >= 10,
+    isUnlocked: (char, quests) => char.mracnik >= 25,
   },
   {
-    // Player finds a way to communicate with another prisoner in a different language
     id: 'achieve-secret-message',
     name: 'Whispers in the Dark',
     description: 'Successfully send or receive a secret message using a non-standard language.',
@@ -167,4 +168,22 @@ export const achievementsData: Achievement[] = [
     icon: 'History',
     isUnlocked: (char, quests) => false, 
   },
+   {
+    id: 'achieve-all-paths',
+    name: 'Master of Fates',
+    description: 'Start a new game with all four main archetypes (Political, Laborer, Heretic, Zealot).',
+    isSpoiler: true,
+    reward: { xp: 2000 },
+    icon: 'GitFork',
+    isUnlocked: (char, quests) => false,
+  },
+  {
+    id: 'achieve-perfect-run',
+    name: 'Flawless Escape',
+    description: 'Escape Fort Umbralis without failing a single attribute check.',
+    isSpoiler: true,
+    reward: { xp: 5000, currency: 1000},
+    icon: 'Trophy',
+    isUnlocked: (char, quests) => false,
+  }
 ];
