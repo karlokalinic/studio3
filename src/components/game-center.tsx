@@ -31,6 +31,7 @@ import {
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from './ui/tooltip';
+import { useToast } from '@/hooks/use-toast';
 
 const ResourceBar = ({ name, iconPath, level, value, color }: { name: string, iconPath: string, level: number, value: string, color: string }) => {
     return (
@@ -68,6 +69,16 @@ const ResourceBar = ({ name, iconPath, level, value, color }: { name: string, ic
 export default function GameCenter() {
   const { character } = useCharacterStore();
   const router = useRouter();
+  const { toast } = useToast();
+
+  const handleSave = () => {
+    // Zustand's persist middleware saves automatically.
+    // This button provides explicit user feedback.
+    toast({
+      title: "Game Saved",
+      description: "Your progress has been saved to the browser's local storage.",
+    });
+  };
 
   const handleQuit = () => {
     router.push('/');
@@ -138,6 +149,7 @@ export default function GameCenter() {
           variant="outline"
           size="sm"
           className="border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all ml-4"
+          onClick={handleSave}
         >
           <Save className="mr-2 h-4 w-4" /> Save
         </Button>
@@ -195,6 +207,7 @@ export default function GameCenter() {
               <Button
                 variant="ghost"
                 className="justify-start text-lg p-6 hover:bg-accent/20 hover:text-accent"
+                disabled
               >
                 <FolderOpen className="mr-4" /> Load Game
               </Button>

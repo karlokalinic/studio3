@@ -96,6 +96,7 @@ export default function HomePage() {
     const router = useRouter();
 
     useEffect(() => {
+        // This ensures the store is hydrated from localStorage before rendering
         useCharacterStore.persist.rehydrate();
         setHasHydrated(true);
     }, [setHasHydrated]);
