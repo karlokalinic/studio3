@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useCharacterStore } from "@/stores/use-character-store";
 import { useToast } from "@/hooks/use-toast";
-import { Hand, Trash2, Info, Lock, Sword, HeartPulse, Shield, Bot, Map, Key, HelpCircle, Gem, Sparkles, Coins, Search, Star, Weight, Zap, Hammer, Aperture, FlaskConical, Scissors, Scroll, Bone, Feather, Eye, Anchor, Brick, Cable, CircleDot, Dna, GitBranch, CookingPot, KeyRound, Leaf, Package, Brain, Pickaxe, Pilcrow, Puzzle, Scale, Shell } from "lucide-react";
+import { Hand, Trash2, Info, Lock, Sword, HeartPulse, Shield, Bot, Map, Key, HelpCircle, Gem, Sparkles, Coins, Search, Star, Weight, Zap, Hammer, Aperture, FlaskConical, Scissors, Scroll, Bone, Feather, Eye, Anchor, ToyBrick, Cable, CircleDot, Dna, GitBranch, CookingPot, KeyRound, Leaf, Package, Brain, Pickaxe, Pilcrow, Puzzle, Scale, Shell } from "lucide-react";
 import { motion, AnimatePresence } from 'framer-motion';
 import { Separator } from "./ui/separator";
 
@@ -33,7 +33,7 @@ interface InventoryProps {
 const iconMap: { [key: string]: React.ElementType } = {
     Sword, HeartPulse, Shield, Bot, Map, Key, Gem, Sparkles, Coins, HelpCircle,
     Hammer, Aperture, FlaskConical, Scissors, Scroll, Bone, Feather, Eye, Anchor,
-    Brick, Cable, CircleDot, Dna, GitBranch, CookingPot, KeyRound, Leaf, Package,
+    ToyBrick, Cable, CircleDot, Dna, GitBranch, CookingPot, KeyRound, Leaf, Package,
     Brain, Pickaxe, Pilcrow, Puzzle, Scale, Shell
 };
 
