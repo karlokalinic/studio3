@@ -41,6 +41,7 @@ export const useCharacterStore = create<CharacterState>()(
                 set({ hasHydrated: hydrated });
             },
             createCharacter: (name, faction, stats, preset) => {
+                const startingInventory = inventoryData.slice(0, 38);
                 const newCharacter: CharacterProfile = {
                     name: name || preset.name,
                     level: 1,
@@ -73,11 +74,11 @@ export const useCharacterStore = create<CharacterState>()(
                         origin: faction,
                         backstory: preset.backstory,
                     },
-                    inventory: inventoryData.slice(0, 38),
+                    inventory: startingInventory,
                 };
                 set({ 
                     character: newCharacter, 
-                    inventory: newCharacter.inventory, 
+                    inventory: startingInventory, 
                     quests: [], 
                     unlockedAchievements: [] 
                 });
