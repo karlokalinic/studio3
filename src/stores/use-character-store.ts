@@ -48,20 +48,23 @@ export const useCharacterStore = create<CharacterState>()(
                         adaptation: { value: stats.adaptation, description: 'Ability to react to sudden situations (uses a D6 roll).' },
                     },
                     metadata: {
+                        ...characterData.metadata,
                         age: preset.age,
                         gender: preset.gender,
-                        orientation: "Undisclosed",
                         style: preset.style,
                         origin: faction,
                         backstory: preset.backstory,
                     },
-                    inventory: inventoryData,
+                    // Explicitly use the full inventory data here
+                    inventory: inventoryData, 
                     inventorySlots: 39,
                     kamen: 0,
                     mracnik: 0,
                     prasinskeKovanice: 0,
+                    currency: 0,
                     ancientKeys: 1,
                 };
+
                 set({ 
                     character: newCharacter, 
                     quests: [], 
