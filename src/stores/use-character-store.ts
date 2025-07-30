@@ -70,6 +70,7 @@ export const useCharacterStore = create<CharacterState>()(
                         origin: faction,
                         backstory: preset.backstory,
                     },
+                    inventory: [], // Ensure inventory is initialized
                 };
                 set({ character: newCharacter, inventory: [], quests: [], unlockedAchievements: [] });
                 
@@ -170,7 +171,12 @@ export const useCharacterStore = create<CharacterState>()(
                 }
                 
                 const achievement = achievementsData.find(a => a.id === achievementId);
-                if (achievement && achievement.isUnlocked(character, quests)) {
+                // Ensure character has inventory before checking achievements that require it
+                const charWithInventory = {
+                    ...character,
+                    inventory: get().inventory,
+                };
+                if (achievement && achievement.isUnlocked(charWithInventory, quests)) {
                     set(state => ({ unlockedAchievements: [...state.unlockedAchievements, achievementId] }));
                     if (achievement.reward.xp || achievement.reward.currency) {
                        updateCharacterStats({

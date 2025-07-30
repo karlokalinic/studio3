@@ -112,7 +112,7 @@ export const achievementsData: Achievement[] = [
     isSpoiler: true,
     reward: { xp: 250, currency: 5 }, // 5 Kamen
     icon: 'PackageCheck',
-    isUnlocked: (char, quests) => char.inventory.some(i => i.type === 'Key'),
+    isUnlocked: (char, quests) => char.inventory?.some(i => i.type === 'Key'),
   },
   {
     id: 'achieve-reach-level-5',

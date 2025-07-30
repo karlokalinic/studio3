@@ -44,6 +44,7 @@ export interface CharacterProfile {
     origin: string;
     backstory: string;
   };
+  inventory: InventoryItem[];
 }
 
 export interface CalculatedStats {
