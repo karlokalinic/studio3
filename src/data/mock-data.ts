@@ -7,14 +7,15 @@ export const playerStats: PlayerStats = {
   sanity: 90,
   kamen: 10,
   mracnik: 1,
-  prasinskeKovanice: 0
+  prasinskeKovanice: 0,
+  ancientKeys: 1,
 };
 
 export const characterData: CharacterProfile = {
   name: "Elysar Valentis",
   level: 1,
   xp: 0,
-  inventorySlots: 10,
+  inventorySlots: 39,
   vitality: 100,
   stamina: 100,
   sanity: 100,
@@ -22,6 +23,7 @@ export const characterData: CharacterProfile = {
   kamen: 10,
   mracnik: 1,
   prasinskeKovanice: 0,
+  ancientKeys: 1,
   attributes: {
     intellect: { value: 3, description: 'Knowledge of ancient languages, symbols, and research.' },
     strength: { value: 1, description: 'Physical power for moving obstacles.' },
@@ -44,38 +46,55 @@ export const characterData: CharacterProfile = {
   inventory: [],
 };
 
+// 8x5 grid = 40 slots. Let's create 38 items.
 export const inventoryData: InventoryItem[] = [
-  { 
-    id: 'item-1', 
-    name: 'Tattered Rags', 
-    type: 'Armor', 
-    value: 1, 
-    description: 'The threadbare uniform of a prisoner. Offers minimal protection.', 
-    icon: 'Shield',
-    rank: 'Common',
-    defense: 1,
-    durability: 20,
-    weight: 2,
-    lore: 'These rags have been worn by countless souls. They smell of despair and dried sweat.'
-  },
-  { 
-    id: 'item-2', 
-    name: 'Stale Bread', 
-    type: 'Consumable', 
-    value: 0, 
-    description: 'Barely edible, but it\'s something.', 
-    nutrition: 5, 
-    icon: 'HeartPulse' 
-  },
-  { 
-    id: 'item-3', 
-    name: 'Phosphorescent Pebble', 
-    type: 'Currency', 
-    value: 1, 
-    description: 'A small stone that glows faintly. The primary currency among prisoners.', 
-    icon: 'Gem' 
-  },
+  // Weapons
+  { id: 'item-rusty-shiv', name: 'Rusty Shiv', type: 'Weapon', value: 2, description: 'A sharpened piece of metal. Better than nothing.', icon: 'Sword', attack: 2, durability: 15, weight: 1, rank: 'Common', position: {x: 0, y: 0}, size: [1, 1] },
+  // Armor
+  { id: 'item-tattered-rags', name: 'Tattered Rags', type: 'Armor', value: 1, description: 'The threadbare uniform of a prisoner.', icon: 'Shield', defense: 1, durability: 20, weight: 2, rank: 'Common', lore: 'Smells of despair.', position: {x: 1, y: 0}, size: [1, 1] },
+  // Potions (Combinable)
+  { id: 'item-azure-elixir', name: 'Azure Elixir', type: 'Consumable', value: 25, description: 'A shimmering blue liquid. Cool to the touch.', icon: 'FlaskConical', effect: { sanity: 20 }, rank: 'Uncommon', position: {x: 2, y: 0}, size: [1, 1] },
+  { id: 'item-verdant-draught', name: 'Verdant Draught', type: 'Consumable', value: 25, description: 'A thick green liquid. Smells of moss and earth.', icon: 'FlaskConical', effect: { stamina: 20 }, rank: 'Uncommon', position: {x: 3, y: 0}, size: [1, 1] },
+  // Tools
+  { id: 'item-lockpick-set', name: 'Makeshift Lockpick', type: 'Tool', value: 50, description: 'A bent piece of wire and a small tension wrench.', icon: 'Key', weight: 0.5, rank: 'Uncommon', lore: 'A symbol of hope.', position: {x: 4, y: 0}, size: [1, 1] },
+  // Currencies
+  { id: 'item-kamen-pile', name: 'Kamen', type: 'Currency', value: 10, description: 'Glowing pebbles used as currency.', icon: 'Gem', weight: 1, position: {x: 5, y: 0}, size: [1, 1] },
+  { id: 'item-mracnik-shard', name: 'Mračnik Shard', type: 'Currency', value: 100, description: 'A crystal that hums with a strange energy.', icon: 'Sparkles', weight: 0.2, position: {x: 6, y: 0}, size: [1, 1] },
+  { id: 'item-arky-coin', name: 'Arkar Coin', type: 'Currency', value: 500, description: 'An ancient coin from a forgotten civilization.', icon: 'Coins', weight: 0.1, position: {x: 7, y: 0}, size: [1, 1] },
+  // Small Objects
+  { id: 'item-chipped-mug', name: 'Chipped Mug', type: 'Junk', value: 0, description: 'A ceramic mug with a piece missing.', icon: 'CookingPot', weight: 1, position: {x: 0, y: 1}, size: [1, 1] },
+  { id: 'item-pet-rock', name: 'Pet Rock', type: 'Junk', value: 1, description: 'Someone drew a face on this rock. His name is Horace.', icon: 'Shell', weight: 1.5, lore: 'Horace has seen things.', position: {x: 1, y: 1}, size: [1, 1] },
+  { id: 'item-single-boot', name: 'Single Boot', type: 'Junk', value: 0, description: 'A sturdy leather boot. Where is its partner?', icon: 'Aperture', weight: 2, position: {x: 2, y: 1}, size: [1, 1] },
+  { id: 'item-mummified-rat', name: 'Mummified Rat', type: 'Junk', value: 1, description: 'A dessicated rat. Surprisingly light.', icon: 'Bone', weight: 0.2, position: {x: 3, y: 1}, size: [1, 1] },
+  { id: 'item-arcane-dust', name: 'Arcane Dust', type: 'Material', value: 15, description: 'A pinch of shimmering dust.', icon: 'CircleDot', weight: 0.1, position: {x: 4, y: 1}, size: [1, 1] },
+  { id: 'item-cultist-missive', name: 'Cultist Missive', type: 'Quest Item', value: 0, description: 'A sealed letter with a wax emblem of a kraken.', icon: 'Scroll', weight: 0.1, position: {x: 5, y: 1}, size: [1, 1] },
+  { id: 'item-guard-key', name: 'Guard\'s Key', type: 'Key', value: 0, description: 'A heavy iron key.', icon: 'KeyRound', weight: 0.5, position: {x: 6, y: 1}, size: [1, 1] },
+  { id: 'item-prison-map-scrap', name: 'Map Scrap', type: 'Quest Item', value: 0, description: 'A torn piece of a map.', icon: 'Map', weight: 0.1, position: {x: 7, y: 1}, size: [1, 1] },
+  // More Items
+  { id: 'item-splintered-shield', name: 'Splintered Shield', type: 'Armor', value: 5, description: 'A wooden shield, barely holding together.', icon: 'Shield', defense: 2, durability: 10, weight: 5, rank: 'Common', position: {x: 0, y: 2}, size: [1, 1] },
+  { id: 'item-moldy-bread', name: 'Moldy Bread', type: 'Consumable', value: 1, description: 'It might be edible. Or it might be poison.', icon: 'HeartPulse', effect: { vitality: 5, sanity: -5 }, rank: 'Common', position: {x: 1, y: 2}, size: [1, 1] },
+  { id: 'item-tangled-rope', name: 'Tangled Rope', type: 'Tool', value: 3, description: 'A length of rope, full of knots.', icon: 'Cable', weight: 3, position: {x: 2, y: 2}, size: [1, 1] },
+  { id: 'item-sharpening-stone', name: 'Sharpening Stone', type: 'Tool', value: 20, description: 'Can improve a weapon\'s edge.', icon: 'Hammer', weight: 2, rank: 'Uncommon', position: {x: 3, y: 2}, size: [1, 1] },
+  { id: 'item-odd-puzzle-box', name: 'Odd Puzzle Box', type: 'Junk', value: 50, description: 'A small wooden box with no visible opening.', icon: 'Puzzle', weight: 1, lore: 'It hums when you aren\'t looking at it.', position: {x: 4, y: 2}, size: [1, 1] },
+  { id: 'item-heretic-symbol', name: 'Heretic\'s Symbol', type: 'Quest Item', value: 0, description: 'A crudely carved symbol of a stylized eye.', icon: 'Eye', weight: 0.1, position: {x: 5, y: 2}, size: [1, 1] },
+  { id: 'item-shimmering-leaf', name: 'Shimmering Leaf', type: 'Material', value: 30, description: 'A leaf from a cave-dwelling plant that glows with its own light.', icon: 'Leaf', weight: 0.1, rank: 'Uncommon', position: {x: 6, y: 2}, size: [1, 1] },
+  { id: 'item-weighted-die', name: 'Weighted Die', type: 'Junk', value: 5, description: 'It always seems to land on six.', icon: 'Scale', weight: 0.1, lore: 'Luck is a matter of preparation.', position: {x: 7, y: 2}, size: [1, 1] },
+  { id: 'item-spider-silk', name: 'Spider Silk', type: 'Material', value: 20, description: 'Incredibly strong and light.', icon: 'GitBranch', weight: 0.1, rank: 'Uncommon', position: {x: 0, y: 3}, size: [1, 1] },
+  { id: 'item-forbidden-tome', name: 'Forbidden Tome', type: 'Tool', value: 200, description: 'A book bound in human skin. Reading it might cost you your sanity.', icon: 'BookOpen', weight: 4, rank: 'Rare', lore: 'Some things are not meant to be known.', position: {x: 1, y: 3}, size: [1, 1] },
+  { id: 'item-preserved-brain', name: 'Preserved Brain', type: 'Junk', value: 100, description: 'A brain floating in a jar of greenish fluid.', icon: 'Brain', weight: 5, rank: 'Rare', lore: 'It still thinks, sometimes.', position: {x: 2, y: 3}, size: [1, 1] },
+  { id: 'item-miner-pickaxe', name: 'Miner\'s Pickaxe', type: 'Weapon', value: 15, description: 'Heavy and crude, but can break rocks... or skulls.', icon: 'Pickaxe', attack: 4, durability: 40, weight: 10, rank: 'Common', position: {x: 3, y: 3}, size: [1, 1] },
+  { id: 'item-suturing-kit', name: 'Suturing Kit', type: 'Tool', value: 40, description: 'A needle and thread for closing deep wounds.', icon: 'Scissors', weight: 0.5, rank: 'Uncommon', position: {x: 4, y: 3}, size: [1, 1] },
+  { id: 'item-forgotten-anchor', name: 'Forgotten Anchor', type: 'Junk', value: 20, description: 'A small, rusty anchor. How did this get here?', icon: 'Anchor', weight: 15, position: {x: 5, y: 3}, size: [1, 1] },
+  { id: 'item-mutated-dna', name: 'Mutated DNA Sample', type: 'Quest Item', value: 0, description: 'A vial containing a swirling, unstable genetic sequence.', icon: 'Dna', weight: 0.2, rank: 'Epic', position: {x: 6, y: 3}, size: [1, 1] },
+  { id: 'item-crow-feather', name: 'Crow Feather', type: 'Junk', value: 1, description: 'A single, black feather. It feels unnaturally cold.', icon: 'Feather', weight: 0.1, lore: 'A messenger from the world above.', position: {x: 7, y: 3}, size: [1, 1] },
+  // BIG OBJECTS
+  { id: 'item-heavy-plank', name: 'Heavy Plank', type: 'Big Object', value: 5, description: 'A long, sturdy wooden plank. Could be used to bridge a gap.', icon: 'Brick', weight: 20, rank: 'Common', position: {x: 0, y: 4}, size: [2, 1] },
+  { id: 'item-unstable-golem-core', name: 'Unstable Golem Core', type: 'Big Object', value: 500, description: 'A pulsating core of arcane energy and technology.', icon: 'Bot', weight: 10, rank: 'Epic', lore: 'It seems to be watching you.', position: {x: 2, y: 4}, size: [1, 2] },
+  { id: 'item-strange-paragraph', name: 'Strange Paragraph', type: 'Junk', value: 0, description: 'A piece of parchment with strange symbols.', icon: 'Pilcrow', weight: 0.1, rank: 'Common', position: {x: 4, y: 4}, size: [1, 1] },
+  { id: 'item-cursed-idol', name: 'Cursed Idol', type: 'Junk', value: 66, description: 'A small, unsettling idol made of dark stone.', icon: 'Package', weight: 3, rank: 'Rare', lore: 'It whispers when you sleep.', position: {x: 5, y: 4}, size: [1, 1] },
+  { id: 'item-sturdy-shield', name: 'Sturdy Shield', type: 'Armor', value: 50, description: 'A well-made shield.', icon: 'Shield', defense: 5, durability: 50, weight: 8, rank: 'Uncommon', position: {x: 6, y: 4}, size: [1, 1] },
 ];
+
 
 export const questData: Quest[] = [
     { 
@@ -178,7 +197,7 @@ export const achievementsData: Achievement[] = [
     isSpoiler: false,
     reward: { xp: 50 },
     icon: 'PackagePlus',
-    isUnlocked: (char) => char.inventorySlots > 10, 
+    isUnlocked: (char) => char.inventorySlots > 2, 
   },
   {
     id: 'achieve-inventory-maxed',

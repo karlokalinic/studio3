@@ -6,6 +6,7 @@ export interface PlayerStats {
   kamen: number;
   mracnik: number;
   prasinskeKovanice: number;
+  ancientKeys: number;
 }
 
 export interface Attribute {
@@ -24,6 +25,7 @@ export interface CharacterProfile {
   kamen: number;
   mracnik: number;
   prasinskeKovanice: number;
+  ancientKeys: number;
   currency: number;
   attributes: {
     intellect: Attribute;
@@ -58,12 +60,18 @@ export interface CalculatedStats {
 export interface InventoryItem {
   id: string;
   name: string;
-  type: 'Weapon' | 'Armor' | 'Consumable' | 'Quest Item' | 'Key' | 'Currency';
+  type: 'Weapon' | 'Armor' | 'Consumable' | 'Quest Item' | 'Key' | 'Currency' | 'Junk' | 'Tool' | 'Material' | 'Big Object';
   value: number;
   description: string;
   icon: string;
+  position: { x: number; y: number };
+  size: [number, number]; // [width, height] in grid cells
   // Consumable-specific
-  nutrition?: number; 
+  effect?: {
+    vitality?: number;
+    stamina?: number;
+    sanity?: number;
+  };
   // Equipment-specific
   durability?: number;
   rank?: 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary';
