@@ -111,7 +111,7 @@ const ChoiceConsequence = ({ consequence, onAcknowledged }: { consequence: any, 
 
 export default function TutorialContent() {
   const router = useRouter();
-  const { character, hasHydrated, loadCharacter, setCharacter, setInventory } = useCharacterStore();
+  const { character, hasHydrated, loadCharacter, setCharacter } = useCharacterStore();
   const { settings, setSetting } = useSettings();
   const [step, setStep] = useState(0);
   const [showText, setShowText] = useState(false);
@@ -174,7 +174,6 @@ export default function TutorialContent() {
   };
   
   const finishTutorial = () => {
-      setInventory([]); // Start with no items
       localStorage.setItem('tutorialCompleted', 'true');
       router.push('/game');
   }
