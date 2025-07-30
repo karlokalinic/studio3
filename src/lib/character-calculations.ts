@@ -38,10 +38,6 @@ function calculateMaxHP(profile: CharacterProfile, effectiveStrength: number): n
   return 100 + (profile.level * 5) + (effectiveStrength * 5);
 }
 
-function calculateInventorySlots(profile: CharacterProfile): number {
-    return 10 + Math.floor(profile.attributes.strength.value / 2);
-}
-
 // Main function to get all calculated stats
 export function getCalculatedStats(profile: CharacterProfile, difficulty: Difficulty): CalculatedStats {
   const effectiveStrength = calculateEffectiveStrength(profile, difficulty);
@@ -53,6 +49,6 @@ export function getCalculatedStats(profile: CharacterProfile, difficulty: Diffic
     effectiveIntellect,
     effectiveAdaptation,
     maxHP: calculateMaxHP(profile, effectiveStrength),
-    inventorySlots: calculateInventorySlots(profile),
+    inventorySlots: profile.inventorySlots,
   };
 }

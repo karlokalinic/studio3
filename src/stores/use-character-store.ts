@@ -55,8 +55,7 @@ export const useCharacterStore = create<CharacterState>()(
                         origin: faction,
                         backstory: preset.backstory,
                     },
-                    // Explicitly use the full inventory data here
-                    inventory: inventoryData, 
+                    inventory: inventoryData,
                     inventorySlots: 39,
                     kamen: 0,
                     mracnik: 0,

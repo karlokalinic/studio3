@@ -62,6 +62,12 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
   const [unlocking, setUnlocking] = useState(false);
   const [shaking, setShaking] = useState(false);
 
+  useEffect(() => {
+    if (selectedItem) {
+        setIsInspecting(false);
+    }
+  }, [selectedItem]);
+
   const handleUseItem = () => {
     if (!selectedItem) return;
 
@@ -125,7 +131,6 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
   const handleCombine = (targetItem: InventoryItem) => {
     if (!selectedItem) return;
     
-    // Specific combination logic
     const isAzureAndVerdant = (selectedItem.id === 'item-azure-elixir' && targetItem.id === 'item-verdant-draught') || (selectedItem.id === 'item-verdant-draught' && targetItem.id === 'item-azure-elixir');
 
     if (isAzureAndVerdant) {
@@ -161,19 +166,10 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
         return;
     }
 
-    if (selectedItem && !item) { // Dropping item on empty slot
-        const newInventory = items.map(i => i.id === selectedItem.id ? { ...i, position: { x:0, y:0 } /* This needs logic to find the actual slot coords */ } : i);
-       // Drag-and-drop logic would go here. For now, we simplify.
-       onSelectItem(null); // Deselect
-       return;
-    }
-
-    setIsInspecting(false);
     onSelectItem(item);
   }
 
   const canBeUsed = selectedItem?.type === 'Consumable';
-  const canBeInspected = selectedItem && !canBeUsed;
   
   const itemDetails = (
     <>
@@ -184,7 +180,7 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
           </CardDescription>
         </CardHeader>
         <CardContent className="p-0 flex-grow">
-          <p className="text-muted-foreground">{selectedItem?.description}</p>
+          <p className="text-muted-foreground text-sm">{selectedItem?.description}</p>
            {isInspecting && (
               <motion.div 
                 initial={{ opacity: 0, y: 10 }}
@@ -217,7 +213,7 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
                     </Button>
                 ) : (
                      <Button className="w-full" onClick={() => setIsInspecting(prev => !prev)} disabled={!selectedItem}>
-                        <Search className="mr-2 h-4 w-4" /> {isInspecting ? 'Hide' : 'Inspect'}
+                        <Search className="mr-2 h-4 w-4" /> {isInspecting ? 'Hide Details' : 'Inspect'}
                     </Button>
                 )}
                  <AlertDialog>
@@ -282,7 +278,6 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
             {Array.from({ length: TOTAL_GRID_SLOTS }).map((_, index) => {
                 const itemAtPos = items.find(item => {
                     const itemIndex = item.position.y * GRID_COLS + item.position.x;
-                    // Check if index is within the item's occupied space
                     for (let y = 0; y < item.size[1]; y++) {
                         for (let x = 0; x < item.size[0]; x++) {
                             if ((item.position.y + y) * GRID_COLS + (item.position.x + x) === index) {
@@ -308,7 +303,7 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
                                 gridRow: `span ${mainItemAtPos.size[1]}`,
                             }}
                             className={cn(
-                                "bg-black/20 rounded-md flex items-center justify-center cursor-pointer border-2 hover:border-accent transition-all duration-300 relative",
+                                "bg-black/20 rounded-md flex items-center justify-center cursor-pointer border-2 hover:border-accent transition-all duration-300 relative aspect-square",
                                 isSelected ? "border-accent bg-accent/10" : "border-primary/20",
                                 unlocking && "opacity-50 blur-sm"
                             )}
@@ -324,7 +319,6 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
                     );
                 }
 
-                // Placeholder for multi-tile items
                 if (itemAtPos && isUnlocked) {
                     return null;
                 }
@@ -389,7 +383,7 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
                     className="space-y-2 mb-4"
                 >
                     <h3 className="font-headline text-accent text-lg">Unlock Mode</h3>
-                    <p className="text-muted-foreground">Select a locked slot to unlock it.</p>
+                    <p className="text-muted-foreground text-sm">Select a locked slot to unlock it.</p>
                     <Button variant="ghost" onClick={() => setUnlocking(false)}>Cancel</Button>
                 </motion.div>
             )}
