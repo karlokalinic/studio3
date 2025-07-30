@@ -272,7 +272,7 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
 
   return (
     <Card className={cn("bg-card/50 border-primary/20 shadow-lg shadow-primary/5 flex flex-col md:flex-row", shaking && 'animate-shake')}>
-      <div className="p-4 border-b md:border-b-0 md:border-r border-primary/10">
+      <div className="p-4 border-b md:border-b-0 md:border-r border-primary/10 flex-grow">
         <CardHeader className="p-2">
             <CardTitle className="font-headline text-2xl text-primary">Inventory</CardTitle>
             <CardDescription>{items.length} / {maxSlots} Slots Used</CardDescription>
@@ -359,7 +359,7 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
         </CardContent>
       </div>
       
-      <div className="w-full md:w-2/3 p-6 flex flex-col min-h-[300px]">
+      <div className="w-full md:w-80 p-6 flex flex-col min-h-[300px] flex-shrink-0">
         <AnimatePresence mode="wait">
         {selectedItem ? (
           <motion.div 
