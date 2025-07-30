@@ -2,6 +2,7 @@
 "use client";
 
 import type { InventoryItem } from "@/types";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import {
   AlertDialog,
