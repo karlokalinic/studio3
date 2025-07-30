@@ -14,7 +14,7 @@ interface CharacterState {
     unlockedAchievements: string[];
     hasHydrated: boolean;
     setHasHydrated: (hydrated: boolean) => void;
-    createCharacter: (name: string, faction: string, stats: { intellect: number, strength: number, adaptation: number }, preset: CharacterPreset, orientation: string) => void;
+    createCharacter: (name: string, faction: string, stats: { intellect: number, strength: number, adaptation: number }, preset: CharacterPreset) => void;
     loadCharacter: () => void;
     resetCharacter: () => void;
     removeItem: (itemId: string) => void;
@@ -38,7 +38,7 @@ export const useCharacterStore = create<CharacterState>()(
             setHasHydrated: (hydrated) => {
                 set({ hasHydrated: hydrated });
             },
-            createCharacter: (name, faction, stats, preset, orientation) => {
+            createCharacter: (name, faction, stats, preset) => {
                 const newCharacter: CharacterProfile = {
                     name: name || preset.name,
                     level: 1,
@@ -65,7 +65,7 @@ export const useCharacterStore = create<CharacterState>()(
                     metadata: {
                         age: preset.age,
                         gender: preset.gender,
-                        orientation: orientation,
+                        orientation: "Undisclosed",
                         style: preset.style,
                         origin: faction,
                         backstory: preset.backstory,

@@ -15,14 +15,10 @@ import {
 import {
   Save,
   Menu,
-  CircleDollarSign,
   Settings,
   FolderOpen,
-  Archive,
   BookOpen,
-  Lightbulb,
   Home,
-  FileText,
   Trophy,
   Gem,
   Coins,
@@ -84,7 +80,7 @@ export default function GameCenter() {
     router.push('/');
   }
 
-  const getStatus = (level: number, type: 'vitality' | 'stamina' | 'sanity') => {
+  const getStatus = (level: number) => {
       if (level > 80) return { value: 'Stable', color: 'text-green-400' };
       if (level > 50) return { value: 'Fraying', color: 'text-yellow-400' };
       if (level > 20) return { value: 'Waning', color: 'text-orange-400' };
@@ -101,9 +97,9 @@ export default function GameCenter() {
     )
   }
 
-  const vitalityStatus = getStatus(character.vitality, 'vitality');
-  const staminaStatus = getStatus(character.stamina, 'stamina');
-  const sanityStatus = getStatus(character.sanity, 'sanity');
+  const vitalityStatus = getStatus(character.vitality);
+  const staminaStatus = getStatus(character.stamina);
+  const sanityStatus = getStatus(character.sanity);
 
   return (
     <div className="bg-card/50 rounded-lg border border-primary/20 p-4 shadow-lg shadow-primary/5 flex flex-col md:flex-row items-center justify-between gap-6">
@@ -112,9 +108,9 @@ export default function GameCenter() {
       </h1>
 
       <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-4">
-          <ResourceBar name="Vitality" iconPath="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" level={character.vitality} value={vitalityStatus.value} color={vitalityStatus.color} />
-          <ResourceBar name="Stamina" iconPath="m13 2-3 14h3l-3 6h6l3-14h-3l3-6h-6Z" level={character.stamina} value={staminaStatus.value} color={staminaStatus.color} />
-          <ResourceBar name="Sanity" iconPath="M12 2a5 5 0 0 0-5 5c0 1.6.83 3 2 3.82V12h6v-1.18c1.17-.82 2-2.22 2-3.82a5 5 0 0 0-5-5Z" level={character.sanity} value={sanityStatus.value} color={sanityStatus.color} />
+          <ResourceBar name="Vitality" iconPath="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" level={character.vitality} value={`${character.vitality}/100 - ${vitalityStatus.value}`} color={vitalityStatus.color} />
+          <ResourceBar name="Stamina" iconPath="m13 2-3 14h3l-3 6h6l3-14h-3l3-6h-6Z" level={character.stamina} value={`${character.stamina}/100 - ${staminaStatus.value}`} color={staminaStatus.color} />
+          <ResourceBar name="Sanity" iconPath="M12 2a5 5 0 0 0-5 5c0 1.6.83 3 2 3.82V12h6v-1.18c1.17-.82 2-2.22 2-3.82a5 5 0 0 0-5-5Z" level={character.sanity} value={`${character.sanity}/100 - ${sanityStatus.value}`} color={sanityStatus.color} />
       </div>
 
       <div className="flex items-center gap-2 shrink-0">

@@ -75,14 +75,6 @@ const SectionCard: React.FC<{
 export default function StoryContent() {
   return (
     <div className="relative isolate overflow-hidden min-h-screen">
-       <Image
-          src="https://placehold.co/1920x1080.png"
-          alt="Dark, oppressive fortress"
-          fill
-          objectFit="cover"
-          className="-z-10 opacity-20"
-          data-ai-hint="dark fortress medieval"
-        />
         <div className="container mx-auto px-4 py-16">
             <div className="text-center pt-16">
                 <h1 className="font-headline text-4xl font-bold tracking-tight text-primary drop-shadow-[0_0_10px_hsl(var(--primary))] sm:text-6xl">

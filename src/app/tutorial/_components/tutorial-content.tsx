@@ -181,7 +181,6 @@ export default function TutorialContent() {
   }
 
   const skipTutorial = () => {
-    setInventory(inventoryData);
     localStorage.setItem('tutorialCompleted', 'true');
     router.push('/game');
   }

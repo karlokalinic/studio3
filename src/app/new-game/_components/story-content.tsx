@@ -76,6 +76,9 @@ const PsychologicalTest = () => {
             counts[archetype]++;
         });
 
+        // Add a point to default for any unanswered questions
+        counts.default += psychologicalQuestions.length - Object.keys(answers).length;
+
         const sortedArchetypes = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
         const finalArchetype = sortedArchetypes[0] || 'default';
         setOutcome(factionOutcomes[finalArchetype]);
@@ -95,7 +98,7 @@ const PsychologicalTest = () => {
     }, [currentQuestionIndex, calculateOutcome]);
 
      useEffect(() => {
-        if (testState !== 'testing') return;
+        if (testState !== 'testing' || !psychologicalQuestions[currentQuestionIndex]) return;
 
         const timer = setInterval(() => {
             setTimeLeft(prev => {
@@ -108,7 +111,7 @@ const PsychologicalTest = () => {
         }, 10);
 
         return () => clearInterval(timer);
-    }, [testState, handleAnswer]);
+    }, [testState, handleAnswer, currentQuestionIndex]);
 
 
     const startNewGame = () => {
@@ -165,6 +168,11 @@ const PsychologicalTest = () => {
 
     const question = psychologicalQuestions[currentQuestionIndex];
 
+    if (!question) {
+        // This case handles the timer running out on the last question
+        return null;
+    }
+
     return (
         <motion.div 
             key={currentQuestionIndex} 
@@ -200,14 +208,6 @@ const PsychologicalTest = () => {
 export default function StoryContent() {
   return (
     <div className="relative isolate overflow-hidden min-h-screen">
-       <Image
-          src="https://placehold.co/1920x1080.png"
-          alt="Dark, oppressive fortress"
-          fill
-          objectFit="cover"
-          className="-z-10 opacity-20"
-          data-ai-hint="dark fortress medieval"
-        />
       <div className="mx-auto max-w-3xl px-6 py-24 sm:py-32 lg:px-8">
         <motion.div
           className="text-center"

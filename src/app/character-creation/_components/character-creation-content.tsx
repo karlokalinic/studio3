@@ -12,7 +12,6 @@ import StatRoller from './stat-roller';
 import { motion, AnimatePresence } from 'framer-motion';
 import { synthesizeCharacter, type CharacterPreset } from '@/lib/character-synthesis';
 import { ArrowRight, Sparkles, RefreshCw } from 'lucide-react';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Skeleton } from '@/components/ui/skeleton';
 
 type CreationStep = 'synthesis' | 'finalize';
@@ -44,9 +43,8 @@ const SynthesisStep = ({ preset, onConfirm, onRetry }: { preset: CharacterPreset
 };
 
 
-const FinalizeStep = ({ preset, faction, onSave }: { preset: CharacterPreset, faction: string, onSave: (name: string, orientation: string, finalStats: any) => void }) => {
+const FinalizeStep = ({ preset, faction, onSave }: { preset: CharacterPreset, faction: string, onSave: (name: string, finalStats: any) => void }) => {
     const [characterName, setCharacterName] = useState(preset.name);
-    const [orientation, setOrientation] = useState('Undisclosed');
     const [isSaving, setIsSaving] = useState(false);
     
     const handleSave = (finalStats: { intellect: number; strength: number; adaptation: number; }) => {
@@ -55,7 +53,7 @@ const FinalizeStep = ({ preset, faction, onSave }: { preset: CharacterPreset, fa
             return;
         }
         setIsSaving(true);
-        onSave(characterName, orientation, finalStats);
+        onSave(characterName, finalStats);
     };
 
     return (
@@ -69,27 +67,6 @@ const FinalizeStep = ({ preset, faction, onSave }: { preset: CharacterPreset, fa
                     placeholder="Enter your character's name..."
                     className="text-lg text-center"
                 />
-            </div>
-             <div className="space-y-2 text-center">
-                <Label className="text-lg text-primary">Character Orientation</Label>
-                 <RadioGroup defaultValue="Undisclosed" onValueChange={setOrientation} className="flex justify-center gap-4">
-                    <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="Heterosexual" id="r1" />
-                        <Label htmlFor="r1">Heterosexual</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="Homosexual" id="r2" />
-                        <Label htmlFor="r2">Homosexual</Label>
-                    </div>
-                     <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="Bisexual" id="r3" />
-                        <Label htmlFor="r3">Bisexual</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="Undisclosed" id="r4" />
-                        <Label htmlFor="r4">Undisclosed</Label>
-                    </div>
-                </RadioGroup>
             </div>
             <p className="text-sm text-center text-muted-foreground">Based on the archetype: <strong className="text-accent">{preset.name}</strong></p>
             <StatRoller onConfirm={handleSave} isSaving={isSaving} />
@@ -143,9 +120,9 @@ export default function CharacterCreationContent() {
         generateCharacter();
     }
 
-    const handleSave = (name: string, orientation: string, finalStats: { intellect: number; strength: number; adaptation: number; }) => {
+    const handleSave = (name: string, finalStats: { intellect: number; strength: number; adaptation: number; }) => {
         if (!characterPreset) return;
-        createCharacter(name, faction, finalStats, characterPreset, orientation);
+        createCharacter(name, faction, finalStats, characterPreset);
         
         setTimeout(() => {
              router.push('/tutorial');

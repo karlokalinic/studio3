@@ -8,7 +8,6 @@ import { useCharacterStore } from '@/stores/use-character-store';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Settings, Gamepad2, BookOpen, Play, Skull } from 'lucide-react';
-import Image from 'next/image';
 
 const MainMenu = () => {
     const router = useRouter();
@@ -20,14 +19,6 @@ const MainMenu = () => {
 
     return (
         <main className="min-h-screen bg-background font-body text-foreground flex items-center justify-center p-4">
-             <Image
-                src="https://placehold.co/1920x1080.png"
-                alt="Dark, oppressive fortress background"
-                fill
-                objectFit="cover"
-                className="-z-10 opacity-20"
-                data-ai-hint="dark fortress medieval"
-                />
             <Card className="max-w-md w-full text-center bg-card/50 border-primary/20 shadow-2xl shadow-primary/10 backdrop-blur-sm">
                 <CardHeader>
                     <CardTitle className="font-headline text-4xl text-primary drop-shadow-[0_0_10px_hsl(var(--primary))]">
