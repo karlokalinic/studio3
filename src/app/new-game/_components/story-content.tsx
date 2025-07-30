@@ -54,8 +54,8 @@ const factionOutcomes: Record<string, { name: string; description: string; }> = 
         description: "Your unwavering belief in order and sacrifice has not gone unnoticed. You are not seen as a mere prisoner, but as a potential acolyte. Your sentence is an opportunity to prove your faith through suffering.",
     },
      default: {
-        name: 'The General Population',
-        description: 'Your profile is balanced, adaptable. You are a survivor, belonging to no single creed. This might be your greatest strength, or your most exploitable weakness.'
+        name: 'Nomad',
+        description: "Your profile is indecisive, adaptable, unreadable. You are a survivor, belonging to no single creed. This might be your greatest strength, or your most exploitable weakness. Your sentence is to wander the general population, a ghost in the machine."
     }
 };
 
@@ -63,16 +63,26 @@ const PsychologicalTest = () => {
     const router = useRouter();
     const { character, resetCharacter } = useCharacterStore();
 
+    const [testState, setTestState] = useState<'pre-test' | 'testing' | 'finished'>('pre-test');
     const [answers, setAnswers] = useState<Record<string, string>>({});
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [isFinished, setIsFinished] = useState(false);
     const [outcome, setOutcome] = useState<{name: string, description: string} | null>(null);
     const [showExistingCharacterAlert, setShowExistingCharacterAlert] = useState(false);
     const [timeLeft, setTimeLeft] = useState(100);
 
+    const calculateOutcome = useCallback(() => {
+        const counts: Record<string, number> = { political: 0, laborer: 0, heretic: 0, zealot: 0, default: 0 };
+        Object.values(answers).forEach(archetype => {
+            counts[archetype]++;
+        });
+
+        const sortedArchetypes = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+        const finalArchetype = sortedArchetypes[0] || 'default';
+        setOutcome(factionOutcomes[finalArchetype]);
+        setTestState('finished');
+    }, [answers]);
+
     const handleAnswer = useCallback((archetype: string) => {
-        if (currentQuestionIndex >= psychologicalQuestions.length) return;
-        
         const question = psychologicalQuestions[currentQuestionIndex];
         setAnswers(prev => ({ ...prev, [question.id]: archetype }));
 
@@ -81,12 +91,11 @@ const PsychologicalTest = () => {
             setTimeLeft(100);
         } else {
             calculateOutcome();
-            setIsFinished(true);
         }
-    }, [currentQuestionIndex]);
+    }, [currentQuestionIndex, calculateOutcome]);
 
      useEffect(() => {
-        if (isFinished) return;
+        if (testState !== 'testing') return;
 
         const timer = setInterval(() => {
             setTimeLeft(prev => {
@@ -99,19 +108,8 @@ const PsychologicalTest = () => {
         }, 10);
 
         return () => clearInterval(timer);
-    }, [currentQuestionIndex, isFinished, handleAnswer]);
+    }, [testState, handleAnswer]);
 
-
-    const calculateOutcome = () => {
-        const counts: Record<string, number> = { political: 0, laborer: 0, heretic: 0, zealot: 0, default: 0 };
-        Object.values(answers).forEach(archetype => {
-            counts[archetype]++;
-        });
-
-        const sortedArchetypes = Object.keys(counts).filter(k => k !== 'default').sort((a, b) => counts[b] - counts[a]);
-        const finalArchetype = sortedArchetypes[0] || 'default';
-        setOutcome(factionOutcomes[finalArchetype]);
-    };
 
     const startNewGame = () => {
         if (!outcome) return;
@@ -127,7 +125,7 @@ const PsychologicalTest = () => {
         }
     }
     
-    if (isFinished && outcome) {
+    if (testState === 'finished' && outcome) {
         return (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center space-y-4">
                 <h3 className="font-headline text-2xl text-accent">Psych Profile Complete</h3>
@@ -152,6 +150,15 @@ const PsychologicalTest = () => {
                         </AlertDialogContent>
                     </AlertDialog>
                 </div>
+            </motion.div>
+        )
+    }
+
+    if (testState === 'pre-test') {
+        return (
+             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center space-y-4">
+                <p className="text-lg text-muted-foreground">The test is simple. A word will appear, followed by two concepts. Choose the one that resonates with you. Your instincts will betray who you truly are. Do not overthink it. Time is short.</p>
+                <Button onClick={() => setTestState('testing')} className="font-headline text-lg mt-4">Begin Inquisition</Button>
             </motion.div>
         )
     }
