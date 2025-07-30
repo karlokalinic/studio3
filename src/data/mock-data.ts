@@ -11,42 +11,6 @@ export const playerStats: PlayerStats = {
   ancientKeys: 1,
 };
 
-export const characterData: CharacterProfile = {
-  name: "Elysar Valentis",
-  level: 1,
-  xp: 0,
-  inventorySlots: 39,
-  vitality: 100,
-  stamina: 100,
-  sanity: 100,
-  currency: 0,
-  kamen: 10,
-  mracnik: 1,
-  prasinskeKovanice: 0,
-  ancientKeys: 1,
-  attributes: {
-    intellect: { value: 3, description: 'Knowledge of ancient languages, symbols, and research.' },
-    strength: { value: 1, description: 'Physical power for moving obstacles.' },
-    adaptation: { value: 1, description: 'Ability to react to sudden situations (uses a D6 roll).' },
-  },
-  state: {
-    fatigue: { value: 0, description: 'Tiredness level. High fatigue negatively impacts performance.' },
-    hunger: {value: 100, description: 'Satiation level.'},
-    focus: { value: 100, description: 'Mental concentration. High focus improves the effectiveness of tasks requiring intelligence.' },
-    mentalClarity: { value: 100, description: 'Clarity of thought. High clarity enhances decision-making and cognitive speed.' },
-  },
-  metadata: {
-    age: 47,
-    gender: "Male",
-    orientation: 'Undisclosed',
-    style: 'Worn Scholar Robes',
-    origin: "Lumenor",
-    backstory: "An esteemed scholar from the city of Lumenor, your relentless pursuit of truth led you to uncover corruption at the highest levels of the Empire. For this, you were sentenced to the lightless depths of Fort Umbralis. Your mind is your only weapon.",
-  },
-  inventory: [],
-};
-
-// 8x5 grid = 40 slots. Let's create 38 items.
 export const inventoryData: InventoryItem[] = [
   // Weapons
   { id: 'item-rusty-shiv', name: 'Rusty Shiv', type: 'Weapon', value: 2, description: 'A sharpened piece of metal. Better than nothing.', icon: 'Sword', attack: 2, durability: 15, weight: 1, rank: 'Common', position: {x: 0, y: 0}, size: [1, 1] },
@@ -89,12 +53,46 @@ export const inventoryData: InventoryItem[] = [
   { id: 'item-crow-feather', name: 'Crow Feather', type: 'Junk', value: 1, description: 'A single, black feather. It feels unnaturally cold.', icon: 'Feather', weight: 0.1, lore: 'A messenger from the world above.', position: {x: 7, y: 3}, size: [1, 1] },
   // BIG OBJECTS
   { id: 'item-heavy-plank', name: 'Heavy Plank', type: 'Big Object', value: 5, description: 'A long, sturdy wooden plank. Could be used to bridge a gap.', icon: 'ToyBrick', weight: 20, rank: 'Common', position: {x: 0, y: 4}, size: [2, 1] },
-  { id: 'item-unstable-golem-core', name: 'Unstable Golem Core', type: 'Big Object', value: 500, description: 'A pulsating core of arcane energy and technology.', icon: 'Bot', weight: 10, rank: 'Epic', lore: 'It seems to be watching you.', position: {x: 2, y: 4}, size: [1, 2] },
+  { id: 'item-unstable-golem-core', name: 'Unstable Golem Core', type: 'Big Object', value: 500, description: 'A pulsating core of arcane energy and technology.', icon: 'Bot', weight: 10, rank: 'Epic', lore: 'It seems to be watching you.', position: {x: 3, y: 4}, size: [1, 2] },
   { id: 'item-strange-paragraph', name: 'Strange Paragraph', type: 'Junk', value: 0, description: 'A piece of parchment with strange symbols.', icon: 'Pilcrow', weight: 0.1, rank: 'Common', position: {x: 4, y: 4}, size: [1, 1] },
   { id: 'item-cursed-idol', name: 'Cursed Idol', type: 'Junk', value: 66, description: 'A small, unsettling idol made of dark stone.', icon: 'Package', weight: 3, rank: 'Rare', lore: 'It whispers when you sleep.', position: {x: 5, y: 4}, size: [1, 1] },
   { id: 'item-sturdy-shield', name: 'Sturdy Shield', type: 'Armor', value: 50, description: 'A well-made shield.', icon: 'Shield', defense: 5, durability: 50, weight: 8, rank: 'Uncommon', position: {x: 6, y: 4}, size: [1, 1] },
 ];
 
+export const characterData: CharacterProfile = {
+  name: "Elysar Valentis",
+  level: 1,
+  xp: 0,
+  inventorySlots: 39,
+  vitality: 100,
+  stamina: 100,
+  sanity: 100,
+  currency: 0,
+  kamen: 10,
+  mracnik: 1,
+  prasinskeKovanice: 0,
+  ancientKeys: 1,
+  attributes: {
+    intellect: { value: 3, description: 'Knowledge of ancient languages, symbols, and research.' },
+    strength: { value: 1, description: 'Physical power for moving obstacles.' },
+    adaptation: { value: 1, description: 'Ability to react to sudden situations (uses a D6 roll).' },
+  },
+  state: {
+    fatigue: { value: 0, description: 'Tiredness level. High fatigue negatively impacts performance.' },
+    hunger: {value: 100, description: 'Satiation level.'},
+    focus: { value: 100, description: 'Mental concentration. High focus improves the effectiveness of tasks requiring intelligence.' },
+    mentalClarity: { value: 100, description: 'Clarity of thought. High clarity enhances decision-making and cognitive speed.' },
+  },
+  metadata: {
+    age: 47,
+    gender: "Male",
+    orientation: 'Undisclosed',
+    style: 'Worn Scholar Robes',
+    origin: "Lumenor",
+    backstory: "An esteemed scholar from the city of Lumenor, your relentless pursuit of truth led you to uncover corruption at the highest levels of the Empire. For this, you were sentenced to the lightless depths of Fort Umbralis. Your mind is your only weapon.",
+  },
+  inventory: inventoryData,
+};
 
 export const questData: Quest[] = [
     { 

@@ -4,7 +4,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware'
 import type { CharacterProfile, InventoryItem, Quest, Achievement } from '@/types';
-import { achievementsData, inventoryData } from '@/data/mock-data';
+import { achievementsData, characterData, inventoryData } from '@/data/mock-data';
 import type { CharacterPreset } from '@/lib/character-synthesis';
 
 interface CharacterState {
@@ -40,28 +40,12 @@ export const useCharacterStore = create<CharacterState>()(
             },
             createCharacter: (name, faction, stats, preset) => {
                 const newCharacter: CharacterProfile = {
+                    ...JSON.parse(JSON.stringify(characterData)), // Deep copy the template
                     name: name || preset.name,
-                    level: 1,
-                    xp: 0,
-                    inventorySlots: 39,
-                    vitality: 100,
-                    stamina: 100,
-                    sanity: 100,
-                    currency: 0,
-                    kamen: 0,
-                    mracnik: 0,
-                    prasinskeKovanice: 0,
-                    ancientKeys: 1,
                     attributes: {
                         intellect: { value: stats.intellect, description: 'Knowledge of ancient languages, symbols, and research.' },
                         strength: { value: stats.strength, description: 'Physical power for moving obstacles.' },
                         adaptation: { value: stats.adaptation, description: 'Ability to react to sudden situations (uses a D6 roll).' },
-                    },
-                    state: {
-                        fatigue: { value: 0, description: 'Tiredness level. High fatigue negatively impacts performance.' },
-                        hunger: { value: 100, description: 'Satiation level.'},
-                        focus: { value: 100, description: 'Mental concentration. High focus improves the effectiveness of tasks requiring intelligence.' },
-                        mentalClarity: { value: 100, description: 'Clarity of thought. High clarity enhances decision-making and cognitive speed.' },
                     },
                     metadata: {
                         age: preset.age,
@@ -72,6 +56,11 @@ export const useCharacterStore = create<CharacterState>()(
                         backstory: preset.backstory,
                     },
                     inventory: inventoryData,
+                    inventorySlots: 39,
+                    kamen: 0,
+                    mracnik: 0,
+                    prasinskeKovanice: 0,
+                    ancientKeys: 1,
                 };
                 set({ 
                     character: newCharacter, 
