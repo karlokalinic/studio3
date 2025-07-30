@@ -17,7 +17,7 @@ import { CalculatedStats } from '@/types';
 
 export default function GamePage() {
   const router = useRouter();
-  const { character, quests, hasHydrated, inventory, setInventory } = useCharacterStore();
+  const { character, quests, hasHydrated, setInventory } = useCharacterStore();
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const { settings } = useSettings();
   const [characterStats, setCharacterStats] = useState<CalculatedStats | null>(null);
@@ -31,15 +31,15 @@ export default function GamePage() {
 
   useEffect(() => {
     if (character && settings) {
-      if (inventory.length > 0 && !selectedItem) {
-        setSelectedItem(inventory[0]);
-      } else if (inventory.length === 0) {
+      if (character.inventory.length > 0 && !selectedItem) {
+        setSelectedItem(character.inventory[0]);
+      } else if (character.inventory.length === 0) {
         setSelectedItem(null);
       }
       const stats = getCalculatedStats(character, settings.difficulty);
       setCharacterStats(stats);
     }
-  }, [character, settings, inventory, selectedItem]);
+  }, [character, settings, selectedItem]);
 
   if (!hasHydrated || !settings || !character || !characterStats) {
     return (
@@ -65,7 +65,7 @@ export default function GamePage() {
           <div className="xl:col-span-1 space-y-8">
             <CharacterProfile profile={character} />
             <Inventory
-              items={inventory}
+              items={character.inventory}
               selectedItem={selectedItem}
               onSelectItem={setSelectedItem}
               maxSlots={characterStats.inventorySlots}

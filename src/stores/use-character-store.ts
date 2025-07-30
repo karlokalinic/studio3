@@ -9,7 +9,6 @@ import type { CharacterPreset } from '@/lib/character-synthesis';
 
 interface CharacterState {
     character: CharacterProfile | null;
-    inventory: InventoryItem[];
     quests: Quest[];
     unlockedAchievements: string[];
     hasHydrated: boolean;
@@ -33,7 +32,6 @@ export const useCharacterStore = create<CharacterState>()(
     persist(
         (set, get) => ({
             character: null,
-            inventory: [],
             quests: [],
             unlockedAchievements: [],
             hasHydrated: false,
@@ -78,7 +76,6 @@ export const useCharacterStore = create<CharacterState>()(
                 };
                 set({ 
                     character: newCharacter, 
-                    inventory: startingInventory, 
                     quests: [], 
                     unlockedAchievements: [] 
                 });
@@ -91,21 +88,25 @@ export const useCharacterStore = create<CharacterState>()(
                 // This function is mostly to trigger rehydration from storage
             },
             resetCharacter: () => {
-                set({ character: null, inventory: [], quests: [], unlockedAchievements: [] });
+                set({ character: null, quests: [], unlockedAchievements: [] });
                  localStorage.removeItem('tutorialCompleted');
                  if (typeof window !== 'undefined') {
                     localStorage.removeItem('character-storage');
                  }
             },
             addItems: (items) => {
-                set((state) => ({
-                    inventory: [...state.inventory, ...items],
-                }));
+                set((state) => {
+                    if (!state.character) return {};
+                    const newCharacter = { ...state.character, inventory: [...state.character.inventory, ...items] };
+                    return { character: newCharacter };
+                });
             },
             removeItem: (itemId) => {
-                set((state) => ({
-                    inventory: state.inventory.filter((item) => item.id !== itemId),
-                }));
+                set((state) => {
+                    if (!state.character) return {};
+                    const newCharacter = { ...state.character, inventory: state.character.inventory.filter((item) => item.id !== itemId) };
+                    return { character: newCharacter };
+                });
             },
             updateCharacterStats: (updates) => {
                  set((state) => {
@@ -183,24 +184,20 @@ export const useCharacterStore = create<CharacterState>()(
                 set((state) => {
                     if (state.character) {
                         const newCharacter = { ...state.character, inventory: items };
-                        return { inventory: items, character: newCharacter };
+                        return { character: newCharacter };
                     }
-                    return { inventory: items };
+                    return {};
                 });
             },
             unlockAchievement: (achievementId) => {
-                const { character, quests, unlockedAchievements, updateCharacterStats, inventory } = get();
+                const { character, quests, unlockedAchievements, updateCharacterStats } = get();
                 if (!character || unlockedAchievements.includes(achievementId)) {
                     return;
                 }
                 
                 const achievement = achievementsData.find(a => a.id === achievementId);
-                const charWithInventory = {
-                    ...character,
-                    inventory: inventory,
-                };
 
-                if (achievement && achievement.isUnlocked(charWithInventory, quests)) {
+                if (achievement && achievement.isUnlocked(character, quests)) {
                     set(state => ({ unlockedAchievements: [...state.unlockedAchievements, achievementId] }));
                     if (achievement.reward.xp || achievement.reward.currency) {
                        updateCharacterStats({
