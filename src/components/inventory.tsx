@@ -278,36 +278,25 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
             {Array.from({ length: TOTAL_GRID_SLOTS }).map((_, index) => {
                 const itemAtPos = items.find(item => {
                     const itemIndex = item.position.y * GRID_COLS + item.position.x;
-                    for (let y = 0; y < item.size[1]; y++) {
-                        for (let x = 0; x < item.size[0]; x++) {
-                            if ((item.position.y + y) * GRID_COLS + (item.position.x + x) === index) {
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
+                    // Check only the top-left corner for placing the item
+                    return itemIndex === index;
                 });
-                const mainItemAtPos = items.find(i => i.position.y * GRID_COLS + i.position.x === index);
-
+                
                 const isUnlocked = index < maxSlots;
                 const isSelected = itemAtPos && selectedItem?.id === itemAtPos.id;
 
-                if (mainItemAtPos && isUnlocked) {
-                    const IconComponent = iconMap[mainItemAtPos.icon] || HelpCircle;
+                if (itemAtPos && isUnlocked) {
+                    const IconComponent = iconMap[itemAtPos.icon] || HelpCircle;
                     return (
                         <motion.div
-                            key={mainItemAtPos.id}
-                            onClick={() => handleSelectItem(mainItemAtPos)}
-                            style={{
-                                gridColumn: `span ${mainItemAtPos.size[0]}`,
-                                gridRow: `span ${mainItemAtPos.size[1]}`,
-                            }}
+                            key={itemAtPos.id}
+                            onClick={() => handleSelectItem(itemAtPos)}
                             className={cn(
                                 "bg-black/20 rounded-md flex items-center justify-center cursor-pointer border-2 hover:border-accent transition-all duration-300 relative aspect-square",
                                 isSelected ? "border-accent bg-accent/10" : "border-primary/20",
                                 unlocking && "opacity-50 blur-sm"
                             )}
-                            title={mainItemAtPos.name}
+                            title={itemAtPos.name}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                         >
@@ -317,10 +306,6 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
                         )} />
                         </motion.div>
                     );
-                }
-
-                if (itemAtPos && isUnlocked) {
-                    return null;
                 }
 
                 if (isUnlocked) {

@@ -49,7 +49,7 @@ export const inventoryData: InventoryItem[] = [
 
   // BIG OBJECTS
   { id: 'item-heavy-plank', name: 'Heavy Plank', type: 'Big Object', value: 5, description: 'A long, sturdy wooden plank. Could be used to bridge a gap.', icon: 'ToyBrick', weight: 20, rank: 'Common', position: {x: 0, y: 4}, size: [2, 1] },
-  { id: 'item-unstable-golem-core', name: 'Unstable Golem Core', type: 'Big Object', value: 500, description: 'A pulsating core of arcane energy and technology.', icon: 'Bot', weight: 10, rank: 'Epic', lore: 'It seems to be watching you.', position: {x: 3, y: 4}, size: [1, 2] },
+  { id: 'item-unstable-golem-core', name: 'Unstable Golem Core', type: 'Big Object', value: 500, description: 'A pulsating core of arcane energy and technology.', icon: 'Bot', weight: 10, rank: 'Epic', lore: 'It seems to be watching you.', position: {x: 2, y: 4}, size: [1, 2] },
 ];
 
 export const characterData: CharacterProfile = {
