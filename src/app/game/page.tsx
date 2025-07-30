@@ -16,14 +16,12 @@ import { useSettings } from '@/context/settings-context';
 import { CalculatedStats } from '@/types';
 
 export default function GamePage() {
-  const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const router = useRouter();
-  const { character, quests, hasHydrated } = useCharacterStore();
+  const { character, quests, hasHydrated, inventory, setInventory } = useCharacterStore();
+  const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const { settings } = useSettings();
   const [characterStats, setCharacterStats] = useState<CalculatedStats | null>(null);
   
-  const inventory = character?.inventory || [];
-
   useEffect(() => {
     if (hasHydrated && !character) {
       // If there's no character, they shouldn't be on the game page.
