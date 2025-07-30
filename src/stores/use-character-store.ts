@@ -75,10 +75,7 @@ export const useCharacterStore = create<CharacterState>()(
                 set({ character: newCharacter, inventory: [], quests: [], unlockedAchievements: [] });
                 
                 // Manually trigger unlock for the first achievement after creation
-                const startJourney = achievementsData.find(a => a.id === 'achieve-start-journey');
-                if (startJourney && startJourney.isUnlocked(newCharacter, [])) {
-                    get().unlockAchievement(startJourney.id);
-                }
+                get().unlockAchievement('achieve-start-journey');
 
                 localStorage.removeItem('tutorialCompleted'); // Reset tutorial on new character
             },
@@ -165,7 +162,7 @@ export const useCharacterStore = create<CharacterState>()(
                 set({ inventory: items });
             },
             unlockAchievement: (achievementId) => {
-                const { character, quests, unlockedAchievements, updateCharacterStats } = get();
+                const { character, quests, unlockedAchievements, updateCharacterStats, inventory } = get();
                 if (!character || unlockedAchievements.includes(achievementId)) {
                     return;
                 }
@@ -174,14 +171,15 @@ export const useCharacterStore = create<CharacterState>()(
                 // Ensure character has inventory before checking achievements that require it
                 const charWithInventory = {
                     ...character,
-                    inventory: get().inventory,
+                    inventory: inventory,
                 };
+
                 if (achievement && achievement.isUnlocked(charWithInventory, quests)) {
                     set(state => ({ unlockedAchievements: [...state.unlockedAchievements, achievementId] }));
                     if (achievement.reward.xp || achievement.reward.currency) {
                        updateCharacterStats({
                            xp: achievement.reward.xp || 0,
-                           currency: achievement.reward.currency || 0
+                           kamen: achievement.reward.currency || 0
                        });
                     }
                 }

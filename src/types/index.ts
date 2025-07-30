@@ -94,5 +94,5 @@ export interface Achievement {
     currency?: number; // Represents 'Kamen'
   };
   icon: string;
-  isUnlocked: (character: CharacterProfile, quests: Quest[]) => boolean;
+  isUnlocked: (character: CharacterProfile, quests?: Quest[]) => boolean;
 }
