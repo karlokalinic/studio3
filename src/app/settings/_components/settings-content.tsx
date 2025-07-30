@@ -11,8 +11,23 @@ import {
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useSettings } from '@/context/settings-context';
-import { Moon, Sun, BookOpen, EyeOff, Swords } from 'lucide-react';
+import { Moon, Sun, BookOpen, EyeOff, Swords, AlertTriangle } from 'lucide-react';
 import DifficultySlider from './difficulty-slider';
+import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { useCharacterStore } from '@/stores/use-character-store';
+import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 
 const SettingsRow = ({
   icon,
@@ -39,8 +54,21 @@ const SettingsRow = ({
 
 export default function SettingsContent() {
   const { settings, setSetting } = useSettings();
+  const { resetCharacter } = useCharacterStore();
+  const { toast } = useToast();
+  const router = useRouter();
+
 
   if (!settings) return null;
+
+  const handleReset = () => {
+    resetCharacter();
+    toast({
+      title: 'Progress Reset',
+      description: 'All your character data and game progress have been deleted.',
+    });
+    router.push('/');
+  };
 
   return (
     <div className="container mx-auto px-4 py-16">
@@ -117,6 +145,36 @@ export default function SettingsContent() {
               aria-label="Toggle flashing lights"
             />
           </SettingsRow>
+        </CardContent>
+      </Card>
+       <Card className="max-w-3xl mx-auto bg-destructive/10 border-destructive/50 mt-8">
+        <CardHeader>
+          <CardTitle className="font-headline text-2xl text-destructive flex items-center gap-2">
+            <AlertTriangle />
+            Danger Zone
+          </CardTitle>
+           <CardDescription className="text-destructive/80">
+            These actions are permanent and cannot be undone.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+           <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" className="w-full">Reset All Progress</Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently delete all your character data, inventory, quest progress, and achievements. This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleReset}>Yes, Delete Everything</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
         </CardContent>
       </Card>
     </div>
