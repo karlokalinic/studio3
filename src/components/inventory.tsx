@@ -18,8 +18,9 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useCharacterStore } from "@/stores/use-character-store";
 import { useToast } from "@/hooks/use-toast";
-import { Hand, Trash2, Info, Lock, Sword, HeartPulse, Shield, Bot, Map, Key, HelpCircle, Gem, Sparkles, Coins } from "lucide-react";
+import { Hand, Trash2, Info, Lock, Sword, HeartPulse, Shield, Bot, Map, Key, HelpCircle, Gem, Sparkles, Coins, Search, Star, Weight, Zap } from "lucide-react";
 import { motion, AnimatePresence } from 'framer-motion';
+import { Separator } from "./ui/separator";
 
 interface InventoryProps {
   items: InventoryItem[];
@@ -41,12 +42,26 @@ const iconMap: { [key: string]: React.ElementType } = {
     HelpCircle
 };
 
+const ItemAttribute = ({ label, value, icon: Icon }: { label: string; value?: string | number; icon: React.ElementType }) => {
+    if (value === undefined) return null;
+    return (
+        <div className="flex items-center justify-between text-xs text-muted-foreground">
+            <div className="flex items-center gap-1.5">
+                <Icon className="h-3 w-3" />
+                <span>{label}</span>
+            </div>
+            <span className="font-mono font-bold text-foreground/80">{value}</span>
+        </div>
+    );
+};
+
 
 const TOTAL_GRID_SLOTS = 25; // 5x5 grid
 
 export default function Inventory({ items, selectedItem, onSelectItem, maxSlots }: InventoryProps) {
   const { removeItem, updateCharacterStats, unlockInventorySlot } = useCharacterStore();
   const { toast } = useToast();
+  const [isInspecting, setIsInspecting] = useState(false);
 
   const handleUseItem = () => {
     if (!selectedItem) return;
@@ -94,9 +109,108 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
         description: `${selectedItem.name} has been removed from your inventory.`,
     });
     onSelectItem(items.length > 1 ? items.filter(i => i.id !== selectedItem.id)[0] : null);
+    setIsInspecting(false);
   }
   
   const canBeUsed = selectedItem && (selectedItem.type === 'Consumable' || (selectedItem.type === 'Key' && maxSlots < TOTAL_GRID_SLOTS));
+  const canBeInspected = selectedItem && !canBeUsed;
+
+  const handleSelectItem = (item: InventoryItem) => {
+    setIsInspecting(false);
+    onSelectItem(item);
+  }
+
+  const itemDetails = (
+    <>
+        <CardHeader className="p-0 mb-4">
+          <CardTitle className="font-headline text-2xl text-accent">{selectedItem?.name}</CardTitle>
+          <CardDescription>
+            {selectedItem?.type} - Rank: {selectedItem?.rank || 'N/A'}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="p-0 flex-grow">
+          <p className="text-muted-foreground">{selectedItem?.description}</p>
+          {selectedItem?.nutrition && (
+            <p className="text-sm text-green-400 mt-2">Nutrition: +{selectedItem.nutrition}</p>
+          )}
+
+           {isInspecting && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-4 space-y-4"
+              >
+                  <Separator />
+                  <div className="space-y-1.5">
+                    <ItemAttribute label="Attack" value={selectedItem?.attack} icon={Sword} />
+                    <ItemAttribute label="Defense" value={selectedItem?.defense} icon={Shield} />
+                    <ItemAttribute label="Durability" value={selectedItem?.durability} icon={Zap} />
+                    <ItemAttribute label="Weight" value={selectedItem?.weight} icon={Weight} />
+                    <ItemAttribute label="Rank" value={selectedItem?.rank} icon={Star} />
+                  </div>
+                  <Separator />
+                  {selectedItem?.lore && (
+                      <div>
+                          <h4 className="font-bold text-xs uppercase text-primary/80 mb-1">Lore</h4>
+                          <p className="text-sm italic text-muted-foreground">"{selectedItem.lore}"</p>
+                      </div>
+                  )}
+              </motion.div>
+           )}
+
+        </CardContent>
+        <CardFooter className="p-0 mt-4 flex gap-2">
+            {canBeUsed && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button className="w-full bg-accent text-background hover:bg-accent/80 transition-all">
+                        <Hand className="mr-2 h-4 w-4" /> Use
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Using this item will consume it permanently. This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleUseItem}>Proceed</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+            )}
+
+             {canBeInspected && (
+                <Button className="w-full" onClick={() => setIsInspecting(prev => !prev)}>
+                    <Search className="mr-2 h-4 w-4" /> {isInspecting ? 'Hide Details' : 'Inspect'}
+                </Button>
+             )}
+
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" className="w-full">
+                    <Trash2 className="mr-2 h-4 w-4" /> Drop
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently remove the item from your inventory. This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDropItem}>Drop Item</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+        </CardFooter>
+    </>
+  );
 
   return (
     <Card className="bg-card/50 border-primary/20 shadow-lg shadow-primary/5 flex flex-col md:flex-row">
@@ -117,7 +231,7 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
                  return (
                     <motion.div
                       key={item.id}
-                      onClick={() => onSelectItem(item)}
+                      onClick={() => handleSelectItem(item)}
                       className={cn(
                           "w-full aspect-square bg-black/20 rounded-md flex items-center justify-center cursor-pointer border-2 hover:border-accent transition-all duration-300",
                           isSelected ? "border-accent bg-accent/10" : "border-primary/20"
@@ -161,65 +275,7 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
             transition={{ duration: 0.2 }}
             className="flex flex-col flex-grow"
           >
-            <CardHeader className="p-0 mb-4">
-              <CardTitle className="font-headline text-2xl text-accent">{selectedItem.name}</CardTitle>
-              <CardDescription>
-                {selectedItem.type}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-0 flex-grow">
-              <p className="text-muted-foreground">{selectedItem.description}</p>
-              {selectedItem.nutrition && (
-                <p className="text-sm text-green-400 mt-2">Nutrition: +{selectedItem.nutrition}</p>
-              )}
-               {!canBeUsed && selectedItem.type !== 'Consumable' && selectedItem.type !== 'Key' && (
-                <div className="mt-4 p-3 bg-black/20 rounded-md text-xs text-muted-foreground flex items-center gap-2">
-                    <Info className="h-4 w-4 shrink-0"/>
-                    <span>This item cannot be "used" directly. It may be a quest item or provide passive bonuses.</span>
-                </div>
-              )}
-            </CardContent>
-            <CardFooter className="p-0 mt-4 flex gap-2">
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button className="w-full bg-accent text-background hover:bg-accent/80 transition-all" disabled={!canBeUsed}>
-                        <Hand className="mr-2 h-4 w-4" /> Use
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Using this item will consume it permanently. This action cannot be undone.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleUseItem}>Proceed</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="destructive" className="w-full">
-                        <Trash2 className="mr-2 h-4 w-4" /> Drop
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This will permanently remove the item from your inventory. This action cannot be undone.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleDropItem}>Drop Item</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-            </CardFooter>
+            {itemDetails}
           </motion.div>
         ) : (
           <motion.div

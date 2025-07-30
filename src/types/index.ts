@@ -61,9 +61,21 @@ export interface InventoryItem {
   type: 'Weapon' | 'Armor' | 'Consumable' | 'Quest Item' | 'Key' | 'Currency';
   value: number;
   description: string;
-  nutrition?: number;
   icon: string;
+  // Consumable-specific
+  nutrition?: number; 
+  // Equipment-specific
+  durability?: number;
+  rank?: 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary';
+  upgrades?: string[];
+  weight?: number;
+  lore?: string;
+  // Armor-specific
+  defense?: number;
+  // Weapon-specific
+  attack?: number;
 }
+
 
 export interface WorldLocation {
   id: string;

@@ -45,9 +45,36 @@ export const characterData: CharacterProfile = {
 };
 
 export const inventoryData: InventoryItem[] = [
-  { id: 'item-1', name: 'Tattered Rags', type: 'Armor', value: 1, description: 'The threadbare uniform of a prisoner.', icon: 'Shield' },
-  { id: 'item-2', name: 'Stale Bread', type: 'Consumable', value: 0, description: 'Barely edible, but it\'s something.', nutrition: 5, icon: 'HeartPulse' },
-  { id: 'item-3', name: 'Phosphorescent Pebble', type: 'Currency', value: 1, description: 'A small stone that glows faintly. The primary currency among prisoners.', icon: 'Gem' },
+  { 
+    id: 'item-1', 
+    name: 'Tattered Rags', 
+    type: 'Armor', 
+    value: 1, 
+    description: 'The threadbare uniform of a prisoner. Offers minimal protection.', 
+    icon: 'Shield',
+    rank: 'Common',
+    defense: 1,
+    durability: 20,
+    weight: 2,
+    lore: 'These rags have been worn by countless souls. They smell of despair and dried sweat.'
+  },
+  { 
+    id: 'item-2', 
+    name: 'Stale Bread', 
+    type: 'Consumable', 
+    value: 0, 
+    description: 'Barely edible, but it\'s something.', 
+    nutrition: 5, 
+    icon: 'HeartPulse' 
+  },
+  { 
+    id: 'item-3', 
+    name: 'Phosphorescent Pebble', 
+    type: 'Currency', 
+    value: 1, 
+    description: 'A small stone that glows faintly. The primary currency among prisoners.', 
+    icon: 'Gem' 
+  },
 ];
 
 export const questData: Quest[] = [
@@ -86,7 +113,7 @@ export const achievementsData: Achievement[] = [
     isSpoiler: false,
     reward: { xp: 50 },
     icon: 'Briefcase',
-    isUnlocked: (char, quests) => quests.some(q => q.id === 'q1-escape'),
+    isUnlocked: (char, quests) => quests?.some(q => q.id === 'q1-escape') ?? false,
   },
   {
     id: 'achieve-complete-first-quest',
@@ -95,7 +122,7 @@ export const achievementsData: Achievement[] = [
     isSpoiler: false,
     reward: { xp: 150, currency: 10 },
     icon: 'Milestone',
-    isUnlocked: (char, quests) => quests.some(q => q.id === 'q1-escape' && q.status === 'Completed'),
+    isUnlocked: (char, quests) => quests?.some(q => q.id === 'q1-escape' && q.status === 'Completed') ?? false,
   },
   {
     id: 'achieve-reach-level-5',
