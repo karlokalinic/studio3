@@ -56,7 +56,7 @@ export const useCharacterStore = create<CharacterState>()(
                         backstory: preset.backstory,
                     },
                     inventory: inventoryData,
-                    inventorySlots: 39,
+                    inventorySlots: 29,
                     kamen: 0,
                     mracnik: 0,
                     prasinskeKovanice: 0,
@@ -119,7 +119,7 @@ export const useCharacterStore = create<CharacterState>()(
             unlockInventorySlot: () => {
                 set((state) => {
                     if (!state.character) return {};
-                    if (state.character.inventorySlots < 40) {
+                    if (state.character.inventorySlots < 30) {
                          const char = { ...state.character };
                          char.inventorySlots += 1;
                          get().unlockAchievement('achieve-inventory-expanded');

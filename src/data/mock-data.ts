@@ -23,8 +23,7 @@ export const inventoryData: InventoryItem[] = [
   { id: 'item-lockpick-set', name: 'Makeshift Lockpick', type: 'Tool', value: 50, description: 'A bent piece of wire and a small tension wrench.', icon: 'Key', weight: 0.5, rank: 'Uncommon', lore: 'A symbol of hope.', position: {x: 4, y: 0}, size: [1, 1] },
   // Currencies
   { id: 'item-kamen-pile', name: 'Kamen', type: 'Currency', value: 10, description: 'Glowing pebbles used as currency.', icon: 'Gem', weight: 1, position: {x: 5, y: 0}, size: [1, 1] },
-  { id: 'item-mracnik-shard', name: 'Mračnik Shard', type: 'Currency', value: 100, description: 'A crystal that hums with a strange energy.', icon: 'Sparkles', weight: 0.2, position: {x: 6, y: 0}, size: [1, 1] },
-  { id: 'item-arky-coin', name: 'Arkar Coin', type: 'Currency', value: 500, description: 'An ancient coin from a forgotten civilization.', icon: 'Coins', weight: 0.1, position: {x: 7, y: 0}, size: [1, 1] },
+  
   // Small Objects
   { id: 'item-chipped-mug', name: 'Chipped Mug', type: 'Junk', value: 0, description: 'A ceramic mug with a piece missing.', icon: 'CookingPot', weight: 1, position: {x: 0, y: 1}, size: [1, 1] },
   { id: 'item-pet-rock', name: 'Pet Rock', type: 'Junk', value: 1, description: 'Someone drew a face on this rock. His name is Horace.', icon: 'Shell', weight: 1.5, lore: 'Horace has seen things.', position: {x: 1, y: 1}, size: [1, 1] },
@@ -32,8 +31,7 @@ export const inventoryData: InventoryItem[] = [
   { id: 'item-mummified-rat', name: 'Mummified Rat', type: 'Junk', value: 1, description: 'A dessicated rat. Surprisingly light.', icon: 'Bone', weight: 0.2, position: {x: 3, y: 1}, size: [1, 1] },
   { id: 'item-arcane-dust', name: 'Arcane Dust', type: 'Material', value: 15, description: 'A pinch of shimmering dust.', icon: 'CircleDot', weight: 0.1, position: {x: 4, y: 1}, size: [1, 1] },
   { id: 'item-cultist-missive', name: 'Cultist Missive', type: 'Quest Item', value: 0, description: 'A sealed letter with a wax emblem of a kraken.', icon: 'Scroll', weight: 0.1, position: {x: 5, y: 1}, size: [1, 1] },
-  { id: 'item-guard-key', name: 'Guard\'s Key', type: 'Key', value: 0, description: 'A heavy iron key.', icon: 'KeyRound', weight: 0.5, position: {x: 6, y: 1}, size: [1, 1] },
-  { id: 'item-prison-map-scrap', name: 'Map Scrap', type: 'Quest Item', value: 0, description: 'A torn piece of a map.', icon: 'Map', weight: 0.1, position: {x: 7, y: 1}, size: [1, 1] },
+
   // More Items
   { id: 'item-splintered-shield', name: 'Splintered Shield', type: 'Armor', value: 5, description: 'A wooden shield, barely holding together.', icon: 'Shield', defense: 2, durability: 10, weight: 5, rank: 'Common', position: {x: 0, y: 2}, size: [1, 1] },
   { id: 'item-moldy-bread', name: 'Moldy Bread', type: 'Consumable', value: 1, description: 'It might be edible. Or it might be poison.', icon: 'HeartPulse', effect: { vitality: 5, sanity: -5 }, rank: 'Common', position: {x: 1, y: 2}, size: [1, 1] },
@@ -41,29 +39,24 @@ export const inventoryData: InventoryItem[] = [
   { id: 'item-sharpening-stone', name: 'Sharpening Stone', type: 'Tool', value: 20, description: 'Can improve a weapon\'s edge.', icon: 'Hammer', weight: 2, rank: 'Uncommon', position: {x: 3, y: 2}, size: [1, 1] },
   { id: 'item-odd-puzzle-box', name: 'Odd Puzzle Box', type: 'Junk', value: 50, description: 'A small wooden box with no visible opening.', icon: 'Puzzle', weight: 1, lore: 'It hums when you aren\'t looking at it.', position: {x: 4, y: 2}, size: [1, 1] },
   { id: 'item-heretic-symbol', name: 'Heretic\'s Symbol', type: 'Quest Item', value: 0, description: 'A crudely carved symbol of a stylized eye.', icon: 'Eye', weight: 0.1, position: {x: 5, y: 2}, size: [1, 1] },
-  { id: 'item-shimmering-leaf', name: 'Shimmering Leaf', type: 'Material', value: 30, description: 'A leaf from a cave-dwelling plant that glows with its own light.', icon: 'Leaf', weight: 0.1, rank: 'Uncommon', position: {x: 6, y: 2}, size: [1, 1] },
-  { id: 'item-weighted-die', name: 'Weighted Die', type: 'Junk', value: 5, description: 'It always seems to land on six.', icon: 'Scale', weight: 0.1, lore: 'Luck is a matter of preparation.', position: {x: 7, y: 2}, size: [1, 1] },
-  { id: 'item-spider-silk', name: 'Spider Silk', type: 'Material', value: 20, description: 'Incredibly strong and light.', icon: 'GitBranch', weight: 0.1, rank: 'Uncommon', position: {x: 0, y: 3}, size: [1, 1] },
-  { id: 'item-forbidden-tome', name: 'Forbidden Tome', type: 'Tool', value: 200, description: 'A book bound in human skin. Reading it might cost you your sanity.', icon: 'BookOpen', weight: 4, rank: 'Rare', lore: 'Some things are not meant to be known.', position: {x: 1, y: 3}, size: [1, 1] },
-  { id: 'item-preserved-brain', name: 'Preserved Brain', type: 'Junk', value: 100, description: 'A brain floating in a jar of greenish fluid.', icon: 'Brain', weight: 5, rank: 'Rare', lore: 'It still thinks, sometimes.', position: {x: 2, y: 3}, size: [1, 1] },
-  { id: 'item-miner-pickaxe', name: 'Miner\'s Pickaxe', type: 'Weapon', value: 15, description: 'Heavy and crude, but can break rocks... or skulls.', icon: 'Pickaxe', attack: 4, durability: 40, weight: 10, rank: 'Common', position: {x: 3, y: 3}, size: [1, 1] },
-  { id: 'item-suturing-kit', name: 'Suturing Kit', type: 'Tool', value: 40, description: 'A needle and thread for closing deep wounds.', icon: 'Scissors', weight: 0.5, rank: 'Uncommon', position: {x: 4, y: 3}, size: [1, 1] },
-  { id: 'item-forgotten-anchor', name: 'Forgotten Anchor', type: 'Junk', value: 20, description: 'A small, rusty anchor. How did this get here?', icon: 'Anchor', weight: 15, position: {x: 5, y: 3}, size: [1, 1] },
-  { id: 'item-mutated-dna', name: 'Mutated DNA Sample', type: 'Quest Item', value: 0, description: 'A vial containing a swirling, unstable genetic sequence.', icon: 'Dna', weight: 0.2, rank: 'Epic', position: {x: 6, y: 3}, size: [1, 1] },
-  { id: 'item-crow-feather', name: 'Crow Feather', type: 'Junk', value: 1, description: 'A single, black feather. It feels unnaturally cold.', icon: 'Feather', weight: 0.1, lore: 'A messenger from the world above.', position: {x: 7, y: 3}, size: [1, 1] },
+  
+  { id: 'item-shimmering-leaf', name: 'Shimmering Leaf', type: 'Material', value: 30, description: 'A leaf from a cave-dwelling plant that glows with its own light.', icon: 'Leaf', weight: 0.1, rank: 'Uncommon', position: {x: 0, y: 3}, size: [1, 1] },
+  { id: 'item-weighted-die', name: 'Weighted Die', type: 'Junk', value: 5, description: 'It always seems to land on six.', icon: 'Scale', weight: 0.1, lore: 'Luck is a matter of preparation.', position: {x: 1, y: 3}, size: [1, 1] },
+  { id: 'item-spider-silk', name: 'Spider Silk', type: 'Material', value: 20, description: 'Incredibly strong and light.', icon: 'GitBranch', weight: 0.1, rank: 'Uncommon', position: {x: 2, y: 3}, size: [1, 1] },
+  { id: 'item-suturing-kit', name: 'Suturing Kit', type: 'Tool', value: 40, description: 'A needle and thread for closing deep wounds.', icon: 'Scissors', weight: 0.5, rank: 'Uncommon', position: {x: 3, y: 3}, size: [1, 1] },
+  { id: 'item-crow-feather', name: 'Crow Feather', type: 'Junk', value: 1, description: 'A single, black feather. It feels unnaturally cold.', icon: 'Feather', weight: 0.1, lore: 'A messenger from the world above.', position: {x: 4, y: 3}, size: [1, 1] },
+  { id: 'item-guard-key', name: 'Guard\'s Key', type: 'Key', value: 0, description: 'A heavy iron key.', icon: 'KeyRound', weight: 0.5, position: {x: 5, y: 3}, size: [1, 1] },
+
   // BIG OBJECTS
   { id: 'item-heavy-plank', name: 'Heavy Plank', type: 'Big Object', value: 5, description: 'A long, sturdy wooden plank. Could be used to bridge a gap.', icon: 'ToyBrick', weight: 20, rank: 'Common', position: {x: 0, y: 4}, size: [2, 1] },
   { id: 'item-unstable-golem-core', name: 'Unstable Golem Core', type: 'Big Object', value: 500, description: 'A pulsating core of arcane energy and technology.', icon: 'Bot', weight: 10, rank: 'Epic', lore: 'It seems to be watching you.', position: {x: 3, y: 4}, size: [1, 2] },
-  { id: 'item-strange-paragraph', name: 'Strange Paragraph', type: 'Junk', value: 0, description: 'A piece of parchment with strange symbols.', icon: 'Pilcrow', weight: 0.1, rank: 'Common', position: {x: 4, y: 4}, size: [1, 1] },
-  { id: 'item-cursed-idol', name: 'Cursed Idol', type: 'Junk', value: 66, description: 'A small, unsettling idol made of dark stone.', icon: 'Package', weight: 3, rank: 'Rare', lore: 'It whispers when you sleep.', position: {x: 5, y: 4}, size: [1, 1] },
-  { id: 'item-sturdy-shield', name: 'Sturdy Shield', type: 'Armor', value: 50, description: 'A well-made shield.', icon: 'Shield', defense: 5, durability: 50, weight: 8, rank: 'Uncommon', position: {x: 6, y: 4}, size: [1, 1] },
 ];
 
 export const characterData: CharacterProfile = {
   name: "Elysar Valentis",
   level: 1,
   xp: 0,
-  inventorySlots: 39,
+  inventorySlots: 29,
   vitality: 100,
   stamina: 100,
   sanity: 100,

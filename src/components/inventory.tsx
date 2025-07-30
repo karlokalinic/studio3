@@ -51,7 +51,7 @@ const ItemAttribute = ({ label, value, icon: Icon }: { label: string; value?: st
 };
 
 
-const GRID_COLS = 8;
+const GRID_COLS = 6;
 const GRID_ROWS = 5;
 const TOTAL_GRID_SLOTS = GRID_COLS * GRID_ROWS;
 
