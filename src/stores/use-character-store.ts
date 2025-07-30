@@ -4,7 +4,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware'
 import type { CharacterProfile, InventoryItem, Quest, Achievement } from '@/types';
-import { achievementsData, inventoryData } from '@/data/mock-data';
+import { achievementsData } from '@/data/mock-data';
 import type { CharacterPreset } from '@/lib/character-synthesis';
 
 interface CharacterState {
@@ -43,12 +43,12 @@ export const useCharacterStore = create<CharacterState>()(
                     name: name || preset.name,
                     level: 1,
                     xp: 0,
-                    inventorySlots: 10 + Math.floor(stats.strength / 2),
+                    inventorySlots: 2,
                     vitality: 100,
                     stamina: 100,
                     sanity: 100,
-                    currency: 1000,
-                    kamen: 15,
+                    currency: 0,
+                    kamen: 0,
                     mracnik: 0,
                     prasinskeKovanice: 0,
                     attributes: {

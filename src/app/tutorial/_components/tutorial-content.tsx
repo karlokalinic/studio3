@@ -11,7 +11,6 @@ import { SkipForward, Zap, Shield } from 'lucide-react';
 import ActionCheck from './action-check';
 import { useSettings, type Difficulty } from '@/context/settings-context';
 import DifficultySlider from '@/app/settings/_components/difficulty-slider';
-import { inventoryData } from '@/data/mock-data';
 
 const tutorialScript = [
   {
@@ -175,7 +174,7 @@ export default function TutorialContent() {
   };
   
   const finishTutorial = () => {
-      setInventory(inventoryData);
+      setInventory([]); // Start with no items
       localStorage.setItem('tutorialCompleted', 'true');
       router.push('/game');
   }
