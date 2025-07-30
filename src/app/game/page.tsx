@@ -18,9 +18,11 @@ import { CalculatedStats } from '@/types';
 export default function GamePage() {
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const router = useRouter();
-  const { character, inventory, quests, hasHydrated } = useCharacterStore();
+  const { character, quests, hasHydrated } = useCharacterStore();
   const { settings } = useSettings();
   const [characterStats, setCharacterStats] = useState<CalculatedStats | null>(null);
+  
+  const inventory = character?.inventory || [];
 
   useEffect(() => {
     if (hasHydrated && !character) {

@@ -45,7 +45,7 @@ export const useCharacterStore = create<CharacterState>()(
                     name: name || preset.name,
                     level: 1,
                     xp: 0,
-                    inventorySlots: 39, // 8x5 grid, one locked
+                    inventorySlots: 39,
                     vitality: 100,
                     stamina: 100,
                     sanity: 100,
@@ -73,11 +73,11 @@ export const useCharacterStore = create<CharacterState>()(
                         origin: faction,
                         backstory: preset.backstory,
                     },
-                    inventory: [], // Ensure inventory is initialized
+                    inventory: inventoryData.slice(0, 38),
                 };
                 set({ 
                     character: newCharacter, 
-                    inventory: inventoryData.slice(0, 38), // Pre-fill with our new items
+                    inventory: newCharacter.inventory, 
                     quests: [], 
                     unlockedAchievements: [] 
                 });
@@ -179,7 +179,13 @@ export const useCharacterStore = create<CharacterState>()(
                 });
             },
             setInventory: (items) => {
-                set({ inventory: items });
+                set((state) => {
+                    if (state.character) {
+                        const newCharacter = { ...state.character, inventory: items };
+                        return { inventory: items, character: newCharacter };
+                    }
+                    return { inventory: items };
+                });
             },
             unlockAchievement: (achievementId) => {
                 const { character, quests, unlockedAchievements, updateCharacterStats, inventory } = get();
