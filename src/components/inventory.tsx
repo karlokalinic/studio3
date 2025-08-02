@@ -116,10 +116,7 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
   }
 
   const handleUnlockSlot = (index: number) => {
-    // Can't unlock if not in unlocking mode, or if you have no keys.
     if (!unlocking || !character || character.ancientKeys <= 0) return;
-    
-    // Can't unlock a slot that is already unlocked
     if (index < maxSlots) return;
 
     spendKey();
@@ -170,12 +167,91 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
             return;
         }
         if (item && selectedItem.id === item.id) {
-            onSelectItem(null); // Deselect if clicking the same item
+            onSelectItem(null);
             return;
         }
     }
     onSelectItem(item);
   }
+
+  const renderGrid = () => {
+    const gridCells = [];
+    const occupied = new Set<number>();
+
+    // First, mark all occupied cells
+    items.forEach(item => {
+        const [width, height] = item.size;
+        for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+                const index = (item.position.y + y) * GRID_COLS + (item.position.x + x);
+                occupied.add(index);
+            }
+        }
+    });
+
+    for (let index = 0; index < TOTAL_GRID_SLOTS; index++) {
+        const itemAtPos = items.find(item => {
+            const itemIndex = item.position.y * GRID_COLS + item.position.x;
+            return itemIndex === index;
+        });
+
+        if (itemAtPos) {
+            const IconComponent = iconMap[itemAtPos.icon] || HelpCircle;
+            const isSelected = selectedItem?.id === itemAtPos.id;
+            gridCells.push(
+                 <motion.div
+                    key={itemAtPos.id}
+                    onClick={() => handleSelectItem(itemAtPos)}
+                    className={cn(
+                        "bg-black/20 rounded-md flex items-center justify-center cursor-pointer border-2 hover:border-accent transition-all duration-300 relative aspect-square",
+                        isSelected ? "border-accent bg-accent/10" : "border-primary/20",
+                        unlocking && "opacity-50 blur-sm"
+                    )}
+                    title={itemAtPos.name}
+                    style={{
+                        gridColumn: `span ${itemAtPos.size[0]}`,
+                        gridRow: `span ${itemAtPos.size[1]}`,
+                    }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                >
+                <IconComponent className={cn(
+                    "h-8 w-8 text-primary/70 transition-all duration-300",
+                    isSelected && "text-accent drop-shadow-[0_0_8px_hsl(var(--accent))]"
+                )} />
+                </motion.div>
+            );
+        } else if (!occupied.has(index)) {
+             const isUnlocked = index < maxSlots;
+             if(isUnlocked) {
+                 gridCells.push(
+                    <div key={`empty-${index}`} 
+                        className={cn(
+                            "aspect-square bg-black/20 rounded-md border-2 border-primary/20 opacity-50",
+                            unlocking && character && character.ancientKeys > 0 && "opacity-100 blur-0 cursor-pointer hover:bg-accent/20 hover:border-accent"
+                        )}
+                        onClick={() => unlocking && handleUnlockSlot(index)}
+                    ></div>
+                 );
+             } else {
+                  gridCells.push(
+                     <div 
+                        key={`locked-${index}`} 
+                        className={cn(
+                            "aspect-square bg-black/40 rounded-md border-2 border-destructive/20 flex items-center justify-center",
+                            unlocking && character && character.ancientKeys > 0 && "cursor-pointer hover:bg-accent/20 hover:border-accent"
+                        )} 
+                        title="Locked Slot"
+                        onClick={() => handleUnlockSlot(index)}
+                    >
+                        <Lock className="h-6 w-6 text-destructive/50"/>
+                    </div>
+                  );
+             }
+        }
+    }
+    return gridCells;
+  };
 
   const canBeUsed = selectedItem?.type === 'Consumable';
   
@@ -283,69 +359,7 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
         </CardHeader>
         <CardContent className="p-2">
             <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${GRID_COLS}, 1fr)`}}>
-            {Array.from({ length: TOTAL_GRID_SLOTS }).map((_, index) => {
-                const itemAtPos = items.find(item => {
-                    const itemIndex = item.position.y * GRID_COLS + item.position.x;
-                    // Check only the top-left corner for placing the item
-                    return itemIndex === index;
-                });
-                
-                const isUnlocked = index < maxSlots;
-                const isSelected = itemAtPos && selectedItem?.id === itemAtPos.id;
-
-                if (itemAtPos && isUnlocked) {
-                    const IconComponent = iconMap[itemAtPos.icon] || HelpCircle;
-                    return (
-                        <motion.div
-                            key={itemAtPos.id}
-                            onClick={() => handleSelectItem(itemAtPos)}
-                            className={cn(
-                                "bg-black/20 rounded-md flex items-center justify-center cursor-pointer border-2 hover:border-accent transition-all duration-300 relative aspect-square",
-                                isSelected ? "border-accent bg-accent/10" : "border-primary/20",
-                                unlocking && "opacity-50 blur-sm"
-                            )}
-                            title={itemAtPos.name}
-                            style={{
-                                gridColumn: `span ${itemAtPos.size[0]}`,
-                                gridRow: `span ${itemAtPos.size[1]}`,
-                            }}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                        >
-                        <IconComponent className={cn(
-                            "h-8 w-8 text-primary/70 transition-all duration-300",
-                            isSelected && "text-accent drop-shadow-[0_0_8px_hsl(var(--accent))]"
-                        )} />
-                        </motion.div>
-                    );
-                }
-
-                if (isUnlocked) {
-                    return (
-                        <div key={`empty-${index}`} 
-                            className={cn(
-                                "aspect-square bg-black/20 rounded-md border-2 border-primary/20 opacity-50",
-                                unlocking && character && character.ancientKeys > 0 && "opacity-100 blur-0 cursor-pointer hover:bg-accent/20 hover:border-accent"
-                            )}
-                            onClick={() => handleUnlockSlot(index)}
-                        ></div>
-                    )
-                }
-
-                return (
-                    <div 
-                        key={`locked-${index}`} 
-                        className={cn(
-                            "aspect-square bg-black/40 rounded-md border-2 border-destructive/20 flex items-center justify-center",
-                            unlocking && character && character.ancientKeys > 0 && "cursor-pointer hover:bg-accent/20 hover:border-accent"
-                        )} 
-                        title="Locked Slot"
-                        onClick={() => handleUnlockSlot(index)}
-                    >
-                        <Lock className="h-6 w-6 text-destructive/50"/>
-                    </div>
-                )
-            })}
+                {renderGrid()}
             </div>
         </CardContent>
       </div>
