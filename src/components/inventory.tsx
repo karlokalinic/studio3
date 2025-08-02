@@ -116,16 +116,19 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
   }
 
   const handleUnlockSlot = (index: number) => {
-    if (!unlocking || index >= maxSlots) return;
-    if (character && character.ancientKeys > 0) {
-        spendKey();
-        unlockInventorySlot();
-        setUnlocking(false);
-        toast({
-            title: 'Slot Unlocked!',
-            description: 'You have expanded your inventory.'
-        });
-    }
+    // Can't unlock if not in unlocking mode, or if you have no keys.
+    if (!unlocking || !character || character.ancientKeys <= 0) return;
+    
+    // Can't unlock a slot that is already unlocked
+    if (index < maxSlots) return;
+
+    spendKey();
+    unlockInventorySlot();
+    setUnlocking(false);
+    toast({
+        title: 'Slot Unlocked!',
+        description: 'You have expanded your inventory.'
+    });
   }
 
   const handleCombine = (targetItem: InventoryItem) => {
@@ -197,7 +200,7 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
                     <ItemAttribute label="Attack" value={selectedItem?.attack} icon={Sword} />
                     <ItemAttribute label="Defense" value={selectedItem?.defense} icon={Shield} />
                     <ItemAttribute label="Durability" value={selectedItem?.durability} icon={Zap} />
-                    <ItemAttribute label="Weight" value={selectedItem?.weight} icon={Weight} />
+                    <ItemAttribute label="Weight" value={selectedItem?.weight} icon={Star} />
                     <ItemAttribute label="Rank" value={selectedItem?.rank} icon={Star} />
                   </div>
                   <Separator />
@@ -302,6 +305,10 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
                                 unlocking && "opacity-50 blur-sm"
                             )}
                             title={itemAtPos.name}
+                            style={{
+                                gridColumn: `span ${itemAtPos.size[0]}`,
+                                gridRow: `span ${itemAtPos.size[1]}`,
+                            }}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                         >
@@ -318,9 +325,9 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
                         <div key={`empty-${index}`} 
                             className={cn(
                                 "aspect-square bg-black/20 rounded-md border-2 border-primary/20 opacity-50",
-                                unlocking && "opacity-50 blur-sm"
+                                unlocking && character && character.ancientKeys > 0 && "opacity-100 blur-0 cursor-pointer hover:bg-accent/20 hover:border-accent"
                             )}
-                            onClick={() => handleSelectItem(null)}
+                            onClick={() => handleUnlockSlot(index)}
                         ></div>
                     )
                 }
@@ -330,7 +337,7 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
                         key={`locked-${index}`} 
                         className={cn(
                             "aspect-square bg-black/40 rounded-md border-2 border-destructive/20 flex items-center justify-center",
-                            unlocking && "cursor-pointer hover:bg-accent/20 hover:border-accent"
+                            unlocking && character && character.ancientKeys > 0 && "cursor-pointer hover:bg-accent/20 hover:border-accent"
                         )} 
                         title="Locked Slot"
                         onClick={() => handleUnlockSlot(index)}
