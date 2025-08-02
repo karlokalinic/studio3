@@ -293,7 +293,7 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
         </CardHeader>
         <CardContent className="p-2">
             <div 
-                className="grid gap-2 relative" 
+                className="grid gap-2 relative"
                 style={{
                     gridTemplateColumns: `repeat(${GRID_COLS}, 1fr)`,
                     gridTemplateRows: `repeat(${GRID_ROWS}, 1fr)`,
@@ -321,43 +321,45 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
                 })}
 
                 {/* Items */}
-                {items.map(item => {
-                    const IconComponent = iconMap[item.icon] || HelpCircle;
-                    const isSelected = selectedItem?.id === item.id;
-                    
-                    return (
-                        <motion.div
-                            key={item.id}
-                            data-item-id={item.id}
-                            layout
-                            drag={!unlocking}
-                            dragSnapToCenter={true}
-                            dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
-                            onDragStart={() => setDraggedItem(item)}
-                            onDragEnd={(event, info) => handleDragEnd(event, info, item)}
-                            onClick={() => handleSelectItem(item)}
-                            className={cn(
-                                "rounded-md flex items-center justify-center cursor-pointer border-2 hover:border-accent transition-all duration-300 relative aspect-square z-10",
-                                isSelected ? "border-accent bg-accent/10" : "border-transparent",
-                                unlocking && "opacity-50 blur-sm",
-                                "bg-black/20"
-                            )}
-                            title={item.name}
-                            style={{
-                                gridColumnStart: item.position.x + 1,
-                                gridRowStart: item.position.y + 1,
-                                gridColumnEnd: `span ${item.size[0]}`,
-                                gridRowEnd: `span ${item.size[1]}`,
-                                zIndex: draggedItem?.id === item.id ? 100 : 10,
-                            }}
-                        >
-                            <IconComponent className={cn(
-                                "h-8 w-8 text-primary/70 transition-all duration-300 pointer-events-none",
-                                isSelected && "text-accent drop-shadow-[0_0_8px_hsl(var(--accent))]"
-                            )} />
-                        </motion.div>
-                    )
-                })}
+                <AnimatePresence>
+                    {items.map(item => {
+                        const IconComponent = iconMap[item.icon] || HelpCircle;
+                        const isSelected = selectedItem?.id === item.id;
+                        
+                        return (
+                            <motion.div
+                                key={item.id}
+                                data-item-id={item.id}
+                                layout
+                                drag={!unlocking}
+                                dragSnapToCenter={true}
+                                dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
+                                onDragStart={() => setDraggedItem(item)}
+                                onDragEnd={(event, info) => handleDragEnd(event, info, item)}
+                                onClick={() => handleSelectItem(item)}
+                                className={cn(
+                                    "rounded-md flex items-center justify-center cursor-pointer border-2 hover:border-accent transition-all duration-300 absolute",
+                                    isSelected ? "border-accent bg-accent/10" : "border-transparent",
+                                    unlocking && "opacity-50 blur-sm",
+                                    "bg-black/20"
+                                )}
+                                title={item.name}
+                                style={{
+                                    top: `calc(${item.position.y * 100 / GRID_ROWS}% + ${item.position.y * 0.5}rem)`,
+                                    left: `calc(${item.position.x * 100 / GRID_COLS}% + ${item.position.x * 0.5}rem)`,
+                                    width: `calc(${item.size[0] * 100 / GRID_COLS}% + ${ (item.size[0] - 1) * 0.5 }rem)`,
+                                    height: `calc(${item.size[1] * 100 / GRID_ROWS}% + ${ (item.size[1] - 1) * 0.5 }rem)`,
+                                    zIndex: draggedItem?.id === item.id ? 100 : 10,
+                                }}
+                            >
+                                <IconComponent className={cn(
+                                    "h-8 w-8 text-primary/70 transition-all duration-300 pointer-events-none",
+                                    isSelected && "text-accent drop-shadow-[0_0_8px_hsl(var(--accent))]"
+                                )} />
+                            </motion.div>
+                        )
+                    })}
+                </AnimatePresence>
             </div>
         </CardContent>
       </div>
@@ -427,7 +429,3 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
     </Card>
   );
 }
-
-    
-
-    
