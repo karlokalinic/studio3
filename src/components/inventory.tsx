@@ -122,10 +122,13 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
         toast({ title: 'No Keys', description: 'You do not have any Ancient Keys to unlock slots.', variant: 'destructive' });
         return;
     }
+    // Check if slot is already unlocked
     if (index >= maxSlots) {
         spendKey();
         unlockInventorySlot();
         toast({ title: 'Slot Unlocked!', description: 'You have expanded your inventory.' });
+    } else {
+        toast({ title: 'Already Unlocked', description: 'This slot is already available.', variant: 'destructive' });
     }
     setUnlocking(false);
   }
@@ -135,7 +138,11 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
         setUnlocking(false);
         return;
     };
-    onSelectItem(item);
+    if (selectedItem && selectedItem.id === item?.id) {
+        onSelectItem(null); // Deselect if clicking the same item
+    } else {
+        onSelectItem(item);
+    }
   }
 
   const handleCombine = (sourceItem: InventoryItem, targetItem: InventoryItem) => {
@@ -187,97 +194,6 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
   };
 
 
-  const renderGrid = () => {
-    const gridCells = [];
-    const occupied = new Set<number>();
-
-    items.forEach(item => {
-        const [width, height] = item.size;
-        for (let y = 0; y < height; y++) {
-            for (let x = 0; x < width; x++) {
-                const index = (item.position.y + y) * GRID_COLS + (item.position.x + x);
-                occupied.add(index);
-            }
-        }
-    });
-
-    for (let index = 0; index < TOTAL_GRID_SLOTS; index++) {
-      const itemAtPos = items.find(item => {
-          return item.position.y * GRID_COLS + item.position.x === index;
-      });
-
-      if (itemAtPos) {
-          if (occupied.has(index) && (itemAtPos.position.y * GRID_COLS + itemAtPos.position.x !== index)) continue;
-          
-          const IconComponent = iconMap[itemAtPos.icon] || HelpCircle;
-          const isSelected = selectedItem?.id === itemAtPos.id;
-          
-          gridCells.push(
-              <motion.div
-                  key={itemAtPos.id}
-                  data-item-id={itemAtPos.id}
-                  layout
-                  drag={!unlocking}
-                  dragSnapToCenter={true}
-                  dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
-                  onDragStart={() => setDraggedItem(itemAtPos)}
-                  onDragEnd={(event, info) => handleDragEnd(event, info, itemAtPos)}
-                  onClick={() => handleSelectItem(itemAtPos)}
-                  className={cn(
-                      "rounded-md flex items-center justify-center cursor-pointer border-2 hover:border-accent transition-all duration-300 relative aspect-square z-10",
-                      isSelected ? "border-accent bg-accent/10" : "border-primary/20",
-                      unlocking && "opacity-50 blur-sm",
-                      "bg-black/20"
-                  )}
-                  title={itemAtPos.name}
-                  style={{
-                      gridColumn: `span ${itemAtPos.size[0]}`,
-                      gridRow: `span ${itemAtPos.size[1]}`,
-                      zIndex: draggedItem?.id === itemAtPos.id ? 100 : 10,
-                  }}
-              >
-              <IconComponent className={cn(
-                  "h-8 w-8 text-primary/70 transition-all duration-300 pointer-events-none",
-                  isSelected && "text-accent drop-shadow-[0_0_8px_hsl(var(--accent))]"
-              )} />
-              </motion.div>
-          );
-
-      } else if (!occupied.has(index)) {
-           const isUnlocked = index < maxSlots;
-           if(isUnlocked) {
-               gridCells.push(
-                  <div 
-                      key={`empty-${index}`} 
-                      data-slot-index={index}
-                      className={cn(
-                          "aspect-square bg-black/20 rounded-md border-2 border-primary/20 opacity-50",
-                          unlocking && character && character.ancientKeys > 0 && "opacity-100 blur-0 cursor-pointer hover:bg-accent/20 hover:border-accent"
-                      )}
-                      onClick={() => handleUnlockSlot(index)}
-                  ></div>
-               );
-           } else {
-                gridCells.push(
-                   <div 
-                      key={`locked-${index}`} 
-                      data-slot-index={index}
-                      className={cn(
-                          "aspect-square bg-black/40 rounded-md border-2 border-destructive/20 flex items-center justify-center",
-                          unlocking && character && character.ancientKeys > 0 && "cursor-pointer hover:bg-accent/20 hover:border-accent"
-                      )} 
-                      title="Locked Slot"
-                      onClick={() => handleUnlockSlot(index)}
-                  >
-                      <Lock className="h-6 w-6 text-destructive/50"/>
-                  </div>
-                );
-           }
-      }
-    }
-    return gridCells;
-  };
-
   const canBeUsed = selectedItem?.type === 'Consumable';
   
   const itemDetails = (
@@ -301,7 +217,7 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
                     <ItemAttribute label="Attack" value={selectedItem?.attack} icon={Sword} />
                     <ItemAttribute label="Defense" value={selectedItem?.defense} icon={Shield} />
                     <ItemAttribute label="Durability" value={selectedItem?.durability} icon={Zap} />
-                    <ItemAttribute label="Weight" value={selectedItem?.weight} icon={Star} />
+                    <ItemAttribute label="Weight" value={selectedItem?.weight} icon={Weight} />
                     <ItemAttribute label="Rank" value={selectedItem?.rank} icon={Star} />
                   </div>
                   <Separator />
@@ -376,8 +292,72 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
             <CardDescription>{items.length} / {maxSlots} Slots Used</CardDescription>
         </CardHeader>
         <CardContent className="p-2">
-            <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${GRID_COLS}, 1fr)`}}>
-                {renderGrid()}
+            <div 
+                className="grid gap-2 relative" 
+                style={{
+                    gridTemplateColumns: `repeat(${GRID_COLS}, 1fr)`,
+                    gridTemplateRows: `repeat(${GRID_ROWS}, 1fr)`,
+                }}
+            >
+                {/* Background Grid */}
+                {Array.from({ length: TOTAL_GRID_SLOTS }).map((_, index) => {
+                    const isUnlocked = index < maxSlots;
+                    return (
+                        <div
+                            key={`bg-slot-${index}`}
+                            data-slot-index={index}
+                            onClick={() => handleUnlockSlot(index)}
+                            className={cn(
+                                "aspect-square rounded-md border-2",
+                                isUnlocked 
+                                    ? "bg-black/20 border-primary/20"
+                                    : "bg-black/40 border-destructive/20 flex items-center justify-center",
+                                unlocking && !isUnlocked && character && character.ancientKeys > 0 && "cursor-pointer hover:bg-accent/20 hover:border-accent"
+                            )}
+                        >
+                            {!isUnlocked && <Lock className="h-6 w-6 text-destructive/50"/>}
+                        </div>
+                    );
+                })}
+
+                {/* Items */}
+                {items.map(item => {
+                    const IconComponent = iconMap[item.icon] || HelpCircle;
+                    const isSelected = selectedItem?.id === item.id;
+                    
+                    return (
+                        <motion.div
+                            key={item.id}
+                            data-item-id={item.id}
+                            layout
+                            drag={!unlocking}
+                            dragSnapToCenter={true}
+                            dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
+                            onDragStart={() => setDraggedItem(item)}
+                            onDragEnd={(event, info) => handleDragEnd(event, info, item)}
+                            onClick={() => handleSelectItem(item)}
+                            className={cn(
+                                "rounded-md flex items-center justify-center cursor-pointer border-2 hover:border-accent transition-all duration-300 relative aspect-square z-10",
+                                isSelected ? "border-accent bg-accent/10" : "border-transparent",
+                                unlocking && "opacity-50 blur-sm",
+                                "bg-black/20"
+                            )}
+                            title={item.name}
+                            style={{
+                                gridColumnStart: item.position.x + 1,
+                                gridRowStart: item.position.y + 1,
+                                gridColumnEnd: `span ${item.size[0]}`,
+                                gridRowEnd: `span ${item.size[1]}`,
+                                zIndex: draggedItem?.id === item.id ? 100 : 10,
+                            }}
+                        >
+                            <IconComponent className={cn(
+                                "h-8 w-8 text-primary/70 transition-all duration-300 pointer-events-none",
+                                isSelected && "text-accent drop-shadow-[0_0_8px_hsl(var(--accent))]"
+                            )} />
+                        </motion.div>
+                    )
+                })}
             </div>
         </CardContent>
       </div>
@@ -416,6 +396,7 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
                      toast({ title: 'No Keys', description: 'You do not have any Ancient Keys to unlock slots.', variant: 'destructive' });
                      return;
                 }
+                onSelectItem(null); // Deselect item when entering unlock mode
                 setUnlocking(prev => !prev);
             }}>
                 <KeyRound className="mr-2" /> {unlocking ? 'Cancel Unlock' : 'Unlock Slot'}
@@ -446,5 +427,7 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
     </Card>
   );
 }
+
+    
 
     
