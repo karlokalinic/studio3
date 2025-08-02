@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -46,13 +47,13 @@ const resultVariants = {
 export default function ActionCheck({ check, successThreshold, isFixedSuccess, onComplete }: ActionCheckProps) {
   const { character } = useCharacterStore();
   const { settings } = useSettings();
-  const [checkValue, setCheckValue] = useState(0);
+  const [checkValue, setCheckValue] = useState<number | null>(null);
   const [isRevealed, setIsRevealed] = useState(false);
 
   useEffect(() => {
     if (character && settings) {
       const stats = getCalculatedStats(character, settings.difficulty);
-      const val = check === 'strength' ? stats.effectiveStrength : stats.effectiveIntelligence;
+      const val = check === 'strength' ? stats.effectiveStrength : stats.effectiveIntellect;
       setCheckValue(val);
 
       const timer = setTimeout(() => setIsRevealed(true), 100); // Start flip animation
@@ -60,7 +61,7 @@ export default function ActionCheck({ check, successThreshold, isFixedSuccess, o
     }
   }, [character, check, settings]);
   
-  const success = isFixedSuccess === true ? true : isFixedSuccess === false ? false : checkValue >= successThreshold;
+  const success = isFixedSuccess === true ? true : isFixedSuccess === false ? false : (checkValue ?? 0) >= successThreshold;
 
   useEffect(() => {
     if (isRevealed) {
@@ -90,7 +91,20 @@ export default function ActionCheck({ check, successThreshold, isFixedSuccess, o
             <h3 className="font-headline text-xl text-primary capitalize">{check} Check</h3>
             <p className="text-sm text-muted-foreground">Target: {successThreshold}</p>
             <div className="my-6">
-                <p className="text-7xl font-bold text-accent">{checkValue}</p>
+                <AnimatePresence mode="wait">
+                {checkValue !== null ? (
+                    <motion.p
+                        key={checkValue}
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-7xl font-bold text-accent"
+                    >
+                        {checkValue}
+                    </motion.p>
+                ) : (
+                    <div className="text-7xl font-bold text-accent">...</div>
+                )}
+                </AnimatePresence>
             </div>
             <motion.div
                 variants={resultVariants}

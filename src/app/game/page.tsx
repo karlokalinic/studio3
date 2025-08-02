@@ -17,7 +17,7 @@ import { CalculatedStats } from '@/types';
 
 export default function GamePage() {
   const router = useRouter();
-  const { character, quests, hasHydrated, setInventory } = useCharacterStore();
+  const { character, quests, hasHydrated } = useCharacterStore();
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const { settings } = useSettings();
   const [characterStats, setCharacterStats] = useState<CalculatedStats | null>(null);
@@ -31,15 +31,13 @@ export default function GamePage() {
 
   useEffect(() => {
     if (character && settings) {
-      if (character.inventory.length > 0 && !selectedItem) {
-        setSelectedItem(character.inventory[0]);
-      } else if (character.inventory.length === 0) {
+      if (character.inventory.length === 0) {
         setSelectedItem(null);
       }
       const stats = getCalculatedStats(character, settings.difficulty);
       setCharacterStats(stats);
     }
-  }, [character, settings, selectedItem]);
+  }, [character, settings]);
 
   if (!hasHydrated || !settings || !character || !characterStats) {
     return (

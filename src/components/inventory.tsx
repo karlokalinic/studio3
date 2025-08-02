@@ -161,11 +161,16 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
   const handleSelectItem = (item: InventoryItem | null) => {
     if (unlocking) return;
 
-    if(selectedItem && item && selectedItem.id !== item.id) {
-        handleCombine(item);
-        return;
+    if (selectedItem) {
+        if (item && selectedItem.id !== item.id) {
+            handleCombine(item);
+            return;
+        }
+        if (item && selectedItem.id === item.id) {
+            onSelectItem(null); // Deselect if clicking the same item
+            return;
+        }
     }
-
     onSelectItem(item);
   }
 

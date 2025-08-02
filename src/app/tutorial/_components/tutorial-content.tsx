@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
@@ -38,7 +39,7 @@ const tutorialScript = [
   },
   {
     type: 'narrator',
-    text: "With a grunt of effort, you slam your shoulder into the door. The ancient metal groans and gives way! That was a Strength check. Your 'Effective Strength' was high enough to succeed. This stat is calculated from your base Strength, but also affected by things like your current fatigue and the difficulty you chose.",
+    text: "With a grunt of effort, you slam your shoulder into the door. The ancient metal groans and gives way! That was a Strength check. Sometimes, fate is on your side. This stat is calculated from your base Strength, but also affected by things like your current fatigue and the difficulty you chose.",
   },
   {
     type: 'narrator',
