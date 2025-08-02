@@ -116,25 +116,26 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
     });
   }
 
-  const handleUnlockSlot = (index: number) => {
-    if (!unlocking || !character || character.ancientKeys <= 0 || index < maxSlots) return;
-
-    spendKey();
-    unlockInventorySlot();
+ const handleUnlockSlot = (index: number) => {
+    if (!unlocking || !character) return;
+    if(character.ancientKeys <= 0) {
+        toast({ title: 'No Keys', description: 'You do not have any Ancient Keys to unlock slots.', variant: 'destructive' });
+        return;
+    }
+    if (index >= maxSlots) {
+        spendKey();
+        unlockInventorySlot();
+        toast({ title: 'Slot Unlocked!', description: 'You have expanded your inventory.' });
+    }
     setUnlocking(false);
-    toast({
-        title: 'Slot Unlocked!',
-        description: 'You have expanded your inventory.'
-    });
   }
   
   const handleSelectItem = (item: InventoryItem | null) => {
-    if (unlocking) return;
-    if (item && selectedItem?.id === item.id) {
-        onSelectItem(null); // Deselect if clicking the same item
-    } else {
-        onSelectItem(item);
-    }
+    if (unlocking) {
+        setUnlocking(false);
+        return;
+    };
+    onSelectItem(item);
   }
 
   const handleCombine = (sourceItem: InventoryItem, targetItem: InventoryItem) => {
@@ -201,85 +202,84 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
     });
 
     for (let index = 0; index < TOTAL_GRID_SLOTS; index++) {
-        if (occupied.has(index)) {
-             const itemAtPos = items.find(item => {
-                const [width, height] = item.size;
-                for (let y = 0; y < height; y++) {
-                    for (let x = 0; x < width; x++) {
-                        if ((item.position.y + y) * GRID_COLS + (item.position.x + x) === index) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-             });
+      const itemAtPos = items.find(item => {
+          return item.position.y * GRID_COLS + item.position.x === index;
+      });
 
-            if (itemAtPos && (itemAtPos.position.y * GRID_COLS + itemAtPos.position.x === index)) {
-                const IconComponent = iconMap[itemAtPos.icon] || HelpCircle;
-                const isSelected = selectedItem?.id === itemAtPos.id;
-                
+      if (itemAtPos) {
+          if (!occupied.has(index)) continue;
+          
+          const IconComponent = iconMap[itemAtPos.icon] || HelpCircle;
+          const isSelected = selectedItem?.id === itemAtPos.id;
+          
+          gridCells.push(
+              <motion.div
+                  key={itemAtPos.id}
+                  data-item-id={itemAtPos.id}
+                  layout
+                  drag={!unlocking}
+                  dragSnapToCenter={true}
+                  dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
+                  onDragStart={() => setDraggedItem(itemAtPos)}
+                  onDragEnd={(event, info) => handleDragEnd(event, info, itemAtPos)}
+                  onClick={() => handleSelectItem(itemAtPos)}
+                  className={cn(
+                      "rounded-md flex items-center justify-center cursor-pointer border-2 hover:border-accent transition-all duration-300 relative aspect-square z-10",
+                      isSelected ? "border-accent bg-accent/10" : "border-primary/20",
+                      unlocking && "opacity-50 blur-sm",
+                      "bg-black/20"
+                  )}
+                  title={itemAtPos.name}
+                  style={{
+                      gridColumn: `span ${itemAtPos.size[0]}`,
+                      gridRow: `span ${itemAtPos.size[1]}`,
+                      zIndex: draggedItem?.id === itemAtPos.id ? 100 : 10,
+                  }}
+              >
+              <IconComponent className={cn(
+                  "h-8 w-8 text-primary/70 transition-all duration-300 pointer-events-none",
+                  isSelected && "text-accent drop-shadow-[0_0_8px_hsl(var(--accent))]"
+              )} />
+              </motion.div>
+          );
+           for (let y = 0; y < itemAtPos.size[1]; y++) {
+              for (let x = 0; x < itemAtPos.size[0]; x++) {
+                  if (x === 0 && y === 0) continue; 
+                  occupied.add((itemAtPos.position.y + y) * GRID_COLS + (itemAtPos.position.x + x));
+              }
+          }
+
+      } else if (!occupied.has(index)) {
+           const isUnlocked = index < maxSlots;
+           if(isUnlocked) {
+               gridCells.push(
+                  <div 
+                      key={`empty-${index}`} 
+                      data-slot-index={index}
+                      className={cn(
+                          "aspect-square bg-black/20 rounded-md border-2 border-primary/20 opacity-50",
+                          unlocking && character && character.ancientKeys > 0 && "opacity-100 blur-0 cursor-pointer hover:bg-accent/20 hover:border-accent"
+                      )}
+                      onClick={() => handleUnlockSlot(index)}
+                  ></div>
+               );
+           } else {
                 gridCells.push(
-                    <motion.div
-                        key={itemAtPos.id}
-                        data-item-id={itemAtPos.id}
-                        layout // This helps animate position changes
-                        drag={!unlocking}
-                        dragSnapToCenter={true}
-                        dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
-                        onDragStart={() => setDraggedItem(itemAtPos)}
-                        onDragEnd={(event, info) => handleDragEnd(event, info, itemAtPos)}
-                        onClick={() => handleSelectItem(itemAtPos)}
-                        className={cn(
-                            "rounded-md flex items-center justify-center cursor-pointer border-2 hover:border-accent transition-all duration-300 relative aspect-square z-10",
-                            isSelected ? "border-accent bg-accent/10" : "border-primary/20",
-                            unlocking && "opacity-50 blur-sm",
-                            "bg-black/20"
-                        )}
-                        title={itemAtPos.name}
-                        style={{
-                            gridColumn: `span ${itemAtPos.size[0]}`,
-                            gridRow: `span ${itemAtPos.size[1]}`,
-                            zIndex: draggedItem?.id === itemAtPos.id ? 100 : 10,
-                        }}
-                    >
-                    <IconComponent className={cn(
-                        "h-8 w-8 text-primary/70 transition-all duration-300 pointer-events-none",
-                        isSelected && "text-accent drop-shadow-[0_0_8px_hsl(var(--accent))]"
-                    )} />
-                    </motion.div>
+                   <div 
+                      key={`locked-${index}`} 
+                      data-slot-index={index}
+                      className={cn(
+                          "aspect-square bg-black/40 rounded-md border-2 border-destructive/20 flex items-center justify-center",
+                          unlocking && character && character.ancientKeys > 0 && "cursor-pointer hover:bg-accent/20 hover:border-accent"
+                      )} 
+                      title="Locked Slot"
+                      onClick={() => handleUnlockSlot(index)}
+                  >
+                      <Lock className="h-6 w-6 text-destructive/50"/>
+                  </div>
                 );
-            }
-        } else {
-             const isUnlocked = index < maxSlots;
-             if(isUnlocked) {
-                 gridCells.push(
-                    <div 
-                        key={`empty-${index}`} 
-                        data-slot-index={index}
-                        className={cn(
-                            "aspect-square bg-black/20 rounded-md border-2 border-primary/20 opacity-50",
-                            unlocking && character && character.ancientKeys > 0 && "opacity-100 blur-0 cursor-pointer hover:bg-accent/20 hover:border-accent"
-                        )}
-                        onClick={() => unlocking && handleUnlockSlot(index)}
-                    ></div>
-                 );
-             } else {
-                  gridCells.push(
-                     <div 
-                        key={`locked-${index}`} 
-                        data-slot-index={index}
-                        className={cn(
-                            "aspect-square bg-black/40 rounded-md border-2 border-destructive/20 flex items-center justify-center",
-                            unlocking && character && character.ancientKeys > 0 && "cursor-pointer hover:bg-accent/20 hover:border-accent"
-                        )} 
-                        title="Locked Slot"
-                        onClick={() => handleUnlockSlot(index)}
-                    >
-                        <Lock className="h-6 w-6 text-destructive/50"/>
-                    </div>
-                  );
-             }
-        }
+           }
+      }
     }
     return gridCells;
   };
@@ -382,7 +382,7 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
             <CardDescription>{items.length} / {maxSlots} Slots Used</CardDescription>
         </CardHeader>
         <CardContent className="p-2">
-            <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${GRID_COLS}, 1fr)`}}>
+            <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${GRID_COLS}, minmax(0, 1fr))`}}>
                 {renderGrid()}
             </div>
         </CardContent>
@@ -417,7 +417,13 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
         </div>
 
         <div className="w-full flex flex-col gap-2 pt-4 border-t border-primary/20 mt-4">
-            <Button variant="outline" className="w-full" onClick={() => setUnlocking(prev => !prev)} disabled={!character || character.ancientKeys <= 0}>
+            <Button variant="outline" className="w-full" onClick={() => {
+                if (!character || character.ancientKeys <= 0) {
+                     toast({ title: 'No Keys', description: 'You do not have any Ancient Keys to unlock slots.', variant: 'destructive' });
+                     return;
+                }
+                setUnlocking(prev => !prev);
+            }}>
                 <KeyRound className="mr-2" /> {unlocking ? 'Cancel Unlock' : 'Unlock Slot'}
                 <span className="text-muted-foreground ml-2">({character?.ancientKeys || 0})</span>
             </Button>
@@ -446,5 +452,3 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
     </Card>
   );
 }
-
-    
