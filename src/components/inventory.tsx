@@ -207,7 +207,7 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
       });
 
       if (itemAtPos) {
-          if (!occupied.has(index)) continue;
+          if (occupied.has(index) && (itemAtPos.position.y * GRID_COLS + itemAtPos.position.x !== index)) continue;
           
           const IconComponent = iconMap[itemAtPos.icon] || HelpCircle;
           const isSelected = selectedItem?.id === itemAtPos.id;
@@ -242,12 +242,6 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
               )} />
               </motion.div>
           );
-           for (let y = 0; y < itemAtPos.size[1]; y++) {
-              for (let x = 0; x < itemAtPos.size[0]; x++) {
-                  if (x === 0 && y === 0) continue; 
-                  occupied.add((itemAtPos.position.y + y) * GRID_COLS + (itemAtPos.position.x + x));
-              }
-          }
 
       } else if (!occupied.has(index)) {
            const isUnlocked = index < maxSlots;
@@ -382,7 +376,7 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
             <CardDescription>{items.length} / {maxSlots} Slots Used</CardDescription>
         </CardHeader>
         <CardContent className="p-2">
-            <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${GRID_COLS}, minmax(0, 1fr))`}}>
+            <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${GRID_COLS}, 1fr)`}}>
                 {renderGrid()}
             </div>
         </CardContent>
@@ -452,3 +446,5 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
     </Card>
   );
 }
+
+    
