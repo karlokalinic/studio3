@@ -3,7 +3,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useCharacterStore } from '@/stores/use-character-store';
 import { getCalculatedStats } from '@/lib/character-calculations';
 import { useSettings } from '@/context/settings-context';
