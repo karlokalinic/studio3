@@ -53,7 +53,6 @@ const ItemAttribute = ({ label, value, icon: Icon }: { label: string; value?: st
 
 const GRID_COLS = 6;
 const GRID_ROWS = 5;
-const TOTAL_GRID_SLOTS = GRID_COLS * GRID_ROWS;
 
 export default function Inventory({ items, selectedItem, onSelectItem, maxSlots }: InventoryProps) {
   const { character, removeItem, updateCharacterStats, unlockInventorySlot, spendKey, setInventory, addItems } = useCharacterStore();
@@ -294,39 +293,29 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
         </CardHeader>
         <CardContent className="p-2">
             <div 
-                className="grid gap-2 relative"
+                className="grid gap-2"
                 style={{
                     gridTemplateColumns: `repeat(${GRID_COLS}, 1fr)`,
                     gridTemplateRows: `repeat(${GRID_ROWS}, 1fr)`,
                 }}
             >
-                {/* Background Grid */}
-                {Array.from({ length: TOTAL_GRID_SLOTS }).map((_, index) => {
-                    const isUnlocked = index < maxSlots;
-                    return (
-                        <div
-                            key={`bg-slot-${index}`}
-                            data-slot-index={index}
-                            onClick={() => handleUnlockSlot(index)}
-                            className={cn(
-                                "aspect-square rounded-md border-2",
-                                isUnlocked 
-                                    ? "bg-black/20 border-primary/20"
-                                    : "bg-black/40 border-destructive/20 flex items-center justify-center",
-                                unlocking && !isUnlocked && character && character.ancientKeys > 0 && "cursor-pointer hover:bg-accent/20 hover:border-accent"
-                            )}
-                        >
-                            {!isUnlocked && <Lock className="h-6 w-6 text-destructive/50"/>}
-                        </div>
-                    );
-                })}
+                {/* Background Grid & Items */}
+                {Array.from({ length: GRID_ROWS * GRID_COLS }).map((_, index) => {
+                    const row = Math.floor(index / GRID_COLS);
+                    const col = index % GRID_COLS;
 
-                {/* Items */}
-                <AnimatePresence>
-                    {items.map(item => {
+                    // Find if an item's top-left corner is at this slot
+                    const item = items.find(i => i.position.x === col && i.position.y === row);
+                    
+                    // Check if this slot is covered by any part of a larger item
+                    const isCovered = items.some(i => 
+                        col >= i.position.x && col < i.position.x + i.size[0] &&
+                        row >= i.position.y && row < i.position.y + i.size[1]
+                    );
+
+                    if (item) {
                         const IconComponent = iconMap[item.icon] || HelpCircle;
                         const isSelected = selectedItem?.id === item.id;
-                        
                         return (
                             <motion.div
                                 key={item.id}
@@ -339,17 +328,17 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
                                 onDragEnd={(event, info) => handleDragEnd(event, info, item)}
                                 onClick={() => handleSelectItem(item)}
                                 className={cn(
-                                    "rounded-md flex items-center justify-center cursor-pointer border-2 hover:border-accent transition-all duration-300 absolute",
+                                    "rounded-md flex items-center justify-center cursor-pointer border-2 hover:border-accent transition-all duration-300",
+                                    "bg-black/20",
                                     isSelected ? "border-accent bg-accent/10" : "border-transparent",
-                                    unlocking && "opacity-50 blur-sm",
-                                    "bg-black/20"
+                                    unlocking && "opacity-50 blur-sm"
                                 )}
                                 title={item.name}
                                 style={{
-                                    top: `calc(${item.position.y} * (100% / ${GRID_ROWS}) + ${item.position.y * 0.5}rem)`,
-                                    left: `calc(${item.position.x} * (100% / ${GRID_COLS}) + ${item.position.x * 0.5}rem)`,
-                                    width: `calc(${item.size[0]} * (100% / ${GRID_COLS}) - ${item.size[0] > 1 ? '0.5rem' : '0rem'})`,
-                                    height: `calc(${item.size[1]} * (100% / ${GRID_ROWS}) - ${item.size[1] > 1 ? '0.5rem' : '0rem'})`,
+                                    gridColumnStart: item.position.x + 1,
+                                    gridColumnEnd: item.position.x + item.size[0] + 1,
+                                    gridRowStart: item.position.y + 1,
+                                    gridRowEnd: item.position.y + item.size[1] + 1,
                                     zIndex: draggedItem?.id === item.id ? 100 : 10,
                                 }}
                             >
@@ -359,8 +348,31 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
                                 )} />
                             </motion.div>
                         )
-                    })}
-                </AnimatePresence>
+                    }
+
+                    if (isCovered) {
+                        return null; // This slot is part of a larger item, so we render nothing here
+                    }
+
+                    // If we reach here, it's an empty or locked slot
+                    const isUnlocked = index < maxSlots;
+                    return (
+                        <div
+                            key={`slot-${index}`}
+                            data-slot-index={index}
+                            onClick={() => handleUnlockSlot(index)}
+                             className={cn(
+                                "aspect-square rounded-md border-2",
+                                isUnlocked 
+                                    ? "bg-black/20 border-primary/20"
+                                    : "bg-black/40 border-destructive/20 flex items-center justify-center",
+                                unlocking && !isUnlocked && character && character.ancientKeys > 0 && "cursor-pointer hover:bg-accent/20 hover:border-accent"
+                            )}
+                        >
+                            {!isUnlocked && <Lock className="h-6 w-6 text-destructive/50"/>}
+                        </div>
+                    );
+                })}
             </div>
         </CardContent>
       </div>
