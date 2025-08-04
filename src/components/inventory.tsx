@@ -117,20 +117,21 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
   }
 
  const handleUnlockSlot = (index: number) => {
-    if (!unlocking || !character) return;
-    if(character.ancientKeys <= 0) {
+    if (!character || character.ancientKeys <= 0) {
         toast({ title: 'No Keys', description: 'You do not have any Ancient Keys to unlock slots.', variant: 'destructive' });
+        setUnlocking(false);
         return;
     }
-    // Check if slot is already unlocked
-    if (index >= maxSlots) {
-        spendKey();
-        unlockInventorySlot();
-        toast({ title: 'Slot Unlocked!', description: 'You have expanded your inventory.' });
-    } else {
-        toast({ title: 'Already Unlocked', description: 'This slot is already available.', variant: 'destructive' });
+    if (unlocking) {
+        if (index >= maxSlots) {
+            spendKey();
+            unlockInventorySlot();
+            toast({ title: 'Slot Unlocked!', description: 'You have expanded your inventory.' });
+        } else {
+            toast({ title: 'Already Unlocked', description: 'This slot is already available.', variant: 'destructive' });
+        }
+        setUnlocking(false);
     }
-    setUnlocking(false);
   }
   
   const handleSelectItem = (item: InventoryItem | null) => {
@@ -345,10 +346,10 @@ export default function Inventory({ items, selectedItem, onSelectItem, maxSlots 
                                 )}
                                 title={item.name}
                                 style={{
-                                    top: `calc(${item.position.y * 100 / GRID_ROWS}% + ${item.position.y * 0.5}rem)`,
-                                    left: `calc(${item.position.x * 100 / GRID_COLS}% + ${item.position.x * 0.5}rem)`,
-                                    width: `calc(${item.size[0] * 100 / GRID_COLS}% + ${ (item.size[0] - 1) * 0.5 }rem)`,
-                                    height: `calc(${item.size[1] * 100 / GRID_ROWS}% + ${ (item.size[1] - 1) * 0.5 }rem)`,
+                                    top: `calc(${item.position.y} * (100% / ${GRID_ROWS}) + ${item.position.y * 0.5}rem)`,
+                                    left: `calc(${item.position.x} * (100% / ${GRID_COLS}) + ${item.position.x * 0.5}rem)`,
+                                    width: `calc(${item.size[0]} * (100% / ${GRID_COLS}) - ${item.size[0] > 1 ? '0.5rem' : '0rem'})`,
+                                    height: `calc(${item.size[1]} * (100% / ${GRID_ROWS}) - ${item.size[1] > 1 ? '0.5rem' : '0rem'})`,
                                     zIndex: draggedItem?.id === item.id ? 100 : 10,
                                 }}
                             >
